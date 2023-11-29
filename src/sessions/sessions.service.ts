@@ -178,7 +178,12 @@ export class SessionsService {
           email: emailUser,
           status: 1,
           deleted: false,
-          support: false
+          support: false,
+          profile: {
+            darkMode: false,
+            skipUntrustedRedirect: false,
+            trustedDomains: []
+          }
         });
         user = await this.usersRepository.save(user);
         const userRoles = this.usersToRolesRepository.create({
