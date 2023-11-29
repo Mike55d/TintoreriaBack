@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@faker-js/faker": "^8.0.1",
+    "@nestjs/axios": "^3.0.1",
     "@nestjs/common": "^8.1.1",
     "@nestjs/config": "^2.0.0",
     "@nestjs/core": "^8.1.1",
@@ -37,7 +38,7 @@
     "@socket.io/redis-adapter": "^7.2.0",
     "@types/cron": "^2.0.1",
     "ajv-dist": "^8.11.0",
-    "axios": "^0.27.2",
+    "axios": "^1.6.2",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
     "date-fns": "^2.29.1",

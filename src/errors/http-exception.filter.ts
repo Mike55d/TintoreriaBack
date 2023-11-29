@@ -52,7 +52,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
      * @todo Modificar el llamado a logCustom para dar la mayor 
      *       cantidad de detalles posibles acerca del error
      */
-    this.logService.logCustom(LogLevel.ERROR, result, null);
+    this.logService.logCustom(LogLevel.ERROR, result);
 
     response.status(result.httpError).json({
       statusCode: result.httpError,

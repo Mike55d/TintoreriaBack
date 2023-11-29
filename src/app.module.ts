@@ -2,8 +2,6 @@ import path, { join } from 'path';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { OrganizationsModule } from './organizations/organizations.module';
-import { Organization } from './organizations/entities/organization.entity';
 import { RolesModule } from './roles/roles.module';
 import { Role } from './roles/entities/role.entity';
 import { UsersModule } from './users/users.module';
@@ -52,7 +50,6 @@ import { UsersToRoles } from './users/entities/usersToRoles.entity';
       logging: process.env.TYPEORM_LOGGING,
       retryAttempts: +process.env.TYPEORM_RETRY_ATTEMPTS,
       entities: [
-        Organization,
         Role,
         Session,
         User,
@@ -63,7 +60,6 @@ import { UsersToRoles } from './users/entities/usersToRoles.entity';
       ]
     } as TypeOrmModuleOptions),
     LogsModule,
-    OrganizationsModule,
     RolesModule,
     UsersModule,
     AuthModule,

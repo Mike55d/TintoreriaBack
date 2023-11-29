@@ -7,7 +7,6 @@ import { User } from './entities/user.entity';
 import { ApiConfigService } from '../api-config/api-config.service';
 import { existsSync, unlinkSync } from 'fs';
 import { join } from 'path';
-import { Organization } from '../organizations/entities/organization.entity';
 import { CustomError } from '../errors/custom-error';
 import { Errors } from '../errors/errors.types';
 import { Role } from '../roles/entities/role.entity';
@@ -30,7 +29,6 @@ export class UsersService {
       email: createUserDto.email,
       name: createUserDto.name,
       roles: createUserDto.roles.map(id => ({ role: { id } as Role } as UsersToRoles)),
-      org: createUserDto.orgId ? { id: createUserDto.orgId } : registrar.org,
       registrar: { id: registrar.id },
       profile: {
         darkMode: false,
@@ -44,16 +42,12 @@ export class UsersService {
     return this.findOne(entity.id);
   }
 
-  findAll(org: Organization) {
+  findAll() {
     return this.usersRepository.find({
       where: {
-        org: {
-          id: org.id
-        },
-        support:false,
-        deleted:false,    
-      },
-      relations: ['org']
+        support: false,
+        deleted: false
+      }
     });
   }
 
@@ -67,15 +61,11 @@ export class UsersService {
     });
   }
 
-  findAllByOrg(org: number) {
+  findAllByOrg() {
     return this.usersRepository.find({
       where: {
-        org: {
-          id: org
-        },
         deleted: false
-      },
-      relations: ['org']
+      }
     });
   }
 
@@ -83,7 +73,7 @@ export class UsersService {
     try {
       return this.usersRepository.findOneOrFail({
         where: { id, deleted: false },
-        relations: ['org', 'roles', 'roles.role']
+        relations: ['roles', 'roles.role']
       });
     } catch (error) {
       console.log(error);
@@ -92,8 +82,7 @@ export class UsersService {
 
   findOneByEmail(email: string) {
     return this.usersRepository.findOneOrFail({
-      where: { email, deleted: false },
-      relations: ['org']
+      where: { email, deleted: false }
     });
   }
 
@@ -128,10 +117,10 @@ export class UsersService {
     await this.usersRepository.save(user);
   }
 
-  async getUsersByRoles(org: Organization, roles: Role[]) {
+  async getUsersByRoles(roles: Role[]) {
     const users = await this.usersRepository.find({
-      where: { deleted: false, org: { id: org.id } },
-      relations: ['sessions', 'sessions.user', 'org', 'registrar']
+      where: { deleted: false },
+      relations: ['sessions', 'sessions.user', 'registrar']
     });
 
     const rolesIds = roles.map(it => it.id);

@@ -1,6 +1,5 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Permission } from '../roles.types';
-import { Organization } from '../../organizations/entities/organization.entity';
 import { UsersToRoles } from '../../users/entities/usersToRoles.entity';
 
 @Entity()
@@ -19,12 +18,6 @@ export class Role {
 
   @CreateDateColumn()
   regDate: Date;
-
-  @ManyToOne(() => Organization, org => org.roles)
-  org: Organization;
-
-  // @Column({ default: false })
-  // hideRole: boolean;
 
   @OneToMany(() => UsersToRoles, roles => roles.user )
   users: UsersToRoles[];

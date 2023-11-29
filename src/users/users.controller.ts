@@ -35,7 +35,7 @@ export class UsersController {
   @Permissions('users:read')
   async findAll(@Request() req) {
     try {
-      const users = await this.usersService.findAll(req.user.org);
+      const users = await this.usersService.findAll();
       return users.map(it => it.json);
     } catch (error) {
       console.log(error);
@@ -53,16 +53,16 @@ export class UsersController {
     }
   }
 
-  @Get(':id/findByOrg')
-  @Permissions('users:read')
-  async findAllByOrg(@Param('id') id: string) {
-    const users = await this.usersService.findAllByOrg(+id);
-    return users.map(it => it.json);
-  }
+  // @Get(':id/findByOrg')
+  // @Permissions('users:read')
+  // async findAllByOrg(@Param('id') id: string) {
+  //   const users = await this.usersService.findAllByOrg(+id);
+  //   return users.map(it => it.json);
+  // }
 
   @Get('/public')
   async findAllPublic(@Request() req) {
-    const users = await this.usersService.findAll(req.user.org);
+    const users = await this.usersService.findAll();
     return users.map(it => it.registrarInfo);
   }
 

@@ -6,7 +6,6 @@ import ElectronLog from 'electron-log';
 import { utilities as NestWinstonUtilities } from 'nest-winston';
 import { CustomError } from '../errors/custom-error';
 import { LogCategory, LogLevel } from './logs.types';
-import { Organization } from '../organizations/entities/organization.entity';
 import { Repository } from 'typeorm';
 import { Log } from './entities/logs.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -88,7 +87,7 @@ export class LogsService implements LoggerService {
     });
   }
 
-  async logCustom(level: LogLevel, error: CustomError, organization: Organization | null) {
+  async logCustom(level: LogLevel, error: CustomError) {
     const { message, ...subError } = error;
 
     if (error.logCategory === LogCategory.SERVER) {
@@ -96,13 +95,11 @@ export class LogsService implements LoggerService {
         this.serverLogger.log('error', message, {
           context: this.currentContext || '<No context>',
           ...subError,
-          organization: organization ? organization.json : organization
         });
       } else {
         this.standardLogger.log('info', message, {
           context: this.currentContext || '<No context>',
           ...subError,
-          organization: organization ? organization.json : organization
         });
       }
     }
@@ -115,11 +112,6 @@ export class LogsService implements LoggerService {
       errorNum: error.errorCode,
       level: level,
       details: error.details,
-      org: organization
-        ? {
-            id: organization.id
-          }
-        : organization
     });
 
     try {

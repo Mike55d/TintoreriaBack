@@ -7,12 +7,15 @@ import { AuthModule } from '../auth/auth.module';
 import { UsersModule } from '../users/users.module';
 import { PreSession } from './entities/pre-session.entity';
 import { User } from '../users/entities/user.entity';
+import { HttpModule } from '@nestjs/axios';
+import { UsersToRoles } from '../users/entities/usersToRoles.entity';
 
 @Module({
   imports: [
     forwardRef(() => AuthModule),
     UsersModule,
-    TypeOrmModule.forFeature([Session, PreSession, User, Session])
+    TypeOrmModule.forFeature([Session, PreSession, User, Session, UsersToRoles]),
+    HttpModule
   ],
   controllers: [SessionsController],
   providers: [SessionsService],

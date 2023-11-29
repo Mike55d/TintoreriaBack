@@ -17,7 +17,7 @@ export class RolesController {
   @Permissions('roles:create')
   async create(@Req() req, @Body() createRoleDto: CreateRoleDto) {
     const { user } = req;
-    const result = await this.rolesService.create(createRoleDto, user.org);
+    const result = await this.rolesService.create(createRoleDto);
     return result.json;
   }
 
@@ -25,16 +25,16 @@ export class RolesController {
   @Permissions('roles:read')
   async findAll(@Req() req) {
     const { user } = req;
-    const result = await this.rolesService.findAll(user.org);
+    const result = await this.rolesService.findAll();
     return result.map(it => it.json);
   }
 
-  @Get('findBy/org/:id')
-  @Permissions('roles:read')
-  async findAllByOrg(@Param('id') id: string) {
-    const result = await this.rolesService.findAllByOrg(+id);
-    return result.map(it => it.json);
-  }
+  // @Get('findBy/org/:id')
+  // @Permissions('roles:read')
+  // async findAllByOrg(@Param('id') id: string) {
+  //   const result = await this.rolesService.findAllByOrg(+id);
+  //   return result.map(it => it.json);
+  // }
 
   @Get(':id')
   @Permissions('roles:read')

@@ -13,6 +13,10 @@ import { PreSession } from './entities/pre-session.entity';
 import srp from 'secure-remote-password/server';
 import srpClient from 'secure-remote-password/client';
 import { v4 as uuid } from 'uuid';
+import { StartMicrosoftSessionDto } from './dto/start-microsoft-session.dto';
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
+import { UsersToRoles } from '../users/entities/usersToRoles.entity';
 
 @Injectable()
 export class SessionsService {
@@ -22,7 +26,10 @@ export class SessionsService {
     private readonly preSessionRepository: Repository<PreSession>,
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly httpService: HttpService,
+    @InjectRepository(UsersToRoles)
+    private usersToRolesRepository: Repository<UsersToRoles>
   ) {}
 
   async createGoogleSession(createSessionDto: StartGoogleSessionDto) {
@@ -54,7 +61,7 @@ export class SessionsService {
       where: {
         id
       },
-      relations: ['user', 'user.roles', 'user.org', 'user.roles.role']
+      relations: ['user', 'user.roles', 'user.roles.role']
     });
   }
 
@@ -66,7 +73,7 @@ export class SessionsService {
         },
         confirmed: true
       },
-      relations: ['user', 'user.roles', 'user.org']
+      relations: ['user', 'user.roles']
     });
   }
 
@@ -78,21 +85,9 @@ export class SessionsService {
           id: userId
         }
       },
-      relations: ['user', 'user.roles', 'user.org', 'user.roles.role']
+      relations: ['user', 'user.roles', 'user.roles.role']
     });
   }
-
-  // findOneByDeviceExternalApp(device: string, appId: number) {
-  //   return this.sessionsRepository.findOne({
-  //     where: {
-  //       deviceId: device,
-  //       app: {
-  //         id: appId
-  //       }
-  //     },
-  //     relations: ['app']
-  //   });
-  // }
 
   async getSessionFromToken(token: string) {
     const { dev, sub } = this.authService.verify(token) as any;
@@ -113,7 +108,7 @@ export class SessionsService {
       where: { email: startSessionDto.username },
       relations: {
         roles: {
-          role: true,
+          role: true
         }
       }
     });
@@ -148,10 +143,7 @@ export class SessionsService {
         confirmSessionDto.clientSessionProof
       );
       const deviceId = uuid();
-      const token = this.authService.createTokenForDevice(
-        user,
-        deviceId
-      );
+      const token = this.authService.createTokenForDevice(user, deviceId);
       let session = this.sessionsRepository.create({
         user,
         token,
@@ -166,50 +158,49 @@ export class SessionsService {
     }
   }
 
-  // async authSupport(userApproval: string) {
-  //   try {
-  //     const presession = await this.preSessionRepository.findOneBy({
-  //       userApproval
-  //     });
-  //     const user = await this.usersRepository.findOneBy({ email: presession.username });
-  //     const deviceId = uuid();
-  //     const token = this.authService.createTokenForDevice(user, deviceId);
-  //     let session = this.sessionsRepository.create({
-  //       user,
-  //       token,
-  //       confirmed: true,
-  //       deviceId: deviceId,
-  //       fcmToken: null
-  //     });
-  //     session = await this.sessionsRepository.save(session);
-  //     return this.findOne(session.id);
-  //   } catch (error) {
-  //     throw new CustomError(Errors.AUTH_UNSUCCESSFUL);
-  //   }
-  // }
-
-  // async authApplication(params: AuthApplication) {
-  //   try {
-  //     const app = await this.externalApplicationRepository.findOneBy({
-  //       clientId: params.clientId,
-  //       clientSecret: params.clientSecret
-  //     });
-  //     if (!app) {
-  //       throw new CustomError(Errors.AUTH_UNSUCCESSFUL);
-  //     }
-  //     const deviceId = uuid();
-  //     const token = this.authService.createTokenForDevice(null, deviceId, null, app);
-  //     let session = this.sessionsRepository.create({
-  //       app,
-  //       token,
-  //       confirmed: true,
-  //       deviceId: deviceId,
-  //       fcmToken: null
-  //     });
-  //     session = await this.sessionsRepository.save(session);
-  //     return this.findOne(session.id);
-  //   } catch (error) {
-  //     throw new CustomError(Errors.AUTH_UNSUCCESSFUL);
-  //   }
-  // }
+  async createMicrosoftSession(createSessionDto: StartMicrosoftSessionDto) {
+    try {
+      const userFromToken = (
+        await firstValueFrom(
+          this.httpService.get('https://graph.microsoft.com/v1.0/me', {
+            headers: {
+              Authorization: `Bearer ${createSessionDto.accessToken}`
+            }
+          })
+        )
+      ).data;
+      const emailUser = userFromToken.mail.toLowerCase();
+      let user = await this.usersRepository.findOneBy({ email: emailUser });
+      if (!user) {
+        const usersCount = (await this.usersRepository.find({})).length;
+        user = this.usersRepository.create({
+          name: userFromToken.displayName,
+          email: emailUser,
+          status: 1,
+          deleted: false,
+          support: false
+        });
+        user = await this.usersRepository.save(user);
+        const userRoles = this.usersToRolesRepository.create({
+          role: { id: usersCount == 0 ? 1 : 3 },
+          user: { id: user.id }
+        });
+        this.usersToRolesRepository.save(userRoles);
+      }
+      const deviceId = uuid();
+      const token = this.authService.createTokenForDevice(user, deviceId);
+      let session = this.sessionsRepository.create({
+        user,
+        token,
+        confirmed: true,
+        deviceId: deviceId,
+        fcmToken: null
+      });
+      session = await this.sessionsRepository.save(session);
+      return this.findOne(session.id);
+    } catch (error) {
+      console.log(error);
+    }
+    return;
+  }
 }

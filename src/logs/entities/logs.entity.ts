@@ -5,7 +5,6 @@ import {
   CreateDateColumn,
   ManyToOne
 } from 'typeorm';
-import { Organization } from '../../organizations/entities/organization.entity';
 import { LogCategory, LogLevel, LogSubCategory } from '../logs.types';
 
 @Entity({ name: 'logs' })
@@ -43,6 +42,4 @@ export class Log {
   @CreateDateColumn({ name: 'reg_date' })
   regDate: Date;
 
-  @ManyToOne(() => Organization, { eager: true })
-  org: Organization;
 }

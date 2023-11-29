@@ -25,9 +25,4 @@ export class CreateUserDto {
   @IsString()
   @IsOptional()
   verifier?: string;
-
-  @Expose()
-  @IsNumber()
-  @IsOptional()
-  orgId?: number;
 }

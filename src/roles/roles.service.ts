@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { Role } from './entities/role.entity';
-import { Organization } from '../organizations/entities/organization.entity';
 
 @Injectable()
 export class RolesService {
@@ -13,26 +12,23 @@ export class RolesService {
     private rolesRepository: Repository<Role>
   ) {}
 
-  create(createRoleDto: CreateRoleDto, org: Organization): Promise<Role> {
+  create(createRoleDto: CreateRoleDto ): Promise<Role> {
     const role = this.rolesRepository.create({
       ...createRoleDto,
       readOnly: false,
-      org: { id: org.id }
     });
     return this.rolesRepository.save(role);
   }
 
-  async findAll(org: Organization) {
+  async findAll() {
     return this.rolesRepository.findBy({
-      org: { id: org.id }
     });
   }
 
-  async findAllByOrg(id: number) {
-    return this.rolesRepository.findBy({
-      org: { id }
-    });
-  }
+  // async findAllByOrg(id: number) {
+  //   return this.rolesRepository.findBy({
+  //   });
+  // }
 
   findOne(id: number) {
     return this.rolesRepository.findOneByOrFail({ id });

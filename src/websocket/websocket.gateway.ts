@@ -2,7 +2,6 @@ import { OnGatewayConnection, OnGatewayInit, WebSocketGateway } from '@nestjs/we
 import { Server as SocketIOServer, Socket } from 'socket.io';
 import { SessionsService } from '../sessions/sessions.service';
 import { User } from '../users/entities/user.entity';
-import { Organization } from '../organizations/entities/organization.entity';
 
 type SessionType = 'appSession' | 'standard' | 'all';
 interface CustomSocket extends Socket {
@@ -48,7 +47,6 @@ export class AppGateway implements OnGatewayConnection, OnGatewayInit {
       };
 
       socket.join(`device-${session.deviceId}`);
-      socket.join(`organization-${session.user.org.id}`);
       socket.join(`user-${session.user.id}`);
     } catch (e) {
       socket.disconnect();
@@ -67,7 +65,4 @@ export class AppGateway implements OnGatewayConnection, OnGatewayInit {
     this.socketServer.to(`user-${user.id}`).emit(event, message);
   }
 
-  sendToOrg(org: Organization, event: string, message: any) {
-    this.socketServer.to(`organization-${org.id}`).emit(event, message);
-  }
 }

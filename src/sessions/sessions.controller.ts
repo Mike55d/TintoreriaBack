@@ -5,6 +5,7 @@ import { Public } from '../auth/guards/is-public.decorator';
 import { ApiTags } from '@nestjs/swagger';
 import { StartSessionDto } from './dto/start-session.dto';
 import { ConfirmSessionDto } from './dto/confirm-session.dto';
+import { StartMicrosoftSessionDto } from './dto/start-microsoft-session.dto';
 
 @Controller('sessions')
 @ApiTags('Sessions')
@@ -26,5 +27,10 @@ export class SessionsController {
   @Post('confirm')
   confirm(@Body() confirmSessionDto: ConfirmSessionDto) {
     return this.sessionsService.confirmSession(confirmSessionDto);
+  }
+
+  @Post('start/microsoft')
+  async createMicrosoftSession(@Body() createSessionDto: StartMicrosoftSessionDto) {
+    return await this.sessionsService.createMicrosoftSession(createSessionDto);
   }
 }

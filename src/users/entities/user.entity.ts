@@ -10,7 +10,6 @@ import {
   OneToOne,
   JoinColumn
 } from 'typeorm';
-import { Organization } from '../../organizations/entities/organization.entity';
 import { Permission } from '../../roles/roles.types';
 import { Session } from '../../sessions/entities/session.entity';
 import { UserProfile } from './user-profile.entity';
@@ -37,9 +36,6 @@ export class User {
 
   @OneToMany(() => UsersToRoles, roles => roles.user ,{ cascade: true })
   roles: UsersToRoles[];
-
-  @ManyToOne(() => Organization, { cascade: true, nullable: true })
-  org?: Organization;
 
   @Column({ nullable: true })
   lastConnection?: Date;
@@ -81,7 +77,6 @@ export class User {
       regDate: this.regDate,
       lastUpdate: this.lastUpdate,
       roles: this.roles?.filter(x => x.role).map(x => x.role?.json),
-      org: this.org ? this.org.json : null,
       support: this.support,
       permissions: this.permissions,
       registrar: !this.registrar ? null : this.registrar.registrarInfo
