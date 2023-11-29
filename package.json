@@ -1,8 +1,8 @@
 {
-  "name": "alm-backend",
+  "name": "adv-tickets-backend",
   "private": true,
   "version": "2.0.2",
-  "description": "ALM Backend",
+  "description": "ADV Tickets Backend",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build --webpack --webpackPath webpack-hmr.config.js",

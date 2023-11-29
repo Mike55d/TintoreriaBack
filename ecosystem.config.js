@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       script: './dist/main.js',
-      name: 'qa-alm-backend',
+      name: 'qa-adv-tickets-backend',
       exec_mode: 'cluster',
       instances: '2',
       env: {
@@ -11,7 +11,7 @@ module.exports = {
     },
     {
       script: './dist/main.js',
-      name: 'dev-alm-backend',
+      name: 'dev-adv-tickets-backend',
       exec_mode: 'cluster',
       instances: '1',
       env: {
@@ -20,7 +20,7 @@ module.exports = {
     },
     {
       script: './dist/main.js',
-      name: 'prod-alm-backend',
+      name: 'prod-adv-tickets-backend',
       exec_mode: 'cluster',
       instances: '2',
       env: {
