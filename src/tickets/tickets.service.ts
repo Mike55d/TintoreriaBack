@@ -58,38 +58,31 @@ export class TicketsService {
   }
 
   async create(createTicketDto: CreateTicketDto) {
-    try {
-      console.log(createTicketDto);
-      const requesting_users = await this.parseUsersToPersist(createTicketDto.requesting_users);
-      const observer_users = await this.parseUsersToPersist(createTicketDto.observer_users);
-      const assigned_users = await this.parseUsersToPersist(createTicketDto.assigned_users);
-      const ticket = this.ticketRepository.create({
-        ...createTicketDto,
-        requesting_users,
-        observer_users,
-        assigned_users,
-        priority: {
-          id: createTicketDto.priority
-        },
-        type: {
-          id: createTicketDto.type
-        },
-        impact: {
-          id: createTicketDto.impact
-        },
-        status: {
-          id: createTicketDto.status
-        },
-        urgency: {
-          id: createTicketDto.urgency
-        }
-      });
-      return this.ticketRepository.save(ticket);
-      return;
-    } catch (error) {
-      console.log(error);
-    }
-    return;
+    const requesting_users = await this.parseUsersToPersist(createTicketDto.requesting_users);
+    const observer_users = await this.parseUsersToPersist(createTicketDto.observer_users);
+    const assigned_users = await this.parseUsersToPersist(createTicketDto.assigned_users);
+    const ticket = this.ticketRepository.create({
+      ...createTicketDto,
+      requesting_users,
+      observer_users,
+      assigned_users,
+      priority: {
+        id: createTicketDto.priority
+      },
+      type: {
+        id: createTicketDto.type
+      },
+      impact: {
+        id: createTicketDto.impact
+      },
+      status: {
+        id: createTicketDto.status
+      },
+      urgency: {
+        id: createTicketDto.urgency
+      }
+    });
+    return this.ticketRepository.save(ticket);
   }
 
   findAll() {

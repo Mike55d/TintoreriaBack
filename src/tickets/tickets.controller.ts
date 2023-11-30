@@ -9,13 +9,7 @@ export class TicketsController {
 
   @Post()
   async create(@Body() createTicketDto: CreateTicketDto) {
-    try {
-      const result = await this.ticketsService.create(createTicketDto);
-      return result;
-    } catch (error) {
-      console.log(error);
-    }
-    return ;
+    return await this.ticketsService.create(createTicketDto);
   }
 
   @Get()
