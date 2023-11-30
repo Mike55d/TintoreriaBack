@@ -1,4 +1,4 @@
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 import {
   ArrayNotEmpty,
   IsEmail,
@@ -6,8 +6,12 @@ import {
   IsOptional,
   Max,
   IsString,
-  IsArray
+  IsArray,
+  IsObject,
+  ValidateNested
 } from 'class-validator';
+import { AssignUser } from '../tickets.types';
+import { AssignUserDto } from './assign-user.dto';
 
 export class CreateTicketDto {
   @Expose()
@@ -18,20 +22,26 @@ export class CreateTicketDto {
   @IsOptional()
   description?: string;
 
-  @Expose()
   @IsArray()
   @IsOptional()
-  requesting_users?: number[];
+  @ValidateNested({ each: true })
+  @Type(() => AssignUserDto)
+  @Expose()
+  requesting_users?: AssignUserDto[];
 
-  @Expose()
   @IsArray()
   @IsOptional()
-  observer_users?: number[];
+  @ValidateNested({ each: true })
+  @Type(() => AssignUserDto)
+  @Expose()
+  observer_users?: AssignUserDto[];
 
-  @Expose()
   @IsArray()
   @IsOptional()
-  assigned_users?: number[];
+  @ValidateNested({ each: true })
+  @Type(() => AssignUserDto)
+  @Expose()
+  assigned_users?: AssignUserDto[];
 
   @Expose()
   @IsNumber()

@@ -3,8 +3,8 @@ import { Priority } from './priority.entity';
 import { Type } from './type.entity';
 import { Impact } from './impact.entity';
 import { Urgency } from './urgency.entity';
-import { UserGlpi } from './user-glpi.entity';
 import { Status } from './status.entity';
+import { AssignUser } from './assign-users.entity';
 
 @Entity()
 export class Ticket {
@@ -17,17 +17,17 @@ export class Ticket {
   @Column('text', { default: null })
   description?: string;
 
-  @ManyToMany(() => UserGlpi, { cascade: true })
+  @ManyToMany(() => AssignUser, { cascade: true })
   @JoinTable()
-  requesting_users: UserGlpi[];
+  requesting_users: AssignUser[];
 
-  @ManyToMany(() => UserGlpi, { cascade: true })
+  @ManyToMany(() => AssignUser, { cascade: true })
   @JoinTable()
-  observer_users: UserGlpi[];
+  observer_users: AssignUser[];
 
-  @ManyToMany(() => UserGlpi, { cascade: true })
+  @ManyToMany(() => AssignUser, { cascade: true })
   @JoinTable()
-  assigned_users: UserGlpi[];
+  assigned_users: AssignUser[];
 
   @ManyToOne(() => Priority, { cascade: true, nullable: true })
   priority: Priority;

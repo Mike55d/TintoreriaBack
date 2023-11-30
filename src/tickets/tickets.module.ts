@@ -8,9 +8,10 @@ import { Type } from './entities/type.entity';
 import { Impact } from './entities/impact.entity';
 import { Urgency } from './entities/urgency.entity';
 import { Ticket } from './entities/ticket.entity';
+import { User } from '../users/entities/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Ticket, Status, Priority, Type, Impact, Urgency])],
+  imports: [TypeOrmModule.forFeature([Ticket, Status, Priority, Type, Impact, Urgency,User])],
   controllers: [TicketsController],
   providers: [TicketsService]
 })

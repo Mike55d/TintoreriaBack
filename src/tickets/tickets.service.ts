@@ -9,6 +9,7 @@ import { Type } from './entities/type.entity';
 import { Impact } from './entities/impact.entity';
 import { Urgency } from './entities/urgency.entity';
 import { Ticket } from './entities/ticket.entity';
+import { User } from '../users/entities/user.entity';
 
 const allRelations = [
   'requesting_users',
@@ -18,8 +19,11 @@ const allRelations = [
   'type',
   'impact',
   'urgency',
-  'status'
+  'status',
+  'assigned_users.user'
 ];
+
+type UsersRequest = { user?: number; email?: string };
 
 @Injectable()
 export class TicketsService {
@@ -35,32 +39,57 @@ export class TicketsService {
     @InjectRepository(Impact)
     private impactRepository: Repository<Impact>,
     @InjectRepository(Urgency)
-    private urgencyRepository: Repository<Urgency>
+    private urgencyRepository: Repository<Urgency>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>
   ) {}
 
-  create(createTicketDto: CreateTicketDto) {
-    const ticket = this.ticketRepository.create({
-      ...createTicketDto,
-      requesting_users: createTicketDto.requesting_users.map(val => ({ id: val })),
-      observer_users: createTicketDto.observer_users.map(val => ({ id: val })),
-      assigned_users: createTicketDto.assigned_users.map(val => ({ id: val })),
-      priority: {
-        id: createTicketDto.priority
-      },
-      type: {
-        id: createTicketDto.type
-      },
-      impact: {
-        id: createTicketDto.impact
-      },
-      status: {
-        id: createTicketDto.status
-      },
-      urgency: {
-        id: createTicketDto.urgency
-      }
-    });
-    return this.ticketRepository.save(ticket);
+  async parseUsersToPersist(users: UsersRequest[]) {
+    console.log(users);
+    const usersFormat = [];
+    for (let user of users) {
+      const userExist = await this.userRepository.findOneBy({ id: user.user });
+      usersFormat.push({
+        user: userExist ? userExist.id : null,
+        email: user.email
+      });
+    }
+    return usersFormat;
+  }
+
+  async create(createTicketDto: CreateTicketDto) {
+    try {
+      console.log(createTicketDto);
+      const requesting_users = await this.parseUsersToPersist(createTicketDto.requesting_users);
+      const observer_users = await this.parseUsersToPersist(createTicketDto.observer_users);
+      const assigned_users = await this.parseUsersToPersist(createTicketDto.assigned_users);
+      const ticket = this.ticketRepository.create({
+        ...createTicketDto,
+        requesting_users,
+        observer_users,
+        assigned_users,
+        priority: {
+          id: createTicketDto.priority
+        },
+        type: {
+          id: createTicketDto.type
+        },
+        impact: {
+          id: createTicketDto.impact
+        },
+        status: {
+          id: createTicketDto.status
+        },
+        urgency: {
+          id: createTicketDto.urgency
+        }
+      });
+      return this.ticketRepository.save(ticket);
+      return;
+    } catch (error) {
+      console.log(error);
+    }
+    return;
   }
 
   findAll() {
@@ -74,18 +103,21 @@ export class TicketsService {
       where: {
         id
       },
-      relations: allRelations,
-
+      relations: allRelations
     });
   }
 
-  update(id: number, updateTicketDto: UpdateTicketDto) {
+  async update(id: number, updateTicketDto: UpdateTicketDto) {
+    const requesting_users = await this.parseUsersToPersist(updateTicketDto.requesting_users);
+    const observer_users = await this.parseUsersToPersist(updateTicketDto.observer_users);
+    const assigned_users = await this.parseUsersToPersist(updateTicketDto.assigned_users);
+
     return this.ticketRepository.save({
       ...updateTicketDto,
       id,
-      requesting_users: updateTicketDto.requesting_users.map(val => ({ id: val })),
-      observer_users: updateTicketDto.observer_users.map(val => ({ id: val })),
-      assigned_users: updateTicketDto.assigned_users.map(val => ({ id: val })),
+      requesting_users,
+      observer_users,
+      assigned_users,
       priority: {
         id: updateTicketDto.priority
       },

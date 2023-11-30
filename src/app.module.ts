@@ -29,9 +29,9 @@ import { Status } from './tickets/entities/status.entity';
 import { Ticket } from './tickets/entities/ticket.entity';
 import { Type } from './tickets/entities/type.entity';
 import { Urgency } from './tickets/entities/urgency.entity';
-import { UserGlpi } from './tickets/entities/user-glpi.entity';
 import { ClientsModule } from './clients/clients.module';
 import { Client } from './clients/entities/clients.entity';
+import { AssignUser } from './tickets/entities/assign-users.entity';
 @Module({
   imports: [
     I18nModule.forRoot({
@@ -73,8 +73,8 @@ import { Client } from './clients/entities/clients.entity';
         Ticket,
         Type,
         Urgency,
-        UserGlpi,
-        Client
+        AssignUser,
+        Client,
       ]
     } as TypeOrmModuleOptions),
     LogsModule,
