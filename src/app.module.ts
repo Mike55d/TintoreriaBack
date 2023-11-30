@@ -22,6 +22,14 @@ import { I18nModule } from 'nestjs-i18n';
 import { ScheduleModule } from '@nestjs/schedule';
 import { PreSession } from './sessions/entities/pre-session.entity';
 import { UsersToRoles } from './users/entities/usersToRoles.entity';
+import { TicketsModule } from './tickets/tickets.module';
+import { Impact } from './tickets/entities/impact.entity';
+import { Priority } from './tickets/entities/priority.entity';
+import { Status } from './tickets/entities/status.entity';
+import { Ticket } from './tickets/entities/ticket.entity';
+import { Type } from './tickets/entities/type.entity';
+import { Urgency } from './tickets/entities/urgency.entity';
+import { UserGlpi } from './tickets/entities/user-glpi.entity';
 @Module({
   imports: [
     I18nModule.forRoot({
@@ -56,7 +64,14 @@ import { UsersToRoles } from './users/entities/usersToRoles.entity';
         UserProfile,
         Log,
         PreSession,
-        UsersToRoles
+        UsersToRoles,
+        Impact,
+        Priority,
+        Status,
+        Ticket,
+        Type,
+        Urgency,
+        UserGlpi
       ]
     } as TypeOrmModuleOptions),
     LogsModule,
@@ -72,7 +87,8 @@ import { UsersToRoles } from './users/entities/usersToRoles.entity';
     ScheduleModule.forRoot(),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'organization_logos')
-    })
+    }),
+    TicketsModule
   ],
   providers: [ApiConfigService]
 })
