@@ -7,9 +7,10 @@ import { Priority } from './entities/priority.entity';
 import { Type } from './entities/type.entity';
 import { Impact } from './entities/impact.entity';
 import { Urgency } from './entities/urgency.entity';
+import { Ticket } from './entities/ticket.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Status,Priority,Type,Impact,Urgency])],
+  imports: [TypeOrmModule.forFeature([Ticket, Status, Priority, Type, Impact, Urgency])],
   controllers: [TicketsController],
   providers: [TicketsService]
 })
