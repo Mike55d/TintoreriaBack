@@ -38,16 +38,6 @@ async function bootstrap() {
     defaultVersion: VERSION_NEUTRAL
   });
 
-  // Redis adapter
-  try {
-    const redisIoAdapter = new RedisIoAdapter(app);
-    await redisIoAdapter.connectToRedis();
-    app.useWebSocketAdapter(redisIoAdapter);
-  } catch (e) {
-    Logger.error(`Error connecting to Redis server: ${e.message}`, 'InstanceLoader');
-    process.exit(0);
-  }
-
   const config = new DocumentBuilder()
     .setTitle(`${process.env.APP_NAME} Docs`)
     .setVersion('1.0')
@@ -75,16 +65,6 @@ async function bootstrap() {
     await app.listen(process.env.SERVER_HTTP_PORT, process.env.SERVER_HTTP_HOSTNAME);
   } catch (e) {
     process.exit(0);
-  }
-
-  var dir = path.join(homedir(), process.env.REPORTS_PATH);
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-
-  var dirLogo = path.join(homedir(), process.env.LOGOS_PATH);
-  if (!fs.existsSync(dirLogo)) {
-    fs.mkdirSync(dirLogo, { recursive: true });
   }
 
   // @ts-ignore

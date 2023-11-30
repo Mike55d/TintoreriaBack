@@ -22,6 +22,8 @@ import { I18nModule } from 'nestjs-i18n';
 import { ScheduleModule } from '@nestjs/schedule';
 import { PreSession } from './sessions/entities/pre-session.entity';
 import { UsersToRoles } from './users/entities/usersToRoles.entity';
+import { ClientsModule } from './clients/clients.module';
+import { Client } from './clients/entities/clients.entity';
 @Module({
   imports: [
     I18nModule.forRoot({
@@ -56,12 +58,14 @@ import { UsersToRoles } from './users/entities/usersToRoles.entity';
         UserProfile,
         Log,
         PreSession,
-        UsersToRoles
+        UsersToRoles,
+        Client
       ]
     } as TypeOrmModuleOptions),
     LogsModule,
     RolesModule,
     UsersModule,
+    ClientsModule,
     AuthModule,
     SessionsModule,
     ConfigModule,

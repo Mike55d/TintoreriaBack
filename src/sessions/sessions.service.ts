@@ -204,8 +204,7 @@ export class SessionsService {
       session = await this.sessionsRepository.save(session);
       return this.findOne(session.id);
     } catch (error) {
-      console.log(error);
+      throw new CustomError(Errors.AUTH_UNSUCCESSFUL);
     }
-    return;
   }
 }
