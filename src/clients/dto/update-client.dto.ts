@@ -1,15 +1,19 @@
 import { Expose } from 'class-transformer';
 import { IsNumber, IsString, MaxLength, ValidateIf } from 'class-validator';
 
-export class CreateClientDto {
-  @IsString()
-  @MaxLength(32)
+export class UpdateClientDto {
+  @IsNumber()
   @Expose()
-  dni: string;
+  id: number;
 
   @IsNumber()
   @Expose()
   status: number;
+
+  @IsString()
+  @MaxLength(32)
+  @Expose()
+  dni: string;
 
   @IsString()
   @MaxLength(128)

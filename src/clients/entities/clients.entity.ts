@@ -12,7 +12,7 @@ export class Client {
   id: number;
 
   @Column()
-  active: boolean;
+  status: number;
 
   @Column({ length: 20, nullable: true })
   dni: string;
@@ -55,7 +55,7 @@ export class Client {
       id: this.id,
       dni: this.dni,
       name: this.name,
-      active: this.active,
+      status: this.status,
       country: this.country,
       phone: this.phone,
       address: this.address,
