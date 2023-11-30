@@ -30,6 +30,8 @@ import { Ticket } from './tickets/entities/ticket.entity';
 import { Type } from './tickets/entities/type.entity';
 import { Urgency } from './tickets/entities/urgency.entity';
 import { UserGlpi } from './tickets/entities/user-glpi.entity';
+import { ClientsModule } from './clients/clients.module';
+import { Client } from './clients/entities/clients.entity';
 @Module({
   imports: [
     I18nModule.forRoot({
@@ -71,12 +73,14 @@ import { UserGlpi } from './tickets/entities/user-glpi.entity';
         Ticket,
         Type,
         Urgency,
-        UserGlpi
+        UserGlpi,
+        Client
       ]
     } as TypeOrmModuleOptions),
     LogsModule,
     RolesModule,
     UsersModule,
+    ClientsModule,
     AuthModule,
     SessionsModule,
     ConfigModule,
