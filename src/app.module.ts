@@ -32,6 +32,7 @@ import { Urgency } from './tickets/entities/urgency.entity';
 import { ClientsModule } from './clients/clients.module';
 import { Client } from './clients/entities/clients.entity';
 import { AssignUser } from './tickets/entities/assign-users.entity';
+import { CommentTicket } from './tickets/entities/comment-ticket.entity';
 @Module({
   imports: [
     I18nModule.forRoot({
@@ -75,6 +76,7 @@ import { AssignUser } from './tickets/entities/assign-users.entity';
         Urgency,
         AssignUser,
         Client,
+        CommentTicket
       ]
     } as TypeOrmModuleOptions),
     LogsModule,

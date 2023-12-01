@@ -20,7 +20,8 @@ const allRelations = [
   'impact',
   'urgency',
   'status',
-  'assigned_users.user'
+  'assigned_users.user',
+  'comments'
 ];
 
 type UsersRequest = { user?: number; email?: string };
@@ -45,22 +46,27 @@ export class TicketsService {
   ) {}
 
   async parseUsersToPersist(users: UsersRequest[]) {
-    console.log(users);
     const usersFormat = [];
-    for (let user of users) {
-      const userExist = await this.userRepository.findOneBy({ id: user.user });
-      usersFormat.push({
-        user: userExist ? userExist.id : null,
-        email: user.email
-      });
+    if (users?.length) {
+      for (let user of users) {
+        const userExist = await this.userRepository.findOneBy({ id: user.user });
+        usersFormat.push({
+          user: userExist ? userExist.id : null,
+          email: user.email
+        });
+      }
     }
     return usersFormat;
   }
 
-  async create(createTicketDto: CreateTicketDto) {
+  async create(userId: number, createTicketDto: CreateTicketDto) {
     const requesting_users = await this.parseUsersToPersist(createTicketDto.requesting_users);
     const observer_users = await this.parseUsersToPersist(createTicketDto.observer_users);
     const assigned_users = await this.parseUsersToPersist(createTicketDto.assigned_users);
+    const comments = createTicketDto.comments.map(comment => ({
+      comment: comment.comment,
+      user: { id: userId }
+    }));
     const ticket = this.ticketRepository.create({
       ...createTicketDto,
       requesting_users,
@@ -80,7 +86,8 @@ export class TicketsService {
       },
       urgency: {
         id: createTicketDto.urgency
-      }
+      },
+      comments: comments
     });
     return this.ticketRepository.save(ticket);
   }
@@ -100,10 +107,15 @@ export class TicketsService {
     });
   }
 
-  async update(id: number, updateTicketDto: UpdateTicketDto) {
+  async update(userId, id: number, updateTicketDto: UpdateTicketDto) {
     const requesting_users = await this.parseUsersToPersist(updateTicketDto.requesting_users);
     const observer_users = await this.parseUsersToPersist(updateTicketDto.observer_users);
     const assigned_users = await this.parseUsersToPersist(updateTicketDto.assigned_users);
+    const comments = updateTicketDto.comments.map(comment => ({
+      comment: comment.comment,
+      user: { id: userId }
+    }));
+    const ticket = await this.ticketRepository.findOne({ where: { id }, relations: allRelations });
 
     return this.ticketRepository.save({
       ...updateTicketDto,
@@ -125,7 +137,8 @@ export class TicketsService {
       },
       urgency: {
         id: updateTicketDto.urgency
-      }
+      },
+      comments: [...ticket.comments, ...comments]
     });
   }
 

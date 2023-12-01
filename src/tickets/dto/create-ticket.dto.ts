@@ -12,6 +12,7 @@ import {
 } from 'class-validator';
 import { AssignUser } from '../tickets.types';
 import { AssignUserDto } from './assign-user.dto';
+import { CommentDto } from './comment.dto';
 
 export class CreateTicketDto {
   @Expose()
@@ -63,8 +64,10 @@ export class CreateTicketDto {
   @IsNumber()
   status: number;
 
-  @Expose()
-  @IsString()
+  @IsArray()
   @IsOptional()
-  comments?: string;
+  @ValidateNested({ each: true })
+  @Type(() => CommentDto)
+  @Expose()
+  comments?: CommentDto[];
 }

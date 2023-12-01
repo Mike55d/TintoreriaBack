@@ -1,15 +1,28 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Request
+} from '@nestjs/common';
 import { TicketsService } from './tickets.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth,guard';
+import { PermissionsGuard } from '../auth/guards/permissions.guard';
 
 @Controller('tickets')
+@UseGuards(JwtAuthGuard, PermissionsGuard)
 export class TicketsController {
   constructor(private readonly ticketsService: TicketsService) {}
 
   @Post()
-  async create(@Body() createTicketDto: CreateTicketDto) {
-    return await this.ticketsService.create(createTicketDto);
+  async create(@Request() req, @Body() createTicketDto: CreateTicketDto) {
+    return await this.ticketsService.create(req.user.id, createTicketDto);
   }
 
   @Get()
@@ -25,8 +38,13 @@ export class TicketsController {
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateTicketDto: UpdateTicketDto) {
-    return await this.ticketsService.update(+id, updateTicketDto);
+  async update(@Request() req, @Param('id') id: string, @Body() updateTicketDto: UpdateTicketDto) {
+    try {
+      return await this.ticketsService.update(req.user.id, +id, updateTicketDto);
+    } catch (error) {
+      console.log(error);
+    }
+    return;
   }
 
   @Delete(':id')
