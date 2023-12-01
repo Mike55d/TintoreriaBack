@@ -12,6 +12,8 @@ type ProductPermission =
   | 'products:delete'
   | 'products:create';
 
+type CommentsPermission = 'comments:delete';
+
 type RolePermission = 'roles:read' | 'roles:update' | 'roles:delete' | 'roles:create';
 
 type SurveyTemplatesPermission =
@@ -40,7 +42,8 @@ export type Permission =
   | CredentialsPermission
   | SettingsPermissions
   | OrgCurrenciesPermissions
-  | ReportsPermissions;
+  | ReportsPermissions
+  | CommentsPermission;
 
 export const ALL_PERMISSIONS: Permission[] = [
   'clients:create',
@@ -73,7 +76,8 @@ export const ALL_PERMISSIONS: Permission[] = [
   'currencies:read',
   'reports:read',
   'settings:update',
-  'settings:read'
+  'settings:read',
+  'comments:delete'
 ];
 
 export enum BasicRoles {

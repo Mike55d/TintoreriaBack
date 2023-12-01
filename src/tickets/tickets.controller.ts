@@ -14,6 +14,7 @@ import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth,guard';
 import { PermissionsGuard } from '../auth/guards/permissions.guard';
+import { Permissions } from '../auth/guards/permissions.decorator';
 
 @Controller('tickets')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
@@ -50,6 +51,12 @@ export class TicketsController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.ticketsService.remove(+id);
+  }
+
+  @Delete('comment/:id')
+  @Permissions('comments:delete')
+  removeComment(@Param('id') id: string) {
+    return this.ticketsService.removeComment(+id);
   }
 
   @Get('resources/status')

@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { Ticket } from './ticket.entity';
 
@@ -13,6 +13,9 @@ export class CommentTicket {
   @Column({ type: 'text' })
   comment: string;
 
-  @ManyToOne(() => Ticket , (ticket) => ticket.comments)
+  @ManyToOne(() => Ticket, ticket => ticket.comments)
   ticket?: Ticket;
+
+  @CreateDateColumn()
+  created_at: Date;
 }

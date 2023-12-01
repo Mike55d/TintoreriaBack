@@ -10,6 +10,7 @@ import { Impact } from './entities/impact.entity';
 import { Urgency } from './entities/urgency.entity';
 import { Ticket } from './entities/ticket.entity';
 import { User } from '../users/entities/user.entity';
+import { CommentTicket } from './entities/comment-ticket.entity';
 
 const allRelations = [
   'requesting_users',
@@ -42,7 +43,9 @@ export class TicketsService {
     @InjectRepository(Urgency)
     private urgencyRepository: Repository<Urgency>,
     @InjectRepository(User)
-    private userRepository: Repository<User>
+    private userRepository: Repository<User>,
+    @InjectRepository(CommentTicket)
+    private commentRepository: Repository<CommentTicket>
   ) {}
 
   async parseUsersToPersist(users: UsersRequest[]) {
@@ -146,6 +149,13 @@ export class TicketsService {
     const ticket = await this.findOne(id);
     if (ticket) {
       await this.ticketRepository.remove(ticket);
+    }
+  }
+
+  async removeComment(id: number) {
+    const comment = await this.commentRepository.findOneBy({ id });
+    if (comment) {
+      await this.commentRepository.remove(comment);
     }
   }
 
