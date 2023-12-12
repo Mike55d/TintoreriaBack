@@ -8,7 +8,8 @@ import {
   IsString,
   IsArray,
   IsObject,
-  ValidateNested
+  ValidateNested,
+  IsDate
 } from 'class-validator';
 import { AssignUser } from '../tickets.types';
 import { AssignUserDto } from './assign-user.dto';
@@ -22,6 +23,45 @@ export class CreateTicketDto {
   @Expose()
   @IsOptional()
   description?: string;
+
+  @Expose()
+  @IsDate()
+  @IsOptional()
+  openingDate?: Date;
+
+  @Expose()
+  @IsDate()
+  @IsOptional()
+  eventDate?: Date;
+
+  @Expose()
+  @IsDate()
+  @IsOptional()
+  assignDate?: Date;
+
+  @Expose()
+  @IsString()
+  @IsOptional()
+  eventDescription?: string;
+
+  @Expose()
+  @IsString()
+  @IsOptional()
+  possibleImpact?: string;
+
+  @Expose()
+  @IsString()
+  @IsOptional()
+  recommendation?: string;
+
+  @Expose()
+  @IsString()
+  @IsOptional()
+  indicesIC?: string;
+
+  @Expose()
+  @IsNumber()
+  client?: number;
 
   @IsArray()
   @IsOptional()

@@ -90,7 +90,10 @@ export class TicketsService {
       urgency: {
         id: createTicketDto.urgency
       },
-      comments: comments
+      comments: comments,
+      client: {
+        id: createTicketDto.client
+      }
     });
     return this.ticketRepository.save(ticket);
   }
@@ -141,7 +144,10 @@ export class TicketsService {
       urgency: {
         id: updateTicketDto.urgency
       },
-      comments: [...ticket.comments, ...comments]
+      comments: [...ticket.comments, ...comments],
+      client: {
+        id: updateTicketDto.client
+      }
     });
   }
 

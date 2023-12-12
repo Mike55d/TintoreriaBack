@@ -45,9 +45,9 @@ export class Ticket {
   @Column()
   recommendation?: string;
 
-  @Column({type:'longtext'})
+  @Column({ type: 'longtext' })
   indicesIC?: string;
-  
+
   @ManyToMany(() => AssignUser, { cascade: true })
   @JoinTable()
   requesting_users: AssignUser[];
@@ -86,6 +86,13 @@ export class Ticket {
       id: this.id,
       title: this.title,
       description: this.description,
+      openingDate: this.openingDate,
+      eventDate: this.eventDate,
+      assignDate: this.assignDate,
+      eventDescription: this.eventDescription,
+      possibleImpact: this.possibleImpact,
+      recommendation: this.recommendation,
+      indicesIC: this.indicesIC,
       requesting_users: this.requesting_users,
       observer_users: this.observer_users,
       assigned_users: this.assigned_users,
@@ -94,7 +101,8 @@ export class Ticket {
       impact: this.impact.id,
       urgency: this.urgency.id,
       status: this.status.id,
-      comments: this.comments
+      comments: this.comments,
+      client: this.client
     };
   }
 }

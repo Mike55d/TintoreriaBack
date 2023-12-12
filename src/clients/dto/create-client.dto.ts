@@ -1,5 +1,5 @@
 import { Expose } from 'class-transformer';
-import { IsNumber, IsString, MaxLength, ValidateIf } from 'class-validator';
+import { IsEmail, IsNumber, IsOptional, IsString, MaxLength, ValidateIf } from 'class-validator';
 
 export class CreateClientDto {
   @IsString()
@@ -62,4 +62,9 @@ export class CreateClientDto {
   @MaxLength(2048)
   @Expose()
   notes: string | null;
+
+  @IsEmail()
+  @IsOptional()
+  @Expose()
+  sender_email?: string;
 }

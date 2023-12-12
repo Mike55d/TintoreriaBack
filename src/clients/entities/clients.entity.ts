@@ -50,6 +50,9 @@ export class Client {
   @UpdateDateColumn()
   lastUpdate: Date;
 
+  @Column({ nullable: true })
+  sender_email: string;
+
   get json() {
     return {
       id: this.id,
