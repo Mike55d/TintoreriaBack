@@ -14,6 +14,7 @@ import { Urgency } from './urgency.entity';
 import { Status } from './status.entity';
 import { AssignUser } from './assign-users.entity';
 import { CommentTicket } from './comment-ticket.entity';
+import { Client } from '../../clients/entities/clients.entity';
 
 @Entity()
 export class Ticket {
@@ -26,6 +27,27 @@ export class Ticket {
   @Column('text', { default: null })
   description?: string;
 
+  @Column()
+  openingDate: Date;
+
+  @Column()
+  eventDate: Date;
+
+  @Column()
+  assignDate: Date;
+
+  @Column()
+  eventDescription?: string;
+
+  @Column()
+  possibleImpact?: string;
+
+  @Column()
+  recommendation?: string;
+
+  @Column({type:'longtext'})
+  indicesIC?: string;
+  
   @ManyToMany(() => AssignUser, { cascade: true })
   @JoinTable()
   requesting_users: AssignUser[];
@@ -55,6 +77,9 @@ export class Ticket {
 
   @OneToMany(() => CommentTicket, comment => comment.ticket, { cascade: true })
   comments?: CommentTicket[];
+
+  @ManyToOne(() => Client)
+  client: Client;
 
   get json() {
     return {

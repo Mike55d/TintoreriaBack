@@ -33,6 +33,9 @@ import { ClientsModule } from './clients/clients.module';
 import { Client } from './clients/entities/clients.entity';
 import { AssignUser } from './tickets/entities/assign-users.entity';
 import { CommentTicket } from './tickets/entities/comment-ticket.entity';
+import { AssetsModule } from './assets/assets.module';
+import { AssetTypes } from './assets/entities/asset.entity';
+import { AssetFields } from './assets/entities/asset-fields.entity';
 @Module({
   imports: [
     I18nModule.forRoot({
@@ -76,7 +79,9 @@ import { CommentTicket } from './tickets/entities/comment-ticket.entity';
         Urgency,
         AssignUser,
         Client,
-        CommentTicket
+        CommentTicket,
+        AssetTypes,
+        AssetFields
       ]
     } as TypeOrmModuleOptions),
     LogsModule,
@@ -94,7 +99,8 @@ import { CommentTicket } from './tickets/entities/comment-ticket.entity';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'organization_logos')
     }),
-    TicketsModule
+    TicketsModule,
+    AssetsModule
   ],
   providers: [ApiConfigService]
 })
