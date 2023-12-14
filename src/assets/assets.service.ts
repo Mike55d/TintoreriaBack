@@ -1,26 +1,46 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAssetDto } from './dto/create-asset.dto';
 import { UpdateAssetDto } from './dto/update-asset.dto';
+import { Repository } from 'typeorm';
+import { AssetFields } from './entities/asset-fields.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class AssetsService {
+  constructor(
+    @InjectRepository(AssetFields)
+    private assetFieldsRepository: Repository<AssetFields>
+  ) {}
+
   create(createAssetDto: CreateAssetDto) {
-    return 'This action adds a new asset';
+    const assetField = this.assetFieldsRepository.create({
+      ...createAssetDto,
+      AssetType: {
+        id: createAssetDto.assetType
+      }
+    });
+    return this.assetFieldsRepository.save(assetField);
   }
 
   findAll() {
-    return `This action returns all assets`;
+    return this.assetFieldsRepository.find({});
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} asset`;
+    return this.assetFieldsRepository.findBy({ id });
   }
 
   update(id: number, updateAssetDto: UpdateAssetDto) {
-    return `This action updates a #${id} asset`;
+    return this.assetFieldsRepository.update(id, {
+      ...updateAssetDto,
+      AssetType: {
+        id: updateAssetDto.assetType
+      }
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} asset`;
+  async remove(id: number) {
+    const asset = await this.assetFieldsRepository.findBy({ id });
+    return this.assetFieldsRepository.remove(asset);
   }
 }

@@ -1,5 +1,6 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinTable,
   ManyToMany,
@@ -27,7 +28,7 @@ export class Ticket {
   @Column('text', { default: null })
   description?: string;
 
-  @Column()
+  @CreateDateColumn()
   openingDate: Date;
 
   @Column()

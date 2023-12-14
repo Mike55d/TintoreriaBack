@@ -42,7 +42,7 @@ export class SessionsService {
       }
     });
 
-    const token = await this.authService.createTokenForDevice(user, createSessionDto.deviceId);
+    const token = this.authService.createTokenForDevice(user, createSessionDto.deviceId);
 
     let session = this.sessionsRepository.create({
       user,

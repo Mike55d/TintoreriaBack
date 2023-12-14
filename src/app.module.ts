@@ -36,6 +36,7 @@ import { CommentTicket } from './tickets/entities/comment-ticket.entity';
 import { AssetsModule } from './assets/assets.module';
 import { AssetTypes } from './assets/entities/asset.entity';
 import { AssetFields } from './assets/entities/asset-fields.entity';
+import { SlAlert } from './tickets/entities/sl-alert.entity';
 @Module({
   imports: [
     I18nModule.forRoot({
@@ -81,7 +82,8 @@ import { AssetFields } from './assets/entities/asset-fields.entity';
         Client,
         CommentTicket,
         AssetTypes,
-        AssetFields
+        AssetFields,
+        SlAlert
       ]
     } as TypeOrmModuleOptions),
     LogsModule,

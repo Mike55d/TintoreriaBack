@@ -10,9 +10,22 @@ import { Urgency } from './entities/urgency.entity';
 import { Ticket } from './entities/ticket.entity';
 import { User } from '../users/entities/user.entity';
 import { CommentTicket } from './entities/comment-ticket.entity';
+import { SlAlert } from './entities/sl-alert.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Ticket, Status, Priority, Type, Impact, Urgency,User,CommentTicket])],
+  imports: [
+    TypeOrmModule.forFeature([
+      Ticket,
+      Status,
+      Priority,
+      Type,
+      Impact,
+      Urgency,
+      User,
+      CommentTicket,
+      SlAlert
+    ])
+  ],
   controllers: [TicketsController],
   providers: [TicketsService]
 })
