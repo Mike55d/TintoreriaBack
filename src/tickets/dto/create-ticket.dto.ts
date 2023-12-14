@@ -11,7 +11,6 @@ import {
   ValidateNested,
   IsDate
 } from 'class-validator';
-import { AssignUser } from '../tickets.types';
 import { AssignUserDto } from './assign-user.dto';
 import { CommentDto } from './comment.dto';
 
@@ -110,4 +109,9 @@ export class CreateTicketDto {
   @Type(() => CommentDto)
   @Expose()
   comments?: CommentDto[];
+
+  @Expose()
+  @IsNumber()
+  @IsOptional()
+  asset?: number;
 }

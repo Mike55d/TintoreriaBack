@@ -37,6 +37,9 @@ import { AssetsModule } from './assets/assets.module';
 import { AssetTypes } from './assets/entities/asset.entity';
 import { AssetFields } from './assets/entities/asset-fields.entity';
 import { SlAlert } from './tickets/entities/sl-alert.entity';
+import { ClientAssetModule } from './client-asset/client-asset.module';
+import { ClientAsset } from './client-asset/entities/client-asset.entity';
+
 @Module({
   imports: [
     I18nModule.forRoot({
@@ -83,7 +86,8 @@ import { SlAlert } from './tickets/entities/sl-alert.entity';
         CommentTicket,
         AssetTypes,
         AssetFields,
-        SlAlert
+        SlAlert,
+        ClientAsset
       ]
     } as TypeOrmModuleOptions),
     LogsModule,
@@ -102,7 +106,8 @@ import { SlAlert } from './tickets/entities/sl-alert.entity';
       rootPath: join(__dirname, '..', 'organization_logos')
     }),
     TicketsModule,
-    AssetsModule
+    AssetsModule,
+    ClientAssetModule
   ],
   providers: [ApiConfigService]
 })

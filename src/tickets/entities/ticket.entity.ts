@@ -16,6 +16,7 @@ import { Status } from './status.entity';
 import { AssignUser } from './assign-users.entity';
 import { CommentTicket } from './comment-ticket.entity';
 import { Client } from '../../clients/entities/clients.entity';
+import { ClientAsset } from '../../client-asset/entities/client-asset.entity';
 
 @Entity()
 export class Ticket {
@@ -81,6 +82,9 @@ export class Ticket {
 
   @ManyToOne(() => Client)
   client: Client;
+
+  @ManyToOne(() => ClientAsset)
+  asset: ClientAsset;
 
   get json() {
     return {

@@ -97,6 +97,9 @@ export class TicketsService {
       comments: comments,
       client: {
         id: createTicketDto.client
+      },
+      asset: {
+        id: createTicketDto.asset
       }
     });
     return this.ticketRepository.save(ticket);
@@ -151,6 +154,9 @@ export class TicketsService {
       comments: [...ticket.comments, ...comments],
       client: {
         id: updateTicketDto.client
+      },
+      asset: {
+        id: updateTicketDto.asset
       }
     });
   }
