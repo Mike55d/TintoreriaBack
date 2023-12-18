@@ -15,8 +15,10 @@ import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth,guard';
 import { PermissionsGuard } from '../auth/guards/permissions.guard';
 import { Permissions } from '../auth/guards/permissions.decorator';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('tickets')
+@ApiTags('Tickets')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class TicketsController {
   constructor(private readonly ticketsService: TicketsService) {}

@@ -1,14 +1,17 @@
-import { Expose } from "class-transformer";
-import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
+import { ApiProperty } from '@nestjs/swagger';
+import { Expose } from 'class-transformer';
+import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class ConfirmSessionDto {
-    @IsString()
-    @IsNotEmpty()
-    @Expose()
-    clientSessionProof: string;
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty()
+  @Expose()
+  clientSessionProof: string;
 
-    @IsNumber()
-    @IsNotEmpty()
-    @Expose()
-    presessionId: number;
+  @ApiProperty()
+  @IsNumber()
+  @IsNotEmpty()
+  @Expose()
+  presessionId: number;
 }

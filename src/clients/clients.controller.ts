@@ -7,7 +7,7 @@ import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
 
 @Controller('clients')
-@ApiTags('Roles')
+@ApiTags('Clients')
 @UseGuards(JwtAuthGuard, PermissionsGuard)
 export class ClientsController {
   constructor(private readonly clientsService: ClientsService) {}

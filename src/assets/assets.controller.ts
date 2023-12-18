@@ -1,9 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { AssetsService } from './assets.service';
 import { CreateAssetDto } from './dto/create-asset.dto';
 import { UpdateAssetDto } from './dto/update-asset.dto';
+import { ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth,guard';
+import { PermissionsGuard } from '../auth/guards/permissions.guard';
 
 @Controller('assets')
+@ApiTags('Assets')
+@UseGuards(JwtAuthGuard, PermissionsGuard)
 export class AssetsController {
   constructor(private readonly assetsService: AssetsService) {}
 

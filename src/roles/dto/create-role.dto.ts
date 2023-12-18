@@ -1,13 +1,16 @@
 import { Expose } from 'class-transformer';
 import { ArrayNotEmpty, ArrayUnique, IsIn, IsString, MaxLength } from 'class-validator';
 import { ALL_PERMISSIONS, Permission } from '../roles.types';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateRoleDto {
+  @ApiProperty()
   @IsString()
   @MaxLength(64)
   @Expose()
   name: string;
 
+  @ApiProperty()
   @Expose()
   @ArrayNotEmpty()
   @ArrayUnique()
