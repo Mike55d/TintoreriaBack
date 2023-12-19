@@ -10,7 +10,7 @@ export class CreateRoleDto {
   @Expose()
   name: string;
 
-  @ApiProperty()
+  @ApiProperty({ type: [String] })
   @Expose()
   @ArrayNotEmpty()
   @ArrayUnique()

@@ -5,7 +5,8 @@ import { UpdateRoleDto } from './dto/update-role.dto';
 import { Permissions } from '../auth/guards/permissions.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth,guard';
 import { PermissionsGuard } from '../auth/guards/permissions.guard';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Role } from './entities/role.entity';
 
 @Controller('roles')
 @ApiTags('Roles')
@@ -14,6 +15,9 @@ export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
   @Post()
+  @ApiResponse({ status: 201, description: 'The record has been successfully created.' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @Permissions('roles:create')
   async create(@Req() req, @Body() createRoleDto: CreateRoleDto) {
     const { user } = req;
@@ -22,6 +26,9 @@ export class RolesController {
   }
 
   @Get()
+  @ApiResponse({ status: 201, description: 'Get all records', type: [Role] })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @Permissions('roles:read')
   async findAll(@Req() req) {
     const { user } = req;
@@ -29,14 +36,10 @@ export class RolesController {
     return result.map(it => it.json);
   }
 
-  // @Get('findBy/org/:id')
-  // @Permissions('roles:read')
-  // async findAllByOrg(@Param('id') id: string) {
-  //   const result = await this.rolesService.findAllByOrg(+id);
-  //   return result.map(it => it.json);
-  // }
-
   @Get(':id')
+  @ApiResponse({ status: 201, description: 'Get one records', type: Role })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @Permissions('roles:read')
   async findOne(@Param('id') id: string) {
     const result = await this.rolesService.findOne(+id);
@@ -44,12 +47,18 @@ export class RolesController {
   }
 
   @Patch(':id')
+  @ApiResponse({ status: 201, description: 'The record has been successfully updated.' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @Permissions('roles:update')
   async update(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
     await this.rolesService.update(+id, updateRoleDto);
   }
 
   @Delete(':id')
+  @ApiResponse({ status: 201, description: 'The record has been successfully deleted.' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @Permissions('roles:delete')
   remove(@Param('id') id: string) {
     return this.rolesService.remove(+id);

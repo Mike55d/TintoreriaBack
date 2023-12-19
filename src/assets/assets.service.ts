@@ -18,7 +18,7 @@ export class AssetsService {
   }
 
   findAll() {
-    return this.assetTypesRepository.find({});
+    return this.assetTypesRepository.find({ relations: ['assetFields'] });
   }
 
   findOne(id: number) {

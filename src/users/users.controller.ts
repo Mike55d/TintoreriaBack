@@ -16,8 +16,9 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth,guard';
 import { Permissions } from '../auth/guards/permissions.decorator';
 import { PermissionsGuard } from '../auth/guards/permissions.guard';
 import { UpdateUserProfileDto } from './dto/update-user-profile.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { newPasswordDataDto } from './dto/new-password-data.dto';
+import { User } from './entities/user.entity';
 
 @Controller('users')
 @ApiTags('Users')
@@ -26,12 +27,18 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
+  @ApiResponse({ status: 201, description: 'The record has been successfully created.' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
   async create(@Request() req, @Body() createUserDto: CreateUserDto) {
     const user = await this.usersService.create(req.user, createUserDto);
     return user.json;
   }
 
   @Get()
+  @ApiResponse({ status: 200, description: 'Get all records', type: [User] })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @Permissions('users:read')
   async findAll(@Request() req) {
     try {
@@ -42,31 +49,10 @@ export class UsersController {
     }
   }
 
-  @Get('all/users')
-  @Permissions('users:read')
-  async findAllUsers(@Request() req) {
-    try {
-      const users = await this.usersService.findAllUsers();
-      return users.map(it => it.json);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  // @Get(':id/findByOrg')
-  // @Permissions('users:read')
-  // async findAllByOrg(@Param('id') id: string) {
-  //   const users = await this.usersService.findAllByOrg(+id);
-  //   return users.map(it => it.json);
-  // }
-
-  @Get('/public')
-  async findAllPublic(@Request() req) {
-    const users = await this.usersService.findAll();
-    return users.map(it => it.registrarInfo);
-  }
-
   @Get('/me')
+  @ApiResponse({ status: 200, description: 'Get one record', type: User })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
   getOwnData(@Request() req) {
     try {
       return req.user.json;
@@ -76,27 +62,42 @@ export class UsersController {
   }
 
   @Get(':id')
+  @ApiResponse({ status: 200, description: 'Get one records', type: User })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
   async findOne(@Param('id') id: string) {
     const users = await this.usersService.findOne(+id);
     return users.json;
   }
 
   @Patch('me/profile')
+  @ApiResponse({ status: 201, description: 'The record has been successfully updated.' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
   updateProfile(@Request() req, @Body() params: UpdateUserProfileDto) {
     return this.usersService.updateProfile(req.user.id, params);
   }
 
   @Patch(':id')
+  @ApiResponse({ status: 201, description: 'The record has been successfully updated.' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(+id, updateUserDto);
   }
 
   @Patch(':id/changePassword')
+  @ApiResponse({ status: 201, description: 'The password has been successfully updated.' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
   changePassword(@Param('id') id: string, @Body() newPasswordData: newPasswordDataDto) {
     return this.usersService.changePassword(+id, newPasswordData);
   }
 
   @Delete(':id')
+  @ApiResponse({ status: 201, description: 'The record has been successfully deleted.' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
   }

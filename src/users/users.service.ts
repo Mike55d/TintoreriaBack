@@ -4,15 +4,8 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
-import { ApiConfigService } from '../api-config/api-config.service';
-import { existsSync, unlinkSync } from 'fs';
-import { join } from 'path';
-import { CustomError } from '../errors/custom-error';
-import { Errors } from '../errors/errors.types';
 import { Role } from '../roles/entities/role.entity';
 import { UpdateUserProfileDto } from './dto/update-user-profile.dto';
-import fs from 'fs';
-import path from 'path';
 import { newPasswordDataDto } from './dto/new-password-data.dto';
 import { UsersToRoles } from './entities/usersToRoles.entity';
 
@@ -21,7 +14,6 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-    private apiConfigService: ApiConfigService
   ) {}
 
   async create(registrar: User, createUserDto: CreateUserDto) {
@@ -46,24 +38,6 @@ export class UsersService {
     return this.usersRepository.find({
       where: {
         support: false,
-        deleted: false
-      }
-    });
-  }
-
-  findAllUsers() {
-    return this.usersRepository.find({
-      relations: {
-        roles: {
-          role: true
-        }
-      }
-    });
-  }
-
-  findAllByOrg() {
-    return this.usersRepository.find({
-      where: {
         deleted: false
       }
     });
