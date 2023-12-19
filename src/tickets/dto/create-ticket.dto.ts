@@ -13,54 +13,84 @@ import {
 } from 'class-validator';
 import { AssignUserDto } from './assign-user.dto';
 import { CommentDto } from './comment.dto';
+import { ApiProperty } from '@nestjs/swagger';
+import { Priority } from '../entities/priority.entity';
 
 export class CreateTicketDto {
+  @ApiProperty({
+    example: 'Dummy title',
+    minLength: 4
+  })
   @Expose()
   @IsString()
   title: string;
 
+  @ApiProperty({
+    example: 'Dummy description',
+    minLength: 4
+  })
   @Expose()
   @IsOptional()
   description?: string;
 
-  @Expose()
-  @IsDate()
-  @IsOptional()
-  openingDate?: Date;
-
+  @ApiProperty({
+    example: new Date(),
+    type: Date
+  })
   @Expose()
   @IsDate()
   @IsOptional()
   eventDate?: Date;
 
+  @ApiProperty({
+    example: new Date(),
+    type: Date
+  })
   @Expose()
   @IsDate()
   @IsOptional()
   assignDate?: Date;
 
+  @ApiProperty({
+    example: 'Dummy description event',
+    minLength: 4
+  })
   @Expose()
   @IsString()
   @IsOptional()
   eventDescription?: string;
 
+  @ApiProperty({
+    example: 'possible impact'
+  })
   @Expose()
   @IsString()
   @IsOptional()
   possibleImpact?: string;
 
+  @ApiProperty({
+    example: 'possible recommendation'
+  })
   @Expose()
   @IsString()
   @IsOptional()
   recommendation?: string;
 
+  @ApiProperty({
+    example: 'dummy indicesIC'
+  })
   @Expose()
   @IsString()
   @IsOptional()
   indicesIC?: string;
 
+  @ApiProperty({
+    example: 1,
+    type: Number
+  })
   @Expose()
   @IsNumber()
-  client?: number;
+  client: number;
 
   @IsArray()
   @IsOptional()
@@ -83,22 +113,47 @@ export class CreateTicketDto {
   @Expose()
   assigned_users?: AssignUserDto[];
 
+  @ApiProperty({
+    example: 1,
+    minimum: 1,
+    maximum: 4
+  })
   @Expose()
   @IsNumber()
   priority: number;
 
+  @ApiProperty({
+    example: 1,
+    minimum: 1,
+    maximum: 2
+  })
   @Expose()
   @IsNumber()
   type: number;
 
+  @ApiProperty({
+    example: 1,
+    minimum: 1,
+    maximum: 4
+  })
   @Expose()
   @IsNumber()
   impact: number;
 
+  @ApiProperty({
+    example: 1,
+    minimum: 1,
+    maximum: 4
+  })
   @Expose()
   @IsNumber()
   urgency: number;
 
+  @ApiProperty({
+    example: 1,
+    minimum: 1,
+    maximum: 2
+  })
   @Expose()
   @IsNumber()
   status: number;

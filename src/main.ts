@@ -51,7 +51,7 @@ async function bootstrap() {
     }
   };
 
-  const document = SwaggerModule.createDocument(app, config);
+  const document = SwaggerModule.createDocument(app, config, swaggerOptions);
 
   const publicDir = path.join(__dirname, '../public/docs');
   if (!fs.existsSync(publicDir)) {

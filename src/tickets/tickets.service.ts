@@ -177,7 +177,6 @@ export class TicketsService {
 
   @Cron('45 * * * * *')
   async expiredLicenses() {
-    console.log('sending alerts');
     const tickets = await this.ticketRepository.find({
       relations: ['type', 'priority'],
       where: {
@@ -234,7 +233,6 @@ export class TicketsService {
         const usersAdmin = await this.userRepository.find({
           where: { roles: { role: { id: 1 } } }
         });
-        console.log('works');
         for (let user of usersAdmin) {
           const alert = this.slAlertRepository.create({
             ticket,

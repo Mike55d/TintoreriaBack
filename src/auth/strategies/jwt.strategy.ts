@@ -30,7 +30,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       };
       return session.user;
     } catch (error) {
-      console.log(error);
     }
   }
 }

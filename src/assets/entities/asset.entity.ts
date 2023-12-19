@@ -9,6 +9,6 @@ export class AssetTypes {
   @Column()
   name: string;
 
-  @OneToMany(() => AssetFields, assetFields => assetFields.AssetType)
+  @OneToMany(() => AssetFields, assetFields => assetFields.AssetType, { cascade: true })
   assetFields: AssetFields[];
 }

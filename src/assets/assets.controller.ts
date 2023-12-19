@@ -1,10 +1,10 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { AssetsService } from './assets.service';
-import { CreateAssetDto } from './dto/create-asset.dto';
 import { UpdateAssetDto } from './dto/update-asset.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth,guard';
 import { PermissionsGuard } from '../auth/guards/permissions.guard';
+import { CreateAssetTypeDto } from './dto/create-asset-type.dto';
 
 @Controller('assets')
 @ApiTags('Assets')
@@ -13,8 +13,12 @@ export class AssetsController {
   constructor(private readonly assetsService: AssetsService) {}
 
   @Post()
-  async create(@Body() createAssetDto: CreateAssetDto) {
-    return await this.assetsService.create(createAssetDto);
+  async create(@Body() createAssetDto: CreateAssetTypeDto) {
+    try {
+      return await this.assetsService.create(createAssetDto);
+    } catch (error) {
+      return error;
+    }
   }
 
   @Get()
@@ -29,7 +33,12 @@ export class AssetsController {
 
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateAssetDto: UpdateAssetDto) {
-    return await this.assetsService.update(+id, updateAssetDto);
+    try {
+      return await this.assetsService.update(+id, updateAssetDto);
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
   }
 
   @Delete(':id')

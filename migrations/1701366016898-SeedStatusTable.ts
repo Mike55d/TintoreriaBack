@@ -17,9 +17,9 @@ export class SeedStatusTable1701366016898 implements MigrationInterface {
     await queryRunner.query(
       `INSERT INTO \`statuss\`(description) VALUES ('En espera'),('Resuelto')`
     );
-    await queryRunner.query(
-      `INSERT INTO \`asset_typess\`(name) VALUES ('Firewall'),('Servidor'),('Antivirus')`
-    );
+    // await queryRunner.query(
+    //   `INSERT INTO \`asset_typess\`(name) VALUES ('Firewall'),('Servidor'),('Antivirus')`
+    // );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {}
