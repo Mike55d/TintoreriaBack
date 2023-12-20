@@ -41,12 +41,8 @@ export class UsersController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @Permissions('users:read')
   async findAll(@Request() req) {
-    try {
-      const users = await this.usersService.findAll();
-      return users.map(it => it.json);
-    } catch (error) {
-      console.log(error);
-    }
+    const users = await this.usersService.findAll();
+    return users.map(it => it.json);
   }
 
   @Get('/me')
@@ -54,11 +50,7 @@ export class UsersController {
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   getOwnData(@Request() req) {
-    try {
-      return req.user.json;
-    } catch (error) {
-      console.log(error);
-    }
+    return req.user.json;
   }
 
   @Get(':id')
@@ -71,7 +63,7 @@ export class UsersController {
   }
 
   @Patch('me/profile')
-  @ApiResponse({ status: 201, description: 'The record has been successfully updated.' })
+  @ApiResponse({ status: 200, description: 'The record has been successfully updated.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   updateProfile(@Request() req, @Body() params: UpdateUserProfileDto) {
@@ -79,7 +71,7 @@ export class UsersController {
   }
 
   @Patch(':id')
-  @ApiResponse({ status: 201, description: 'The record has been successfully updated.' })
+  @ApiResponse({ status: 200, description: 'The record has been successfully updated.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
@@ -87,7 +79,7 @@ export class UsersController {
   }
 
   @Patch(':id/changePassword')
-  @ApiResponse({ status: 201, description: 'The password has been successfully updated.' })
+  @ApiResponse({ status: 200, description: 'The password has been successfully updated.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   changePassword(@Param('id') id: string, @Body() newPasswordData: newPasswordDataDto) {
@@ -95,7 +87,7 @@ export class UsersController {
   }
 
   @Delete(':id')
-  @ApiResponse({ status: 201, description: 'The record has been successfully deleted.' })
+  @ApiResponse({ status: 200, description: 'The record has been successfully deleted.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   remove(@Param('id') id: string) {

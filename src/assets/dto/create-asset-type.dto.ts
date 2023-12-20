@@ -4,12 +4,25 @@ import { IsArray, IsNumber, IsString, ValidateNested } from 'class-validator';
 import { CreateAssetFieldDto } from './create-asset-field.dto';
 
 export class CreateAssetTypeDto {
-  @ApiProperty()
+  @ApiProperty({
+    example: 'Antivirus'
+  })
   @IsString()
   @Expose()
   name: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: [
+      {
+        name: 'dummy name',
+        type: 'text'
+      },
+      {
+        name: 'dummy name 2',
+        type: 'number'
+      }
+    ]
+  })
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CreateAssetFieldDto)

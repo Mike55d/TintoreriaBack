@@ -5,7 +5,6 @@ import { AuthService } from '../auth/auth.service';
 import { CustomError } from '../errors/custom-error';
 import { Errors } from '../errors/errors.types';
 import { User } from '../users/entities/user.entity';
-import { StartGoogleSessionDto } from './dto/start-google-session.dto';
 import { Session } from './entities/session.entity';
 import { StartSessionDto } from './dto/start-session.dto';
 import { ConfirmSessionDto } from './dto/confirm-session.dto';
@@ -31,30 +30,6 @@ export class SessionsService {
     @InjectRepository(UsersToRoles)
     private usersToRolesRepository: Repository<UsersToRoles>
   ) {}
-
-  async createGoogleSession(createSessionDto: StartGoogleSessionDto) {
-    const user = await this.authService.googleAuth(createSessionDto.accessToken);
-
-    await this.sessionsRepository.delete({
-      deviceId: createSessionDto.deviceId,
-      user: {
-        id: user.id
-      }
-    });
-
-    const token = this.authService.createTokenForDevice(user, createSessionDto.deviceId);
-
-    let session = this.sessionsRepository.create({
-      user,
-      token,
-      confirmed: true,
-      deviceId: createSessionDto.deviceId,
-      fcmToken: createSessionDto.fmcToken
-    });
-
-    session = await this.sessionsRepository.save(session);
-    return this.findOne(session.id);
-  }
 
   findOne(id: number) {
     return this.sessionsRepository.findOneOrFail({

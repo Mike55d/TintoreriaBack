@@ -3,18 +3,22 @@ import { Expose } from 'class-transformer';
 import { ArrayNotEmpty, IsEmail, IsNumber, IsOptional, Max, IsString } from 'class-validator';
 
 export class CreateUserDto {
-  @ApiProperty()
+  @ApiProperty({
+    example: 'dummyEmail@gmail.com'
+  })
   @Expose()
   @IsEmail()
   email: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({ required: false, example: 'dummy name' })
   @Expose()
   @IsOptional()
   @Max(512)
   name?: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: [1, 2]
+  })
   @Expose()
   @ArrayNotEmpty()
   @IsNumber({}, { each: true })

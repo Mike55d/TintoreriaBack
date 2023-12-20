@@ -3,18 +3,24 @@ import { Expose } from 'class-transformer';
 import { IsEmail, IsNumber, IsOptional, IsString, MaxLength, ValidateIf } from 'class-validator';
 
 export class CreateClientDto {
-  @ApiProperty()
+  @ApiProperty({
+    example: '123456789'
+  })
   @IsString()
   @MaxLength(32)
   @Expose()
   dni: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: 1
+  })
   @IsNumber()
   @Expose()
   status: number;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: 'Dummy name'
+  })
   @IsString()
   @MaxLength(128)
   @Expose()
@@ -26,56 +32,72 @@ export class CreateClientDto {
   @Expose()
   trademark: string | null;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: 'Venezuela'
+  })
   @ValidateIf((_, value) => value !== null)
   @IsString()
   @MaxLength(128)
   @Expose()
   country: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: 'Dummy address'
+  })
   @ValidateIf((_, value) => value !== null)
   @IsString()
   @MaxLength(256)
   @Expose()
   address: string | null;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: '+58415265854'
+  })
   @ValidateIf((_, value) => value !== null)
   @IsString()
   @MaxLength(64)
   @Expose()
   phone: string | null;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: 'dummyEmail@gmail.com'
+  })
   @ValidateIf((_, value) => value !== null)
   @IsString()
   @MaxLength(128)
   @Expose()
   email: string | null;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: 'Dummy name'
+  })
   @ValidateIf((_, value) => value !== null)
   @IsString()
   @MaxLength(128)
   @Expose()
   contactName: string | null;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: '+58415265854'
+  })
   @ValidateIf((_, value) => value !== null)
   @IsString()
   @MaxLength(128)
   @Expose()
   contactPhone: string | null;
 
-  @ApiProperty()
+  @ApiProperty({
+    example: 'dummy notes'
+  })
   @ValidateIf((_, value) => value !== null)
   @IsString()
   @MaxLength(2048)
   @Expose()
   notes: string | null;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({
+    example: 'dummyEmail@gmail.com'
+  })
   @IsEmail()
   @IsOptional()
   @Expose()

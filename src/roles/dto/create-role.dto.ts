@@ -4,13 +4,18 @@ import { ALL_PERMISSIONS, Permission } from '../roles.types';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateRoleDto {
-  @ApiProperty()
+  @ApiProperty({
+    example: 'Admin'
+  })
   @IsString()
   @MaxLength(64)
   @Expose()
   name: string;
 
-  @ApiProperty({ type: [String] })
+  @ApiProperty({
+    type: [String],
+    example: ['tickets:create', 'tickets:delete', 'tickets:read', 'tickets:update']
+  })
   @Expose()
   @ArrayNotEmpty()
   @ArrayUnique()

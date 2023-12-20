@@ -42,20 +42,15 @@ export class AssetsController {
   }
 
   @Patch(':id')
-  @ApiResponse({ status: 201, description: 'The record has been successfully updated.' })
+  @ApiResponse({ status: 200, description: 'The record has been successfully updated.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   async update(@Param('id') id: string, @Body() updateAssetDto: UpdateAssetDto) {
-    try {
-      return await this.assetsService.update(+id, updateAssetDto);
-    } catch (error) {
-      console.log(error);
-      return error;
-    }
+    return await this.assetsService.update(+id, updateAssetDto);
   }
 
   @Delete(':id')
-  @ApiResponse({ status: 201, description: 'The record has been successfully deleted.' })
+  @ApiResponse({ status: 200, description: 'The record has been successfully deleted.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   remove(@Param('id') id: string) {

@@ -26,7 +26,7 @@ export class RolesController {
   }
 
   @Get()
-  @ApiResponse({ status: 201, description: 'Get all records', type: [Role] })
+  @ApiResponse({ status: 200, description: 'Get all records', type: [Role] })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @Permissions('roles:read')
@@ -37,7 +37,7 @@ export class RolesController {
   }
 
   @Get(':id')
-  @ApiResponse({ status: 201, description: 'Get one records', type: Role })
+  @ApiResponse({ status: 200, description: 'Get one records', type: Role })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @Permissions('roles:read')
@@ -47,7 +47,7 @@ export class RolesController {
   }
 
   @Patch(':id')
-  @ApiResponse({ status: 201, description: 'The record has been successfully updated.' })
+  @ApiResponse({ status: 200, description: 'The record has been successfully updated.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @Permissions('roles:update')
@@ -56,7 +56,7 @@ export class RolesController {
   }
 
   @Delete(':id')
-  @ApiResponse({ status: 201, description: 'The record has been successfully deleted.' })
+  @ApiResponse({ status: 200, description: 'The record has been successfully deleted.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @Permissions('roles:delete')

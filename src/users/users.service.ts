@@ -13,7 +13,7 @@ import { UsersToRoles } from './entities/usersToRoles.entity';
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    private usersRepository: Repository<User>
   ) {}
 
   async create(registrar: User, createUserDto: CreateUserDto) {
@@ -44,14 +44,10 @@ export class UsersService {
   }
 
   findOne(id: number) {
-    try {
-      return this.usersRepository.findOneOrFail({
-        where: { id, deleted: false },
-        relations: ['roles', 'roles.role']
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    return this.usersRepository.findOneOrFail({
+      where: { id, deleted: false },
+      relations: ['roles', 'roles.role']
+    });
   }
 
   findOneByEmail(email: string) {
