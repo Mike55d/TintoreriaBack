@@ -32,22 +32,22 @@ export class Ticket {
   @CreateDateColumn()
   openingDate: Date;
 
-  @Column()
-  eventDate: Date;
+  @Column({ nullable: true })
+  eventDate?: Date;
 
-  @Column()
-  assignDate: Date;
+  @Column({ nullable: true })
+  assignDate?: Date;
 
-  @Column()
+  @Column({ nullable: true })
   eventDescription?: string;
 
-  @Column()
+  @Column({ nullable: true })
   possibleImpact?: string;
 
-  @Column()
+  @Column({ nullable: true })
   recommendation?: string;
 
-  @Column({ type: 'longtext' })
+  @Column({ type: 'longtext', nullable: true })
   indicesIC?: string;
 
   @ManyToMany(() => AssignUser, { cascade: true })

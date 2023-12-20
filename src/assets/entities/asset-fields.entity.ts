@@ -12,6 +12,9 @@ export class AssetFields {
   @Column()
   type: string;
 
-  @ManyToOne(() => AssetTypes, assetType => assetType.assetFields, { orphanedRowAction: 'delete' })
+  @ManyToOne(() => AssetTypes, assetType => assetType.assetFields, {
+    orphanedRowAction: 'delete',
+    onDelete: 'CASCADE'
+  })
   AssetType: AssetTypes;
 }

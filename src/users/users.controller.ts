@@ -16,7 +16,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth,guard';
 import { Permissions } from '../auth/guards/permissions.decorator';
 import { PermissionsGuard } from '../auth/guards/permissions.guard';
 import { UpdateUserProfileDto } from './dto/update-user-profile.dto';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { newPasswordDataDto } from './dto/new-password-data.dto';
 import { User } from './entities/user.entity';
 
@@ -71,6 +71,7 @@ export class UsersController {
   }
 
   @Patch(':id')
+  @ApiBody({ type: UpdateUserDto })
   @ApiResponse({ status: 200, description: 'The record has been successfully updated.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })

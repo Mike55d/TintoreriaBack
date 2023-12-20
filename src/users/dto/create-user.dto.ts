@@ -13,7 +13,6 @@ export class CreateUserDto {
   @ApiProperty({ required: false, example: 'dummy name' })
   @Expose()
   @IsOptional()
-  @Max(512)
   name?: string;
 
   @ApiProperty({

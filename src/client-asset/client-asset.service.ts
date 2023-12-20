@@ -23,11 +23,11 @@ export class ClientAssetService {
   }
 
   findAll() {
-    return this.clientAssetRepository.find({});
+    return this.clientAssetRepository.find({ relations: ['assetType'] });
   }
 
   findOne(id: number) {
-    return this.clientAssetRepository.findBy({ id });
+    return this.clientAssetRepository.find({ where: { id }, relations: ['assetType'] });
   }
 
   update(id: number, updateClientAssetDto: UpdateClientAssetDto) {

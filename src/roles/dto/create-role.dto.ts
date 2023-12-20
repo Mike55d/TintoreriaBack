@@ -14,7 +14,7 @@ export class CreateRoleDto {
 
   @ApiProperty({
     type: [String],
-    example: ['tickets:create', 'tickets:delete', 'tickets:read', 'tickets:update']
+    example: ['ticket:create', 'ticket:delete', 'ticket:read', 'ticket:update']
   })
   @Expose()
   @ArrayNotEmpty()

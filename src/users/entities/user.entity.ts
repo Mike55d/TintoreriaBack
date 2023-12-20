@@ -73,7 +73,7 @@ export class User {
       lastConnection: this.lastConnection,
       name: this.name,
       email: this.email,
-      profile: this.profile.json,
+      profile: this.profile?.json,
       regDate: this.regDate,
       lastUpdate: this.lastUpdate,
       roles: this.roles?.filter(x => x.role).map(x => x.role?.json),

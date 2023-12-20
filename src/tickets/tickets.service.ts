@@ -70,7 +70,7 @@ export class TicketsService {
     const requesting_users = await this.parseUsersToPersist(createTicketDto.requesting_users);
     const observer_users = await this.parseUsersToPersist(createTicketDto.observer_users);
     const assigned_users = await this.parseUsersToPersist(createTicketDto.assigned_users);
-    const comments = createTicketDto.comments.map(comment => ({
+    const comments = createTicketDto.comments?.map(comment => ({
       comment: comment.comment,
       user: { id: userId }
     }));
@@ -98,9 +98,11 @@ export class TicketsService {
       client: {
         id: createTicketDto.client
       },
-      asset: {
-        id: createTicketDto.asset
-      }
+      asset: createTicketDto.asset
+        ? {
+            id: createTicketDto.asset
+          }
+        : null
     });
     return this.ticketRepository.save(ticket);
   }
@@ -124,7 +126,7 @@ export class TicketsService {
     const requesting_users = await this.parseUsersToPersist(updateTicketDto.requesting_users);
     const observer_users = await this.parseUsersToPersist(updateTicketDto.observer_users);
     const assigned_users = await this.parseUsersToPersist(updateTicketDto.assigned_users);
-    const comments = updateTicketDto.comments.map(comment => ({
+    const comments = updateTicketDto.comments?.map(comment => ({
       comment: comment.comment,
       user: { id: userId }
     }));
@@ -151,13 +153,15 @@ export class TicketsService {
       urgency: {
         id: updateTicketDto.urgency
       },
-      comments: [...ticket.comments, ...comments],
+      comments: comments ? [...ticket.comments, ...comments] : [...ticket.comments],
       client: {
         id: updateTicketDto.client
       },
-      asset: {
-        id: updateTicketDto.asset
-      }
+      asset: updateTicketDto.asset
+        ? {
+            id: updateTicketDto.asset
+          }
+        : null
     });
   }
 

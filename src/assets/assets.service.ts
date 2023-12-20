@@ -22,7 +22,7 @@ export class AssetsService {
   }
 
   findOne(id: number) {
-    return this.assetTypesRepository.findBy({ id });
+    return this.assetTypesRepository.find({ where: { id }, relations: ['assetFields'] });
   }
 
   update(id: number, updateAssetDto: UpdateAssetDto) {
@@ -34,6 +34,6 @@ export class AssetsService {
 
   async remove(id: number) {
     const asset = await this.assetTypesRepository.findBy({ id });
-    return this.assetTypesRepository.remove(asset);
+    return await this.assetTypesRepository.remove(asset);
   }
 }

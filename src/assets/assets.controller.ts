@@ -18,11 +18,7 @@ export class AssetsController {
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   async create(@Body() createAssetDto: CreateAssetTypeDto) {
-    try {
-      return await this.assetsService.create(createAssetDto);
-    } catch (error) {
-      return error;
-    }
+    return await this.assetsService.create(createAssetDto);
   }
 
   @Get()

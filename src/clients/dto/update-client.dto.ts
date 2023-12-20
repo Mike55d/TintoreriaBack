@@ -4,10 +4,6 @@ import { IsNumber, IsString, MaxLength, ValidateIf } from 'class-validator';
 export class UpdateClientDto {
   @IsNumber()
   @Expose()
-  id: number;
-
-  @IsNumber()
-  @Expose()
   status: number;
 
   @IsString()
