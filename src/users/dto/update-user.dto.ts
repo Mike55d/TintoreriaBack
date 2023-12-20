@@ -15,7 +15,7 @@ export class UpdateUserDto {
   @Expose()
   @ArrayNotEmpty()
   @IsNumber({}, { each: true })
-  roles: number[];
+  roles?: number[];
 
   @Expose()
   @IsNumber()

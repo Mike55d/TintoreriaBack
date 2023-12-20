@@ -92,6 +92,14 @@ export class CreateTicketDto {
   @IsNumber()
   client: number;
 
+  @ApiProperty({
+    example: [
+      {
+        user: 1,
+        email: 'dummyEmail@gmail.com'
+      }
+    ]
+  })
   @IsArray()
   @IsOptional()
   @ValidateNested({ each: true })
@@ -99,6 +107,14 @@ export class CreateTicketDto {
   @Expose()
   requesting_users?: AssignUserDto[];
 
+  @ApiProperty({
+    example: [
+      {
+        user: 1,
+        email: 'dummyEmail@gmail.com'
+      }
+    ]
+  })
   @IsArray()
   @IsOptional()
   @ValidateNested({ each: true })
@@ -106,6 +122,14 @@ export class CreateTicketDto {
   @Expose()
   observer_users?: AssignUserDto[];
 
+  @ApiProperty({
+    example: [
+      {
+        user: 1,
+        email: 'dummyEmail@gmail.com'
+      }
+    ]
+  })
   @IsArray()
   @IsOptional()
   @ValidateNested({ each: true })
@@ -158,6 +182,13 @@ export class CreateTicketDto {
   @IsNumber()
   status: number;
 
+  @ApiProperty({
+    example: [
+      {
+        comment: 'dummy comment'
+      }
+    ]
+  })
   @IsArray()
   @IsOptional()
   @ValidateNested({ each: true })
@@ -165,6 +196,9 @@ export class CreateTicketDto {
   @Expose()
   comments?: CommentDto[];
 
+  @ApiProperty({
+    example: 1
+  })
   @Expose()
   @IsNumber()
   @IsOptional()

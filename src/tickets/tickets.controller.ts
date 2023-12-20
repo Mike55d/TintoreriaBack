@@ -15,12 +15,13 @@ import { UpdateTicketDto } from './dto/update-ticket.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth,guard';
 import { PermissionsGuard } from '../auth/guards/permissions.guard';
 import { Permissions } from '../auth/guards/permissions.decorator';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Ticket } from './entities/ticket.entity';
 import { Priority } from './entities/priority.entity';
 import { Type } from './entities/type.entity';
 import { Impact } from './entities/impact.entity';
 import { Urgency } from './entities/urgency.entity';
+import { Status } from './entities/status.entity';
 
 @Controller('tickets')
 @ApiTags('Tickets')
@@ -55,6 +56,7 @@ export class TicketsController {
   }
 
   @Patch(':id')
+  @ApiBody({ type: CreateTicketDto })
   @ApiResponse({ status: 200, description: 'The record has been successfully updated.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
@@ -80,7 +82,7 @@ export class TicketsController {
   }
 
   @Get('resources/status')
-  @ApiResponse({ status: 200, description: 'Get all records', type: [Ticket] })
+  @ApiResponse({ status: 200, description: 'Get all records', type: [Status] })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   async getAllStatus() {

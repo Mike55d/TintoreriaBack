@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@n
 import { ClientAssetService } from './client-asset.service';
 import { CreateClientAssetDto } from './dto/create-client-asset.dto';
 import { UpdateClientAssetDto } from './dto/update-client-asset.dto';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth,guard';
 import { PermissionsGuard } from '../auth/guards/permissions.guard';
 import { ClientAsset } from './entities/client-asset.entity';
@@ -38,6 +38,7 @@ export class ClientAssetController {
   }
 
   @Patch(':id')
+  @ApiBody({ type: CreateClientAssetDto })
   @ApiResponse({ status: 200, description: 'The record has been successfully updated.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
