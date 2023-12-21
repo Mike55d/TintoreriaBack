@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateAssetFieldDto {
   @ApiProperty()
@@ -18,4 +18,10 @@ export class CreateAssetFieldDto {
   @IsString()
   @Expose()
   type: string;
+
+  @ApiProperty()
+  @IsBoolean()
+  @IsOptional()
+  @Expose()
+  optional?: boolean;
 }

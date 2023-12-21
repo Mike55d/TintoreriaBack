@@ -12,6 +12,9 @@ export class AssetFields {
   @Column()
   type: string;
 
+  @Column({ default: false })
+  optional: boolean;
+
   @ManyToOne(() => AssetTypes, assetType => assetType.assetFields, {
     orphanedRowAction: 'delete',
     onDelete: 'CASCADE'
