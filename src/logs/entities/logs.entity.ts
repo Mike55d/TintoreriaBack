@@ -1,10 +1,4 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  ManyToOne
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne } from 'typeorm';
 import { LogCategory, LogLevel, LogSubCategory } from '../logs.types';
 
 @Entity({ name: 'logs' })
@@ -18,14 +12,16 @@ export class Log {
   level: LogLevel;
 
   @Column({
-    type: 'int'
+    type: 'int',
+    nullable: true
   })
-  category: LogCategory;
+  category?: LogCategory;
 
   @Column({
-    type: 'int'
+    type: 'int',
+    nullable: true
   })
-  subCategory: LogSubCategory;
+  subCategory?: LogSubCategory;
 
   @Column('text')
   message: string;
@@ -42,4 +38,18 @@ export class Log {
   @CreateDateColumn({ name: 'reg_date' })
   regDate: Date;
 
+  @Column({ nullable: true })
+  logId?: string;
+
+  @Column({ nullable: true })
+  user_email?: string;
+
+  @Column({ nullable: true })
+  method?: string;
+
+  @Column({ nullable: true })
+  entity?: string;
+
+  @Column({ nullable: true })
+  statusResponse?: string;
 }

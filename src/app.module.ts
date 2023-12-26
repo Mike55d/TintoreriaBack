@@ -1,5 +1,5 @@
 import path, { join } from 'path';
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { RolesModule } from './roles/roles.module';
@@ -39,6 +39,7 @@ import { AssetFields } from './assets/entities/asset-fields.entity';
 import { SlAlert } from './tickets/entities/sl-alert.entity';
 import { ClientAssetModule } from './client-asset/client-asset.module';
 import { ClientAsset } from './client-asset/entities/client-asset.entity';
+import { LogsMiddleware } from './logs.middleware';
 
 @Module({
   imports: [
@@ -111,4 +112,8 @@ import { ClientAsset } from './client-asset/entities/client-asset.entity';
   ],
   providers: [ApiConfigService]
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LogsMiddleware).forRoutes('*');
+  }
+}

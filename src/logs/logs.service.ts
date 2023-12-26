@@ -5,10 +5,12 @@ import * as packageJson from '../../package.json';
 import ElectronLog from 'electron-log';
 import { utilities as NestWinstonUtilities } from 'nest-winston';
 import { CustomError } from '../errors/custom-error';
-import { LogCategory, LogLevel } from './logs.types';
+import { LogCategory, LogLevel, LogSubCategory } from './logs.types';
 import { Repository } from 'typeorm';
 import { Log } from './entities/logs.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Request, Response } from 'express';
+import { User } from '../users/entities/user.entity';
 
 @Injectable({ scope: Scope.TRANSIENT })
 export class LogsService implements LoggerService {
@@ -94,12 +96,12 @@ export class LogsService implements LoggerService {
       if (level >= LogLevel.WARN) {
         this.serverLogger.log('error', message, {
           context: this.currentContext || '<No context>',
-          ...subError,
+          ...subError
         });
       } else {
         this.standardLogger.log('info', message, {
           context: this.currentContext || '<No context>',
-          ...subError,
+          ...subError
         });
       }
     }
@@ -111,7 +113,7 @@ export class LogsService implements LoggerService {
       message,
       errorNum: error.errorCode,
       level: level,
-      details: error.details,
+      details: error.details
     });
 
     try {
@@ -128,5 +130,35 @@ export class LogsService implements LoggerService {
 
   setContext(context: string) {
     this.currentContext = context;
+  }
+
+  create(id: string, req: Request, resLog: any) {
+    try {
+      const user = req.user as User;
+      const newLog = this.logsRepository.create({
+        level: LogLevel.INFO,
+        category: LogCategory.GENERIC,
+        subCategory: LogSubCategory.GENERIC,
+        details: {
+          request: {
+            body: req.body,
+            Headers: req.rawHeaders,
+            path: req.originalUrl,
+            user: user,
+            method: req.method
+          },
+          idReq: id,
+          response: { ...resLog }
+        },
+        message: 'Api Request',
+        logId: id,
+        statusResponse: resLog.statusCode,
+        user_email: user ? user?.email : null,
+        method: req.method
+      });
+      return this.logsRepository.save(newLog);
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
