@@ -147,6 +147,8 @@ export class LogsService implements LoggerService {
 
   async create(id: string, req: Request) {
     const token = req.headers.authorization.split(' ')[1];
+    const entity = req.originalUrl.split('/')[2];
+    console.log(entity);
     const session = await this.sessionsRepository.findOne({
       where: { token },
       relations: ['user']
@@ -170,7 +172,8 @@ export class LogsService implements LoggerService {
         message: 'Api request successful',
         logId: id,
         user_email: session ? session.user.email : null,
-        method: req.method
+        method: req.method,
+        entity
       });
       return await this.logsRepository.save(newLog);
     } catch (error) {
