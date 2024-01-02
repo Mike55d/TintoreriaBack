@@ -9,12 +9,15 @@ export const LOG_ID_HEADER = 'X-Log-Id';
 export class LogsMiddleware implements NestMiddleware {
   constructor(private readonly logsService: LogsService) {}
 
-  use(req: Request, res: Response, next: NextFunction) {
-    this.getResponseLog(req, res);
+  async use(req: any, res: Response, next: NextFunction) {
+    const id = uuid();
+    await this.logsService.create(id, req);
+    res.set(LOG_ID_HEADER, id);
+    this.getResponseLog(req, res, id);
     next();
   }
 
-  getResponseLog = (req: Request, res: Response) => {
+  getResponseLog = (req: Request, res: Response, id: string) => {
     const rawResponse = res.write;
     const rawResponseEnd = res.end;
     const chunkBuffers = [];
@@ -56,9 +59,7 @@ export class LogsMiddleware implements NestMiddleware {
       };
       // console.log('res: ', responseLog);
       rawResponseEnd.apply(res, resArgs);
-      const id = uuid();
-      this.logsService.create(id, req, responseLog);
-      req[LOG_ID_HEADER] = id;
+      this.logsService.addResponse(id, responseLog);
       return responseLog as unknown as Response;
     };
   };

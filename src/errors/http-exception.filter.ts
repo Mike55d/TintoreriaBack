@@ -49,10 +49,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
     }
 
     /**
-     * @todo Modificar el llamado a logCustom para dar la mayor 
+     * @todo Modificar el llamado a logCustom para dar la mayor
      *       cantidad de detalles posibles acerca del error
      */
-    this.logService.logCustom(LogLevel.ERROR, result);
+    const logId = response.getHeaders()['x-log-id'] as string;
+    this.logService.logCustom(LogLevel.ERROR, result, logId);
 
     response.status(result.httpError).json({
       statusCode: result.httpError,

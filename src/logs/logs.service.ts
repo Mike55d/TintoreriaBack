@@ -11,6 +11,7 @@ import { Log } from './entities/logs.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request, Response } from 'express';
 import { User } from '../users/entities/user.entity';
+import { Session } from '../sessions/entities/session.entity';
 
 @Injectable({ scope: Scope.TRANSIENT })
 export class LogsService implements LoggerService {
@@ -21,7 +22,9 @@ export class LogsService implements LoggerService {
 
   constructor(
     @InjectRepository(Log)
-    private readonly logsRepository: Repository<Log>
+    private readonly logsRepository: Repository<Log>,
+    @InjectRepository(Session)
+    private sessionsRepository: Repository<Session>
   ) {
     const logDir = path.dirname(ElectronLog.transports.file.getFile().path);
 
@@ -89,7 +92,7 @@ export class LogsService implements LoggerService {
     });
   }
 
-  async logCustom(level: LogLevel, error: CustomError) {
+  async logCustom(level: LogLevel, error: CustomError, idLog?: string) {
     const { message, ...subError } = error;
 
     if (error.logCategory === LogCategory.SERVER) {
@@ -105,19 +108,29 @@ export class LogsService implements LoggerService {
         });
       }
     }
-
-    const newLog = this.logsRepository.create({
-      category: error.logCategory,
-      subCategory: error.logSubCategory,
-      title: error.title,
-      message,
-      errorNum: error.errorCode,
-      level: level,
-      details: error.details
-    });
-
     try {
-      await this.logsRepository.save(newLog);
+      if (idLog) {
+        const log = await this.logsRepository.findOneBy({ logId: idLog });
+        log.category = error.logCategory;
+        log.subCategory = error.logSubCategory;
+        log.title = error.title;
+        log.message = message;
+        log.errorNum = error.errorCode;
+        log.level = level;
+        await this.logsRepository.save(log);
+      } else {
+        const newLog = this.logsRepository.create({
+          category: error.logCategory,
+          subCategory: error.logSubCategory,
+          title: error.title,
+          message,
+          errorNum: error.errorCode,
+          level: level,
+          details: error.details,
+          logId: idLog
+        });
+        await this.logsRepository.save(newLog);
+      }
     } catch (e) {
       this.serverLogger.log('crit', 'Unable to log to database', {
         context: 'LogsService',
@@ -132,7 +145,12 @@ export class LogsService implements LoggerService {
     this.currentContext = context;
   }
 
-  create(id: string, req: Request, resLog: any) {
+  async create(id: string, req: Request) {
+    const token = req.headers.authorization.split(' ')[1];
+    const session = await this.sessionsRepository.findOne({
+      where: { token },
+      relations: ['user']
+    });
     try {
       const user = req.user as User;
       const newLog = this.logsRepository.create({
@@ -147,16 +165,25 @@ export class LogsService implements LoggerService {
             user: user,
             method: req.method
           },
-          idReq: id,
-          response: { ...resLog }
+          idReq: id
         },
-        message: 'Api Request',
+        message: 'Api request successful',
         logId: id,
-        statusResponse: resLog.statusCode,
-        user_email: user ? user?.email : null,
+        user_email: session ? session.user.email : null,
         method: req.method
       });
-      return this.logsRepository.save(newLog);
+      return await this.logsRepository.save(newLog);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async addResponse(id: string, resLog: any) {
+    try {
+      const log = await this.logsRepository.findOneBy({ logId: id });
+      log.details = { ...log.details, ...resLog };
+      log.statusResponse = resLog.statusCode;
+      return await this.logsRepository.save(log);
     } catch (error) {
       console.log(error);
     }
