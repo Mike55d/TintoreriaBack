@@ -147,14 +147,14 @@ export class LogsService implements LoggerService {
   }
 
   async create(id: string, req: Request) {
-    const token = req.headers.authorization.split(' ')[1];
-    const entity = req.originalUrl.split('/')[2].split('?')[0];
-    console.log(entity);
-    const session = await this.sessionsRepository.findOne({
-      where: { token },
-      relations: ['user']
-    });
     try {
+      const token = req?.headers?.authorization?.split(' ')[1];
+      const entity = req?.originalUrl?.split('/')[2]?.split('?')[0];
+      console.log(entity);
+      const session = await this.sessionsRepository.findOne({
+        where: { token },
+        relations: ['user']
+      });
       const user = req.user as User;
       const newLog = this.logsRepository.create({
         level: LogLevel.INFO,
@@ -185,7 +185,7 @@ export class LogsService implements LoggerService {
   async addResponse(id: string, resLog: any) {
     try {
       const log = await this.logsRepository.findOneBy({ logId: id });
-      log.details = { ...log.details, ...resLog };
+      log.details = { ...log?.details, ...resLog };
       log.statusResponse = resLog.statusCode;
       return await this.logsRepository.save(log);
     } catch (error) {

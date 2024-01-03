@@ -4,7 +4,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class FindLogsDto {
   @ApiProperty({
-    example: 0
+    example: 5
   })
   @IsNumber()
   @Expose()
