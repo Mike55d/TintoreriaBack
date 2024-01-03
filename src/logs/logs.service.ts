@@ -6,12 +6,13 @@ import ElectronLog from 'electron-log';
 import { utilities as NestWinstonUtilities } from 'nest-winston';
 import { CustomError } from '../errors/custom-error';
 import { LogCategory, LogLevel, LogSubCategory } from './logs.types';
-import { Repository } from 'typeorm';
+import { Between, Repository } from 'typeorm';
 import { Log } from './entities/logs.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request, Response } from 'express';
 import { User } from '../users/entities/user.entity';
 import { Session } from '../sessions/entities/session.entity';
+import { FindLogsDto } from './dto/find-logs.dto';
 
 @Injectable({ scope: Scope.TRANSIENT })
 export class LogsService implements LoggerService {
@@ -147,7 +148,7 @@ export class LogsService implements LoggerService {
 
   async create(id: string, req: Request) {
     const token = req.headers.authorization.split(' ')[1];
-    const entity = req.originalUrl.split('/')[2];
+    const entity = req.originalUrl.split('/')[2].split('?')[0];
     console.log(entity);
     const session = await this.sessionsRepository.findOne({
       where: { token },
@@ -187,6 +188,25 @@ export class LogsService implements LoggerService {
       log.details = { ...log.details, ...resLog };
       log.statusResponse = resLog.statusCode;
       return await this.logsRepository.save(log);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  findAll(query: FindLogsDto) {
+    try {
+      const { skip, take, entity, method, user, from, to } = query;
+      const logs = this.logsRepository.find({
+        skip,
+        take,
+        where: {
+          entity,
+          method,
+          user_email: user,
+          regDate: Between(from, to)
+        }
+      });
+      return logs;
     } catch (error) {
       console.log(error);
     }
