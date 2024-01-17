@@ -1,5 +1,14 @@
-import { Expose } from 'class-transformer';
-import { IsNumber, IsString, MaxLength, ValidateIf } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { Expose, Type } from 'class-transformer';
+import {
+  IsArray,
+  IsNumber,
+  IsString,
+  MaxLength,
+  ValidateIf,
+  ValidateNested
+} from 'class-validator';
+import { CreateClientAssetDto } from '../../client-asset/dto/create-client-asset.dto';
 
 export class UpdateClientDto {
   @IsNumber()
@@ -62,4 +71,28 @@ export class UpdateClientDto {
   @MaxLength(2048)
   @Expose()
   notes: string | null;
+
+  @ApiProperty({
+    example: [
+      {
+        assetType: '3',
+        id: 1,
+        ip: '192.0.0.1',
+        name: 'test',
+        type: 'text'
+      },
+      {
+        assetType: '2',
+        id: 1,
+        ip: '192.0.0.1',
+        name: 'test',
+        type: 'text'
+      }
+    ]
+  })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateClientAssetDto)
+  @Expose()
+  clientAssets: CreateClientAssetDto[];
 }

@@ -46,7 +46,11 @@ export class ClientsController {
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   async update(@Param('id') id: string, @Body() updateClientData: UpdateClientDto) {
-    await this.clientsService.update(+id, updateClientData);
+    try {
+      await this.clientsService.update(+id, updateClientData);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   @Delete(':id')

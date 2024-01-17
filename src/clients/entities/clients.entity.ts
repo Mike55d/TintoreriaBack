@@ -3,8 +3,10 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
+  OneToMany
 } from 'typeorm';
+import { ClientAsset } from '../../client-asset/entities/client-asset.entity';
 
 @Entity()
 export class Client {
@@ -53,6 +55,9 @@ export class Client {
   @Column({ nullable: true })
   sender_email: string;
 
+  @OneToMany(() => ClientAsset, clientAsset => clientAsset.client, { cascade: true })
+  clientAssets: ClientAsset[];
+
   get json() {
     return {
       id: this.id,
@@ -67,7 +72,8 @@ export class Client {
       contactPhone: this.contactPhone,
       notes: this.notes,
       trademark: this.trademark,
-      regDate: this.regDate
+      regDate: this.regDate,
+      clientAssets: this.clientAssets.map(asset => ({ ...asset, assetType: asset.assetType.id }))
     };
   }
 }

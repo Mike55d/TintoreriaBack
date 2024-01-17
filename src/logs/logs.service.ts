@@ -150,7 +150,6 @@ export class LogsService implements LoggerService {
     try {
       const token = req?.headers?.authorization?.split(' ')[1];
       const entity = req?.originalUrl?.split('/')[2]?.split('?')[0];
-      console.log(entity);
       const session = await this.sessionsRepository.findOne({
         where: { token },
         relations: ['user']

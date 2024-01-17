@@ -144,7 +144,7 @@ export class SessionsService {
           })
         )
       ).data;
-      const emailUser = userFromToken.mail.toLowerCase();
+      const emailUser = userFromToken.userPrincipalName.toLowerCase();
       let user = await this.usersRepository.findOneBy({ email: emailUser });
       if (!user) {
         const usersCount = (await this.usersRepository.find({})).length;

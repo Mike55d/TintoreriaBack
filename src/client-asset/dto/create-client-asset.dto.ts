@@ -3,6 +3,12 @@ import { Expose } from 'class-transformer';
 import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateClientAssetDto {
+  @ApiProperty()
+  @IsNumber()
+  @IsOptional()
+  @Expose()
+  id?: number;
+
   @ApiProperty({
     example: 1
   })

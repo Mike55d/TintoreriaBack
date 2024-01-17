@@ -13,25 +13,41 @@ export class ClientsService {
   ) {}
 
   async findAll() {
-    return this.clientsRepository.find();
+    return this.clientsRepository.find({ relations: ['clientAssets', 'clientAssets.assetType'] });
   }
 
   async findOne(id: number) {
     return this.clientsRepository.findOne({
       where: {
         id
-      }
+      },
+      relations: ['clientAssets', 'clientAssets.assetType']
     });
   }
 
   async create(client: CreateClientDto) {
-    const newClient = this.clientsRepository.create(client);
+    const { clientAssets } = client;
+    const clientAssestFormat = clientAssets.map(asset => ({
+      ...asset,
+      assetType: { id: asset.assetType }
+    }));
+    const newClient = this.clientsRepository.create({
+      ...client,
+      clientAssets: clientAssestFormat
+    });
     return this.clientsRepository.save(newClient);
   }
 
   update(id: number, data: UpdateClientDto) {
-    return this.clientsRepository.update(id, {
-      ...data
+    const { clientAssets } = data;
+    const clientAssestFormat = clientAssets.map(asset => ({
+      ...asset,
+      assetType: { id: asset.assetType }
+    }));
+    return this.clientsRepository.save({
+      id,
+      ...data,
+      clientAssets: clientAssestFormat
     });
   }
 
