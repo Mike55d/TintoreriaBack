@@ -24,7 +24,11 @@ const allRelations = [
   'urgency',
   'status',
   'assigned_users.user',
-  'comments'
+  'requesting_users.user',
+  'requesting_users.user',
+  'comments',
+  'client',
+  'asset'
 ];
 
 type UsersRequest = { user?: number; email?: string };

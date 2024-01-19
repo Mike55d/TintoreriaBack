@@ -98,9 +98,18 @@ export class Ticket {
       possibleImpact: this.possibleImpact,
       recommendation: this.recommendation,
       indicesIC: this.indicesIC,
-      requesting_users: this.requesting_users,
-      observer_users: this.observer_users,
-      assigned_users: this.assigned_users,
+      requesting_users: this.requesting_users.map(user => ({
+        ...user?.user,
+        email: user.email ?? user.user?.email
+      })),
+      observer_users: this.observer_users.map(user => ({
+        ...user?.user,
+        email: user.email ?? user.user?.email
+      })),
+      assigned_users: this.assigned_users.map(user => ({
+        ...user?.user,
+        email: user.email ?? user.user?.email
+      })),
       priority: this.priority.id,
       type: this.type.id,
       impact: this.impact.id,
