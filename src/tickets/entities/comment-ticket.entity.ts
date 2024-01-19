@@ -13,7 +13,7 @@ export class CommentTicket {
   @Column({ type: 'text' })
   comment: string;
 
-  @ManyToOne(() => Ticket, ticket => ticket.comments)
+  @ManyToOne(() => Ticket, ticket => ticket.comments, { onDelete: 'CASCADE' })
   ticket?: Ticket;
 
   @CreateDateColumn()

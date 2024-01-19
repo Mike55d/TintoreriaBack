@@ -30,6 +30,13 @@ export class ClientAssetService {
     return this.clientAssetRepository.find({ where: { id }, relations: ['assetType'] });
   }
 
+  findOneByClient(id: number) {
+    return this.clientAssetRepository.find({
+      where: { client: { id: id } },
+      relations: ['assetType', 'client']
+    });
+  }
+
   update(id: number, updateClientAssetDto: UpdateClientAssetDto) {
     return this.clientAssetRepository.update(id, {
       ...updateClientAssetDto,

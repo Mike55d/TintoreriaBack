@@ -37,6 +37,14 @@ export class ClientAssetController {
     return await this.clientAssetService.findOne(+id);
   }
 
+  @Get('getByClient/:id')
+  @ApiResponse({ status: 200, description: 'Get one records', type: [ClientAsset] })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  async findOneByClient(@Param('id') id: string) {
+    return await this.clientAssetService.findOneByClient(+id);
+  }
+
   @Patch(':id')
   @ApiBody({ type: CreateClientAssetDto })
   @ApiResponse({ status: 200, description: 'The record has been successfully updated.' })

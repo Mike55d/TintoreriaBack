@@ -7,7 +7,7 @@ export class SlAlert {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Ticket)
+  @ManyToOne(() => Ticket, { onDelete: 'CASCADE' })
   ticket: Ticket;
 
   @ManyToOne(() => User)

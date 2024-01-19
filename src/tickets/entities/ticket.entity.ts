@@ -116,7 +116,8 @@ export class Ticket {
       urgency: this.urgency.id,
       status: this.status.id,
       comments: this.comments,
-      client: this.client
+      client: this.client,
+      asset: this.asset
     };
   }
 }
