@@ -53,4 +53,12 @@ export class AssetsController {
   remove(@Param('id') id: string) {
     return this.assetsService.remove(+id);
   }
+
+  @Get('getAssetAndFields/:id')
+  @ApiResponse({ status: 200, description: 'Get one records', type: AssetTypes })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  async getAssetAndFields(@Param('id') id: string) {
+    return await this.assetsService.getAssetAndFields(+id);
+  }
 }

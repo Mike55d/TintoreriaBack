@@ -36,4 +36,8 @@ export class AssetsService {
     const asset = await this.assetTypesRepository.findBy({ id });
     return await this.assetTypesRepository.remove(asset);
   }
+
+  getAssetAndFields(id: number) {
+    return this.assetTypesRepository.findOne({ where: { id }, relations: ['assetFields'] });
+  }
 }

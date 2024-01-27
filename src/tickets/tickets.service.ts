@@ -27,6 +27,7 @@ const allRelations = [
   'requesting_users.user',
   'requesting_users.user',
   'comments',
+  'comments.user',
   'client',
   'asset'
 ];
@@ -280,4 +281,5 @@ export class TicketsService {
   getAllUrgencys() {
     return this.urgencyRepository.find({});
   }
+
 }
