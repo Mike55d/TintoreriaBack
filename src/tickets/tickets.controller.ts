@@ -7,7 +7,8 @@ import {
   Param,
   Delete,
   UseGuards,
-  Request
+  Request,
+  Query
 } from '@nestjs/common';
 import { TicketsService } from './tickets.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
@@ -22,6 +23,8 @@ import { Type } from './entities/type.entity';
 import { Impact } from './entities/impact.entity';
 import { Urgency } from './entities/urgency.entity';
 import { Status } from './entities/status.entity';
+import { ValidationPipe } from '../pipes/validation.pipe';
+import { AllTicketsDto } from './dto/all-tickets.dto';
 
 @Controller('tickets')
 @ApiTags('Tickets')
@@ -41,9 +44,13 @@ export class TicketsController {
   @ApiResponse({ status: 200, description: 'Get all records', type: [Ticket] })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  async findAll() {
-    const tickets = await this.ticketsService.findAll();
-    return tickets.map(ticket => ticket.json);
+  async findAll(@Query(ValidationPipe) q: AllTicketsDto) {
+    try {
+      const tickets = await this.ticketsService.findAll(q);
+      return tickets;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   @Get(':id')

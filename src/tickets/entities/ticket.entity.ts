@@ -98,23 +98,23 @@ export class Ticket {
       possibleImpact: this.possibleImpact,
       recommendation: this.recommendation,
       indicesIC: this.indicesIC,
-      requesting_users: this.requesting_users.map(user => ({
+      requesting_users: this.requesting_users?.map(user => ({
         ...user?.user,
         email: user.email ?? user.user?.email
       })),
-      observer_users: this.observer_users.map(user => ({
+      observer_users: this.observer_users?.map(user => ({
         ...user?.user,
         email: user.email ?? user.user?.email
       })),
-      assigned_users: this.assigned_users.map(user => ({
+      assigned_users: this.assigned_users?.map(user => ({
         ...user?.user,
         email: user.email ?? user.user?.email
       })),
-      priority: this.priority.id,
-      type: this.type.id,
-      impact: this.impact.id,
-      urgency: this.urgency.id,
-      status: this.status.id,
+      priority: this.priority,
+      type: this.type,
+      impact: this.impact,
+      urgency: this.urgency,
+      status: this.status,
       comments: this.comments,
       client: this.client,
       asset: this.asset

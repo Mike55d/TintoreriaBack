@@ -13,6 +13,7 @@ import { User } from '../users/entities/user.entity';
 import { CommentTicket } from './entities/comment-ticket.entity';
 import { Cron } from '@nestjs/schedule';
 import { SlAlert } from './entities/sl-alert.entity';
+import { AllTicketsDto } from './dto/all-tickets.dto';
 
 const allRelations = [
   'requesting_users',
@@ -112,10 +113,45 @@ export class TicketsService {
     return this.ticketRepository.save(ticket);
   }
 
-  findAll() {
-    return this.ticketRepository.find({
-      relations: allRelations
-    });
+  async findAll(q: AllTicketsDto) {
+    try {
+      const formatFilters = q.filters?.map(filter => filter.split(','));
+      console.log(formatFilters);
+      const query = this.ticketRepository
+        .createQueryBuilder('tickets')
+        .leftJoinAndSelect('tickets.priority', 'priority')
+        .leftJoinAndSelect('tickets.type', 'type')
+        .leftJoinAndSelect('tickets.impact', 'impact')
+        .leftJoinAndSelect('tickets.urgency', 'urgency')
+        .leftJoinAndSelect('tickets.status', 'status')
+        .leftJoinAndSelect('tickets.client', 'client')
+        .leftJoinAndSelect('tickets.asset', 'asset')
+        .leftJoinAndSelect('tickets.requesting_users', 'requesting_users')
+        .leftJoinAndSelect('tickets.observer_users', 'observer_users')
+        .leftJoinAndSelect('tickets.assigned_users', 'assigned_users')
+        .leftJoinAndSelect('tickets.comments', 'comments')
+        .leftJoinAndSelect('comments.user', 'user');
+      if (q.skip || q.take) {
+        query.skip(q.skip).take(q.take);
+      }
+      if (q.orderBy && q.orderDir) {
+        const order = q.orderDir.toUpperCase() as 'ASC' | 'DESC';
+        query.orderBy(`tickets.${q.orderBy}`, order);
+      }
+      formatFilters?.forEach((filter, key) => {
+        const field = filter[1] == 'LIKE' ? `'%${filter[2]}%'` : `'${filter[2]}'`;
+        if (!key) {
+          query.where(`tickets.${filter[0]} ${filter[1]} ${field}`);
+        } else {
+          query[filter[3].toLowerCase() + 'Where'](`tickets.${filter[0]} ${filter[1]} ${field}`);
+        }
+      });
+      const data = await query.getMany();
+      const rows = await query.getCount();
+      return { data: data.map(x => x.json), rows };
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   findOne(id: number) {
@@ -281,5 +317,4 @@ export class TicketsService {
   getAllUrgencys() {
     return this.urgencyRepository.find({});
   }
-
 }
