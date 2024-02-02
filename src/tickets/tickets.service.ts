@@ -14,6 +14,7 @@ import { CommentTicket } from './entities/comment-ticket.entity';
 import { Cron } from '@nestjs/schedule';
 import { SlAlert } from './entities/sl-alert.entity';
 import { AllTicketsDto } from './dto/all-tickets.dto';
+import { Historic } from '../historic/entities/historic.entity';
 
 const allRelations = [
   'requesting_users',
@@ -55,7 +56,9 @@ export class TicketsService {
     @InjectRepository(CommentTicket)
     private commentRepository: Repository<CommentTicket>,
     @InjectRepository(SlAlert)
-    private slAlertRepository: Repository<SlAlert>
+    private slAlertRepository: Repository<SlAlert>,
+    @InjectRepository(Historic)
+    private historicRepository: Repository<Historic>
   ) {}
 
   async parseUsersToPersist(users: UsersRequest[]) {
@@ -110,7 +113,19 @@ export class TicketsService {
           }
         : null
     });
-    return this.ticketRepository.save(ticket);
+    const savedTicket = await this.ticketRepository.save(ticket);
+    const ticketNew = await this.ticketRepository.findOne({
+      where: { id: savedTicket.id },
+      relations: allRelations
+    });
+    const historicRecord = this.historicRepository.create({
+      title: 'Creado',
+      content: JSON.stringify(ticketNew.json),
+      user: { id: userId },
+      ticket: { id: savedTicket.id }
+    });
+    this.historicRepository.save(historicRecord);
+    return savedTicket;
   }
 
   async findAll(q: AllTicketsDto) {
@@ -172,8 +187,7 @@ export class TicketsService {
       user: { id: userId }
     }));
     const ticket = await this.ticketRepository.findOne({ where: { id }, relations: allRelations });
-
-    return this.ticketRepository.save({
+    const newTicket = {
       ...updateTicketDto,
       id,
       requesting_users,
@@ -203,7 +217,20 @@ export class TicketsService {
             id: updateTicketDto.asset
           }
         : null
+    };
+    await this.ticketRepository.save(newTicket);
+    const ticketNew = await this.ticketRepository.findOne({
+      where: { id },
+      relations: allRelations
     });
+    const historicRecord = this.historicRepository.create({
+      title: 'Actualizado',
+      content: JSON.stringify(ticketNew.json),
+      user: { id: userId },
+      ticket: { id }
+    });
+    this.historicRepository.save(historicRecord);
+    return ticketNew;
   }
 
   async remove(id: number) {

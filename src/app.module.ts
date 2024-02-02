@@ -40,6 +40,8 @@ import { SlAlert } from './tickets/entities/sl-alert.entity';
 import { ClientAssetModule } from './client-asset/client-asset.module';
 import { ClientAsset } from './client-asset/entities/client-asset.entity';
 import { LogsMiddleware } from './logs.middleware';
+import { HistoricModule } from './historic/historic.module';
+import { Historic } from './historic/entities/historic.entity';
 
 @Module({
   imports: [
@@ -88,7 +90,8 @@ import { LogsMiddleware } from './logs.middleware';
         AssetTypes,
         AssetFields,
         SlAlert,
-        ClientAsset
+        ClientAsset,
+        Historic
       ]
     } as TypeOrmModuleOptions),
     LogsModule,
@@ -108,7 +111,8 @@ import { LogsMiddleware } from './logs.middleware';
     }),
     TicketsModule,
     AssetsModule,
-    ClientAssetModule
+    ClientAssetModule,
+    HistoricModule
   ],
   providers: [ApiConfigService]
 })
