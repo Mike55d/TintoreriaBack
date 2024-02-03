@@ -8,12 +8,16 @@ import { Role } from '../roles/entities/role.entity';
 import { UpdateUserProfileDto } from './dto/update-user-profile.dto';
 import { newPasswordDataDto } from './dto/new-password-data.dto';
 import { UsersToRoles } from './entities/usersToRoles.entity';
+import { UpdateUserSettingsDto } from './dto/update-settings-profile.dto';
+import { UserProfile } from './entities/user-profile.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User>
+    private usersRepository: Repository<User>,
+    @InjectRepository(UserProfile)
+    private usersProfileRepository: Repository<UserProfile>
   ) {}
 
   async create(registrar: User, createUserDto: CreateUserDto) {
@@ -101,6 +105,15 @@ export class UsersService {
         }
       }
       return false;
+    });
+  }
+
+  async updateTableSettings(idUser: number, params: UpdateUserSettingsDto) {
+    const user = await this.usersRepository.findOneBy({ id: idUser });
+    const userProfile = await this.usersProfileRepository.findOneBy({ id: user.profile.id });
+    return await this.usersProfileRepository.save({
+      ...userProfile,
+      ...params
     });
   }
 }

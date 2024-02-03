@@ -14,11 +14,21 @@ export class UserProfile {
   @Column({ default: false })
   darkMode: boolean;
 
+  @Column({
+    default: 'title,description,client,openingDate,priority,type,status,history'
+  })
+  columns: string;
+
+  @Column({ default: 1 })
+  take: number;
+
   get json(): any {
     return {
       trustedDomains: this.trustedDomains,
       skipUntrustedRedirect: this.skipUntrustedRedirect,
-      darkMode: this.darkMode
+      darkMode: this.darkMode,
+      columns: this.columns.split(','),
+      take: this.take
     };
   }
 }

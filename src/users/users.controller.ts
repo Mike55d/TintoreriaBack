@@ -19,6 +19,7 @@ import { UpdateUserProfileDto } from './dto/update-user-profile.dto';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { newPasswordDataDto } from './dto/new-password-data.dto';
 import { User } from './entities/user.entity';
+import { UpdateUserSettingsDto } from './dto/update-settings-profile.dto';
 
 @Controller('users')
 @ApiTags('Users')
@@ -94,4 +95,13 @@ export class UsersController {
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
   }
+
+  @Patch('me/settings')
+  @ApiResponse({ status: 200, description: 'The record has been successfully updated.' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  updateTableSettings(@Request() req, @Body() params: UpdateUserSettingsDto) {
+    return this.usersService.updateTableSettings(req.user.id, params);
+  }
+
 }

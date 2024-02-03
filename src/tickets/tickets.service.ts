@@ -131,7 +131,6 @@ export class TicketsService {
   async findAll(q: AllTicketsDto) {
     try {
       const formatFilters = q.filters?.map(filter => filter.split(','));
-      console.log(formatFilters);
       const query = this.ticketRepository
         .createQueryBuilder('tickets')
         .leftJoinAndSelect('tickets.priority', 'priority')

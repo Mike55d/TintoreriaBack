@@ -6,10 +6,11 @@ import { User } from './entities/user.entity';
 import { ApiConfigModule } from '../api-config/api-config.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { ApiConfigService } from '../api-config/api-config.service';
+import { UserProfile } from './entities/user-profile.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User,UserProfile]),
     ApiConfigModule,
     MulterModule.registerAsync({
       imports: [ApiConfigModule],
