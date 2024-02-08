@@ -42,6 +42,9 @@ import { ClientAsset } from './client-asset/entities/client-asset.entity';
 import { LogsMiddleware } from './logs.middleware';
 import { HistoricModule } from './historic/historic.module';
 import { Historic } from './historic/entities/historic.entity';
+import { Category } from './categories/entities/category.entity';
+import { AlertTitle } from './categories/entities/alert-title.entity';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -91,7 +94,9 @@ import { Historic } from './historic/entities/historic.entity';
         AssetFields,
         SlAlert,
         ClientAsset,
-        Historic
+        Historic,
+        Category,
+        AlertTitle
       ]
     } as TypeOrmModuleOptions),
     LogsModule,
@@ -112,7 +117,8 @@ import { Historic } from './historic/entities/historic.entity';
     TicketsModule,
     AssetsModule,
     ClientAssetModule,
-    HistoricModule
+    HistoricModule,
+    CategoriesModule
   ],
   providers: [ApiConfigService]
 })

@@ -17,6 +17,7 @@ import { AssignUser } from './assign-users.entity';
 import { CommentTicket } from './comment-ticket.entity';
 import { Client } from '../../clients/entities/clients.entity';
 import { ClientAsset } from '../../client-asset/entities/client-asset.entity';
+import { Category } from '../../categories/entities/category.entity';
 
 @Entity()
 export class Ticket {
@@ -86,6 +87,11 @@ export class Ticket {
   @ManyToOne(() => ClientAsset)
   asset: ClientAsset;
 
+  @ManyToOne(() => Category, category => category.tickets, {
+    nullable: true
+  })
+  category?: Category;
+
   get json() {
     return {
       id: this.id,
@@ -117,7 +123,8 @@ export class Ticket {
       status: this.status,
       comments: this.comments,
       client: this.client,
-      asset: this.asset
+      asset: this.asset,
+      category: this?.category
     };
   }
 }

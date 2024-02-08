@@ -27,14 +27,14 @@ const allRelations = [
   'status',
   'assigned_users.user',
   'requesting_users.user',
-  'requesting_users.user',
+  'observer_users.user',
   'comments',
   'comments.user',
   'client',
   'asset'
 ];
 
-type UsersRequest = { user?: number; email?: string };
+type UsersRequest = { id?: number; user?: number; email?: string };
 
 @Injectable()
 export class TicketsService {
@@ -65,7 +65,7 @@ export class TicketsService {
     const usersFormat = [];
     if (users?.length) {
       for (let user of users) {
-        const userExist = await this.userRepository.findOneBy({ id: user.user });
+        const userExist = await this.userRepository.findOneBy({ email: user.email });
         usersFormat.push({
           user: userExist ? userExist.id : null,
           email: user.email
