@@ -40,7 +40,7 @@ export class Ticket {
   @Column({ nullable: true })
   assignDate?: Date;
 
-  @Column({ nullable: true })
+  @Column({ type: 'longtext', nullable: true })
   eventDescription?: string;
 
   @Column({ nullable: true })
