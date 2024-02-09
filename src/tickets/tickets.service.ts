@@ -31,7 +31,9 @@ const allRelations = [
   'comments',
   'comments.user',
   'client',
-  'asset'
+  'asset',
+  'category',
+  'alertTitle'
 ];
 
 type UsersRequest = { id?: number; user?: number; email?: string };
@@ -110,6 +112,16 @@ export class TicketsService {
       asset: createTicketDto.asset
         ? {
             id: createTicketDto.asset
+          }
+        : null,
+      category: createTicketDto.category
+        ? {
+            id: createTicketDto.category
+          }
+        : null,
+      alertTitle: createTicketDto.alertTitle
+        ? {
+            id: createTicketDto.alertTitle
           }
         : null
     });
@@ -214,6 +226,16 @@ export class TicketsService {
       asset: updateTicketDto.asset
         ? {
             id: updateTicketDto.asset
+          }
+        : null,
+      category: updateTicketDto.category
+        ? {
+            id: updateTicketDto.category
+          }
+        : null,
+      alertTitle: updateTicketDto.alertTitle
+        ? {
+            id: updateTicketDto.alertTitle
           }
         : null
     };

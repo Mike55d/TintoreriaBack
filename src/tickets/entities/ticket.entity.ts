@@ -18,6 +18,7 @@ import { CommentTicket } from './comment-ticket.entity';
 import { Client } from '../../clients/entities/clients.entity';
 import { ClientAsset } from '../../client-asset/entities/client-asset.entity';
 import { Category } from '../../categories/entities/category.entity';
+import { AlertTitle } from '../../categories/entities/alert-title.entity';
 
 @Entity()
 export class Ticket {
@@ -92,6 +93,11 @@ export class Ticket {
   })
   category?: Category;
 
+  @ManyToOne(() => AlertTitle, alertTitle => alertTitle.tickets, {
+    nullable: true
+  })
+  alertTitle?: AlertTitle;
+
   get json() {
     return {
       id: this.id,
@@ -124,7 +130,8 @@ export class Ticket {
       comments: this.comments,
       client: this.client,
       asset: this.asset,
-      category: this?.category
+      category: this?.category,
+      alertTitle: this?.alertTitle
     };
   }
 }

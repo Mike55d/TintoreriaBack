@@ -1,12 +1,14 @@
 import { Expose } from 'class-transformer';
-import { IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class UpdateUserSettingsDto {
+  @IsOptional()
   @IsString()
   @Expose()
-  columns: string;
+  columns?: string;
 
+  @IsOptional()
   @IsNumber()
   @Expose()
-  take: number;
+  take?: number;
 }

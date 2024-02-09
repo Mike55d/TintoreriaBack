@@ -203,4 +203,20 @@ export class CreateTicketDto {
   @IsNumber()
   @IsOptional()
   asset?: number;
+
+  @ApiProperty({
+    example: 1
+  })
+  @Expose()
+  @IsNumber()
+  @IsOptional()
+  category?: number;
+
+  @ApiProperty({
+    example: 1
+  })
+  @Expose()
+  @IsNumber()
+  @IsOptional()
+  alertTitle?: number;
 }

@@ -19,7 +19,7 @@ export class UserProfile {
   })
   columns: string;
 
-  @Column({ default: 1 })
+  @Column({ default: 10 })
   take: number;
 
   get json(): any {
