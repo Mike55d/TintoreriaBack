@@ -46,6 +46,8 @@ import { Category } from './categories/entities/category.entity';
 import { AlertTitle } from './categories/entities/alert-title.entity';
 import { CategoriesModule } from './categories/categories.module';
 import { FileE } from './tickets/entities/files.entity';
+import { SettingsModule } from './settings/settings.module';
+import { Setting } from './settings/entities/setting.entity';
 
 @Module({
   imports: [
@@ -98,7 +100,8 @@ import { FileE } from './tickets/entities/files.entity';
         Historic,
         Category,
         AlertTitle,
-        FileE
+        FileE,
+        Setting
       ]
     } as TypeOrmModuleOptions),
     LogsModule,
@@ -120,7 +123,8 @@ import { FileE } from './tickets/entities/files.entity';
     AssetsModule,
     ClientAssetModule,
     HistoricModule,
-    CategoriesModule
+    CategoriesModule,
+    SettingsModule
   ],
   providers: [ApiConfigService]
 })

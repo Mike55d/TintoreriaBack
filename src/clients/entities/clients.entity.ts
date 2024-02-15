@@ -58,6 +58,12 @@ export class Client {
   @OneToMany(() => ClientAsset, clientAsset => clientAsset.client, { cascade: true })
   clientAssets: ClientAsset[];
 
+  @Column({ nullable: true })
+  domain: string;
+
+  @Column({ nullable: true })
+  emails?: string;
+
   get json() {
     return {
       id: this.id,
@@ -73,7 +79,9 @@ export class Client {
       notes: this.notes,
       trademark: this.trademark,
       regDate: this.regDate,
-      clientAssets: this.clientAssets.map(asset => ({ ...asset, assetType: asset.assetType.id }))
+      clientAssets: this.clientAssets.map(asset => ({ ...asset, assetType: asset.assetType.id })),
+      domain: this.domain,
+      emails: this.emails?.split(',')
     };
   }
 }

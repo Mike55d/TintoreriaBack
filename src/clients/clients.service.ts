@@ -33,6 +33,7 @@ export class ClientsService {
     }));
     const newClient = this.clientsRepository.create({
       ...client,
+      emails: client.emails.join(','),
       clientAssets: clientAssestFormat
     });
     return this.clientsRepository.save(newClient);
@@ -47,6 +48,7 @@ export class ClientsService {
     return this.clientsRepository.save({
       id,
       ...data,
+      emails: data.emails.join(','),
       clientAssets: clientAssestFormat
     });
   }

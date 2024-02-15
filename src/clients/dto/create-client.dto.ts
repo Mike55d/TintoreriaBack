@@ -1,6 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Expose, Type } from 'class-transformer';
-import { IsArray, IsEmail, IsNumber, IsOptional, IsString, MaxLength, ValidateIf, ValidateNested } from 'class-validator';
+import {
+  IsArray,
+  IsEmail,
+  IsNumber,
+  IsOptional,
+  IsString,
+  MaxLength,
+  ValidateIf,
+  ValidateNested
+} from 'class-validator';
 import { CreateClientAssetDto } from '../../client-asset/dto/create-client-asset.dto';
 
 export class CreateClientDto {
@@ -127,4 +136,9 @@ export class CreateClientDto {
   @Type(() => CreateClientAssetDto)
   @Expose()
   clientAssets: CreateClientAssetDto[];
+
+  @IsArray()
+  @IsOptional()
+  @Expose()
+  emails?: string[];
 }

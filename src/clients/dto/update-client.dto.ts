@@ -3,6 +3,7 @@ import { Expose, Type } from 'class-transformer';
 import {
   IsArray,
   IsNumber,
+  IsOptional,
   IsString,
   MaxLength,
   ValidateIf,
@@ -95,4 +96,14 @@ export class UpdateClientDto {
   @Type(() => CreateClientAssetDto)
   @Expose()
   clientAssets: CreateClientAssetDto[];
+
+  @IsString()
+  @MaxLength(2048)
+  @Expose()
+  domain: string | null;
+
+  @IsArray()
+  @IsOptional()
+  @Expose()
+  emails?: string[];
 }
