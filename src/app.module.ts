@@ -45,6 +45,7 @@ import { Historic } from './historic/entities/historic.entity';
 import { Category } from './categories/entities/category.entity';
 import { AlertTitle } from './categories/entities/alert-title.entity';
 import { CategoriesModule } from './categories/categories.module';
+import { FileE } from './tickets/entities/files.entity';
 
 @Module({
   imports: [
@@ -96,7 +97,8 @@ import { CategoriesModule } from './categories/categories.module';
         ClientAsset,
         Historic,
         Category,
-        AlertTitle
+        AlertTitle,
+        FileE
       ]
     } as TypeOrmModuleOptions),
     LogsModule,

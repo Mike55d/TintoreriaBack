@@ -12,6 +12,7 @@ import { User } from '../users/entities/user.entity';
 import { CommentTicket } from './entities/comment-ticket.entity';
 import { SlAlert } from './entities/sl-alert.entity';
 import { Historic } from '../historic/entities/historic.entity';
+import { FileE } from './entities/files.entity';
 
 @Module({
   imports: [
@@ -25,7 +26,8 @@ import { Historic } from '../historic/entities/historic.entity';
       User,
       CommentTicket,
       SlAlert,
-      Historic
+      Historic,
+      FileE
     ])
   ],
   controllers: [TicketsController],

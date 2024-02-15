@@ -67,6 +67,11 @@ async function bootstrap() {
     process.exit(0);
   }
 
+  var dir = path.join(homedir(), process.env.FILES_PATH);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+
   // @ts-ignore
   if (module.hot) {
     // @ts-ignore

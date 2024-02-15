@@ -15,6 +15,11 @@ import { Cron } from '@nestjs/schedule';
 import { SlAlert } from './entities/sl-alert.entity';
 import { AllTicketsDto } from './dto/all-tickets.dto';
 import { Historic } from '../historic/entities/historic.entity';
+import path from 'path';
+import fs from 'fs/promises';
+import { homedir } from 'os';
+import { v4 as uuid } from 'uuid';
+import { FileE } from './entities/files.entity';
 
 const allRelations = [
   'requesting_users',
@@ -60,7 +65,9 @@ export class TicketsService {
     @InjectRepository(SlAlert)
     private slAlertRepository: Repository<SlAlert>,
     @InjectRepository(Historic)
-    private historicRepository: Repository<Historic>
+    private historicRepository: Repository<Historic>,
+    @InjectRepository(FileE)
+    private fileERepository: Repository<FileE>
   ) {}
 
   async parseUsersToPersist(users: UsersRequest[]) {
@@ -333,6 +340,27 @@ export class TicketsService {
           });
           this.slAlertRepository.save(alert);
         }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async uploadFiles(files: Array<Express.Multer.File>) {
+    try {
+      if (files[0]) {
+        const file = files[0];
+        const ext = path.extname(file.originalname);
+        const filename = file.originalname;
+        await fs.writeFile(
+          path.join(homedir(), process.env.FILES_PATH, filename),
+          file.buffer,
+          'binary'
+        );
+        const fileE = this.fileERepository.create({
+          filename
+        });
+        return await this.fileERepository.save(fileE);
       }
     } catch (error) {
       console.log(error);

@@ -19,6 +19,7 @@ import { Client } from '../../clients/entities/clients.entity';
 import { ClientAsset } from '../../client-asset/entities/client-asset.entity';
 import { Category } from '../../categories/entities/category.entity';
 import { AlertTitle } from '../../categories/entities/alert-title.entity';
+import { FileE } from './files.entity';
 
 @Entity()
 export class Ticket {

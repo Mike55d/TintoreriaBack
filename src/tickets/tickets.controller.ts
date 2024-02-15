@@ -8,7 +8,11 @@ import {
   Delete,
   UseGuards,
   Request,
-  Query
+  Query,
+  UploadedFiles,
+  UseInterceptors,
+  Response,
+  StreamableFile
 } from '@nestjs/common';
 import { TicketsService } from './tickets.service';
 import { CreateTicketDto } from './dto/create-ticket.dto';
@@ -25,6 +29,12 @@ import { Urgency } from './entities/urgency.entity';
 import { Status } from './entities/status.entity';
 import { ValidationPipe } from '../pipes/validation.pipe';
 import { AllTicketsDto } from './dto/all-tickets.dto';
+import { AnyFilesInterceptor } from '@nestjs/platform-express';
+import { createReadStream } from 'fs';
+import { homedir } from 'os';
+import * as mime from 'mime-types';
+import path from 'path';
+import { Public } from '../auth/guards/is-public.decorator';
 
 @Controller('tickets')
 @ApiTags('Tickets')
@@ -125,5 +135,31 @@ export class TicketsController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   async getAllUrgencys() {
     return await this.ticketsService.getAllUrgencys();
+  }
+
+  @Post('files')
+  @UseInterceptors(AnyFilesInterceptor())
+  async uploadFiles(@UploadedFiles() files: Array<Express.Multer.File> = []) {
+    try {
+      return await this.ticketsService.uploadFiles(files);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  @Public()
+  @Get(':filename/file')
+  async getLogo(@Param('filename') filename: string, @Response({ passthrough: true }) res) {
+    try {
+      res.set({
+        'Content-Type': mime.lookup(filename),
+        'Content-Disposition': `attachment; filename="${filename}"`
+      });
+      if (!filename) return;
+      const fileToStream = createReadStream(path.join(homedir(), process.env.FILES_PATH, filename));
+      return new StreamableFile(fileToStream);
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
