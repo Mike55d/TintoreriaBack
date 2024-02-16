@@ -17,7 +17,7 @@ export class SettingsService {
   }
 
   findAll() {
-    return this.settingRepository.findOne({});
+      return this.settingRepository.findOneBy({});
   }
 
   findOne(id: number) {
