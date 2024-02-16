@@ -177,7 +177,7 @@ export class LogsService implements LoggerService {
       });
       return await this.logsRepository.save(newLog);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   }
 
@@ -188,7 +188,7 @@ export class LogsService implements LoggerService {
       log.statusResponse = resLog.statusCode;
       return await this.logsRepository.save(log);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   }
 
@@ -207,7 +207,7 @@ export class LogsService implements LoggerService {
       });
       return logs;
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
   }
 }

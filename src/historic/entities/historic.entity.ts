@@ -23,5 +23,8 @@ export class Historic {
   user?: User;
 
   @Column({ default: 0 })
-  type: boolean;
+  type: number;
+
+  @Column({ default: false, nullable: true })
+  includeIcs: boolean;
 }
