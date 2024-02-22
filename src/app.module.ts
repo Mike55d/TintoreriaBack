@@ -48,6 +48,8 @@ import { CategoriesModule } from './categories/categories.module';
 import { FileE } from './tickets/entities/files.entity';
 import { SettingsModule } from './settings/settings.module';
 import { Setting } from './settings/entities/setting.entity';
+import { EmailNotificationsModule } from './email-notifications/email-notifications.module';
+import { EmailNotification } from './email-notifications/entities/email-notification.entity';
 
 @Module({
   imports: [
@@ -101,7 +103,8 @@ import { Setting } from './settings/entities/setting.entity';
         Category,
         AlertTitle,
         FileE,
-        Setting
+        Setting,
+        EmailNotification
       ]
     } as TypeOrmModuleOptions),
     LogsModule,
@@ -124,7 +127,8 @@ import { Setting } from './settings/entities/setting.entity';
     ClientAssetModule,
     HistoricModule,
     CategoriesModule,
-    SettingsModule
+    SettingsModule,
+    EmailNotificationsModule
   ],
   providers: [ApiConfigService]
 })

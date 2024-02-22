@@ -16,4 +16,9 @@ export class UpdateUserProfileDto {
   @IsOptional()
   @Expose()
   trustedDomains?: string[];
+
+  @IsString()
+  @IsOptional()
+  @Expose()
+  signature?: string;
 }

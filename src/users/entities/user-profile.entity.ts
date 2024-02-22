@@ -22,13 +22,17 @@ export class UserProfile {
   @Column({ default: 10 })
   take: number;
 
+  @Column({ type: 'longtext', nullable: true })
+  signature: string;
+
   get json(): any {
     return {
       trustedDomains: this.trustedDomains,
       skipUntrustedRedirect: this.skipUntrustedRedirect,
       darkMode: this.darkMode,
       columns: this.columns.split(','),
-      take: this.take
+      take: this.take,
+      signature: this.signature
     };
   }
 }
