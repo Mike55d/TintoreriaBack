@@ -48,8 +48,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { FileE } from './tickets/entities/files.entity';
 import { SettingsModule } from './settings/settings.module';
 import { Setting } from './settings/entities/setting.entity';
-import { EmailNotificationsModule } from './email-notifications/email-notifications.module';
-import { EmailNotification } from './email-notifications/entities/email-notification.entity';
+import { EmailNotification } from './email/entities/email-notification.entity';
 import { EmailModule } from './email/email.module';
 
 @Module({
@@ -129,7 +128,6 @@ import { EmailModule } from './email/email.module';
     HistoricModule,
     CategoriesModule,
     SettingsModule,
-    EmailNotificationsModule,
     EmailModule
   ],
   providers: [ApiConfigService]
