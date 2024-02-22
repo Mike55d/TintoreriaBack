@@ -9,7 +9,7 @@ export class EmailNotification {
   mailbox: string;
 
   @Column({ nullable: true })
-  folderId: number;
+  folderId: string;
 
   @Column({ nullable: true, length: 4096})
   ticketTemplate: string;
