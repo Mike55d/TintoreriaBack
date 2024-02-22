@@ -10,4 +10,10 @@ export class EmailNotification {
 
   @Column({ nullable: true })
   folderId: number;
+
+  @Column({ nullable: true, length: 4096})
+  ticketTemplate: string;
+
+  @Column({ nullable: true, length: 4096})
+  iocTemplate: string;
 }

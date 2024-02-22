@@ -70,7 +70,7 @@ export class EmailService {
           mailbox,
           name: subFolder.displayName,
           id: subFolder.id,
-          children
+          children: []
         });
       }
     }
