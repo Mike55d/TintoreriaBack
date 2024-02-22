@@ -1,14 +1,23 @@
 import { Injectable } from '@nestjs/common';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import msal from '@azure/msal-node';
 import { Email, MailboxFolder } from './email.types';
 import { CustomError } from '../errors/custom-error';
 import { Errors } from '../errors/errors.types';
+import { Ticket } from '../tickets/entities/ticket.entity';
+import { EmailSettingsService } from './email-settings.service';
+import { User } from '../users/entities/user.entity';
+import { SettingsService } from '../settings/settings.service';
 
 const baseUrl = 'https://graph.microsoft.com/v1.0';
 
 @Injectable()
 export class EmailService {
+  constructor(
+    private readonly emailSettingsService: EmailSettingsService,
+    private readonly settingsService: SettingsService
+  ) {}
+
   async onModuleInit() {
     // const token = await this.getToken();
     // const folders = await this.listMailFolders('carlos.alvarez@adv-ic.com', token);
@@ -33,46 +42,56 @@ export class EmailService {
       scopes: ['https://graph.microsoft.com/.default']
     };
 
-    const cca = new msal.ConfidentialClientApplication(msalConfig);
-    const tokenInfo = await cca.acquireTokenByClientCredential(tokenRequest);
-    return tokenInfo.accessToken;
+    try {
+      const cca = new msal.ConfidentialClientApplication(msalConfig);
+      const tokenInfo = await cca.acquireTokenByClientCredential(tokenRequest);
+      return tokenInfo.accessToken;
+    } catch (e) {
+      throw new CustomError(Errors.MS_LOGIN_FAILED);
+    }
   }
 
   async listMailFolders(mailbox: string, token?: string) {
     const jwt = token || (await this.getToken());
     const url = `${baseUrl}/users/${mailbox}/mailFolders`;
-    const graphResponse = await axios.get(url, {
-      headers: {
-        Authorization: `Bearer ${jwt}`
-      }
-    });
 
     const mailboxFolders: MailboxFolder[] = [];
 
-    const mainFolders = graphResponse.data.value;
-    for (const mainFolder of mainFolders) {
-      const children: MailboxFolder[] = [];
-      mailboxFolders.push({
-        mailbox,
-        name: mainFolder.displayName,
-        id: mainFolder.id,
-        children
-      });
-
-      const mainFolderChildren = await axios.get(`${url}/${mainFolder.id}/childFolders`, {
+    try {
+      const graphResponse = await axios.get(url, {
         headers: {
           Authorization: `Bearer ${jwt}`
         }
       });
 
-      for (const subFolder of mainFolderChildren.data.value) {
-        children.push({
+      const mainFolders = graphResponse.data.value;
+      for (const mainFolder of mainFolders) {
+        const children: MailboxFolder[] = [];
+        mailboxFolders.push({
           mailbox,
-          name: subFolder.displayName,
-          id: subFolder.id,
-          children: []
+          name: mainFolder.displayName,
+          id: mainFolder.id,
+          children
         });
+
+        const mainFolderChildren = await axios.get(`${url}/${mainFolder.id}/childFolders`, {
+          headers: {
+            Authorization: `Bearer ${jwt}`
+          }
+        });
+
+        for (const subFolder of mainFolderChildren.data.value) {
+          children.push({
+            mailbox,
+            name: subFolder.displayName,
+            id: subFolder.id,
+            children: []
+          });
+        }
       }
+
+    } catch (e) {
+      throw new CustomError(Errors.MS_GRAPH_REQUEST_FAILED);
     }
 
     return mailboxFolders;
@@ -82,11 +101,17 @@ export class EmailService {
     const jwt = token || (await this.getToken());
     const url = `${baseUrl}/users/${folder.mailbox}/mailFolders/${folder.id}/messages`;
 
-    const messages = await axios.get(`${url}`, {
-      headers: {
-        Authorization: `Bearer ${jwt}`
-      }
-    });
+    let messages: AxiosResponse<any, any>;
+
+    try {
+      messages = await axios.get(`${url}`, {
+        headers: {
+          Authorization: `Bearer ${jwt}`
+        }
+      });
+    } catch (e) {
+      throw new CustomError(Errors.MS_GRAPH_REQUEST_FAILED);
+    }
 
     const finalMessages: Email[] = [];
     for (const x of messages.data.value) {
@@ -121,7 +146,7 @@ export class EmailService {
         }
       });
     } catch (e) {
-      throw new CustomError(Errors.INTERNAL_ERROR);
+      throw new CustomError(Errors.MS_GRAPH_REQUEST_FAILED);
     }
   }
 
@@ -147,7 +172,46 @@ export class EmailService {
         }
       );
     } catch (e) {
-      throw new CustomError(Errors.INTERNAL_ERROR);
+      throw new CustomError(Errors.MS_GRAPH_REQUEST_FAILED);
     }
+  }
+
+  async sendMail(from: string, to: string[], subject: string, content: string, saveToSentItems = true) {
+    const message: MsGraphMessage = {
+      "subjec"
+    }
+  }
+
+  async notify(ticket: Ticket, response: string = null, user: User = null, includeIoc = false) {
+    const emailSettings: any = {}//await this.emailSettingsService.find();
+    const ticketSettings = await this.settingsService.findAll();
+    const ticketTemplate = emailSettings.ticketTemplate;
+    const iocTemplate = emailSettings.iocTemplate;
+    const socSignature = ticketSettings.signature;
+
+    let finalHtml: string;
+    
+    if (response) {
+      finalHtml = 
+      `<HTML><BODY>
+        ${response}
+        </br>
+        ${includeIoc? iocTemplate : ''}
+        </br>
+        ${user.profile.signature ?? ''}
+      </HTML>`;
+    } else {
+      finalHtml = 
+      `<HTML>
+        ${ticketTemplate}
+        </br>
+        ${includeIoc? iocTemplate : ''}
+        </br>
+        ${socSignature ?? ''}
+      </BODY></HTML>`;
+    }
+
+
+
   }
 }

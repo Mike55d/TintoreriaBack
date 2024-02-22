@@ -166,10 +166,26 @@ export namespace Errors {
 
   export const EXTERNAL_RESOURCE_ERROR: ErrorInterface = {
     title: 'EXTERNAL_RESOURCE_ERROR',
-    errorCode: 31,
+    errorCode: 19,
     httpError: HttpStatus.CONFLICT,
     logCategory: LogCategory.SERVER,
     logSubCategory: LogSubCategory.SERVER_INTERNAL_ERROR
+  };
+
+  export const MS_LOGIN_FAILED: ErrorInterface = {
+    title: 'MS_LOGIN_FAILED',
+    errorCode: 20,
+    httpError: HttpStatus.INTERNAL_SERVER_ERROR,
+    logCategory: LogCategory.SERVER,
+    logSubCategory: LogSubCategory.UNAUTHORIZED
+  };
+
+  export const MS_GRAPH_REQUEST_FAILED: ErrorInterface = {
+    title: 'MS_GRAPH_REQUEST_FAILED',
+    errorCode: 21,
+    httpError: HttpStatus.INTERNAL_SERVER_ERROR,
+    logCategory: LogCategory.SERVER,
+    logSubCategory: LogSubCategory.GENERIC
   };
 
   export const INTERNAL_ERROR: ErrorInterface = {
