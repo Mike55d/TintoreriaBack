@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { EmailNotificationsService } from './email-notifications.service';
+import { EmailNotificationsService } from './email-settings.service';
 import { CreateEmailNotificationDto } from './dto/create-email-notification.dto';
 import { UpdateEmailNotificationDto } from './dto/update-email-notification.dto';
 
