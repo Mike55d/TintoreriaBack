@@ -48,6 +48,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { FileE } from './tickets/entities/files.entity';
 import { SettingsModule } from './settings/settings.module';
 import { Setting } from './settings/entities/setting.entity';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -124,7 +125,8 @@ import { Setting } from './settings/entities/setting.entity';
     ClientAssetModule,
     HistoricModule,
     CategoriesModule,
-    SettingsModule
+    SettingsModule,
+    EmailModule
   ],
   providers: [ApiConfigService]
 })
