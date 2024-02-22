@@ -50,6 +50,7 @@ import { SettingsModule } from './settings/settings.module';
 import { Setting } from './settings/entities/setting.entity';
 import { EmailNotificationsModule } from './email-notifications/email-notifications.module';
 import { EmailNotification } from './email-notifications/entities/email-notification.entity';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -128,7 +129,8 @@ import { EmailNotification } from './email-notifications/entities/email-notifica
     HistoricModule,
     CategoriesModule,
     SettingsModule,
-    EmailNotificationsModule
+    EmailNotificationsModule,
+    EmailModule
   ],
   providers: [ApiConfigService]
 })
