@@ -21,23 +21,20 @@ export interface Email {
   }[]
 }
 
-interface MsGraphMessage {
-  message: {
-    subject: string;
-    body: {
-      contentType: string;
-      content: string;
-    };
-    toRecipients: [{
-      emailAddress: {
-        address: string;
-      };
-    }];
-    ccRecipients: [{
-      emailAddress: {
-        address: string;
-      };
-    }];
+export interface MsGraphMessage {
+  subject: string;
+  body: {
+    contentType: string;
+    content: string;
   };
-  saveToSentItems: string;
+  toRecipients: [{
+    emailAddress: {
+      address: string;
+    };
+  }];
+  ccRecipients: [{
+    emailAddress: {
+      address: string;
+    };
+  }];
 }

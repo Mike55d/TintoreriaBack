@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import axios, { AxiosResponse } from 'axios';
 import msal from '@azure/msal-node';
-import { Email, MailboxFolder } from './email.types';
+import { Email, MailboxFolder, MsGraphMessage } from './email.types';
 import { CustomError } from '../errors/custom-error';
 import { Errors } from '../errors/errors.types';
 import { Ticket } from '../tickets/entities/ticket.entity';
@@ -176,10 +176,15 @@ export class EmailService {
     }
   }
 
-  async sendMail(from: string, to: string[], subject: string, content: string, saveToSentItems = true) {
-    const message: MsGraphMessage = {
-      "subjec"
-    }
+  async sendMail(from: string, to: string[], cc: string[], subject: string, content: string, saveToSentItems = true) {
+    //const message: MsGraphMessage = {
+    //  subject,
+    //  toRecipients: to.map(x => ({
+    //    emailAddress: {
+    //      address: x
+    //    }
+    //  }))
+    //}
   }
 
   async notify(ticket: Ticket, response: string = null, user: User = null, includeIoc = false) {
