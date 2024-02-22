@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { CreateEmailNotificationDto } from './dto/create-email-notification.dto';
-import { UpdateEmailNotificationDto } from './dto/update-email-notification.dto';
+import { CreateEmailSettingsDto } from './dto/create-email-settings.dto';
+import { UpdateEmailSettingsDto } from './dto/update-email-settings.dto';
 
 @Injectable()
-export class EmailNotificationsService {
-  create(createEmailNotificationDto: CreateEmailNotificationDto) {
+export class EmailSettingsService {
+  create(createEmailNotificationDto: CreateEmailSettingsDto) {
     return 'This action adds a new emailNotification';
   }
 
@@ -16,7 +16,7 @@ export class EmailNotificationsService {
     return `This action returns a #${id} emailNotification`;
   }
 
-  update(id: number, updateEmailNotificationDto: UpdateEmailNotificationDto) {
+  update(id: number, updateEmailNotificationDto: UpdateEmailSettingsDto) {
     return `This action updates a #${id} emailNotification`;
   }
 

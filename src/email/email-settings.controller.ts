@@ -1,14 +1,14 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { EmailNotificationsService } from './email-settings.service';
-import { CreateEmailNotificationDto } from './dto/create-email-notification.dto';
-import { UpdateEmailNotificationDto } from './dto/update-email-notification.dto';
+import { EmailSettingsService } from './email-settings.service';
+import { CreateEmailSettingsDto } from './dto/create-email-settings.dto';
+import { UpdateEmailSettingsDto } from './dto/update-email-settings.dto';
 
-@Controller('email-notifications')
-export class EmailNotificationsController {
-  constructor(private readonly emailNotificationsService: EmailNotificationsService) {}
+@Controller('email-settings')
+export class EmailSettingsController {
+  constructor(private readonly emailNotificationsService: EmailSettingsService) {}
 
   @Post()
-  create(@Body() createEmailNotificationDto: CreateEmailNotificationDto) {
+  create(@Body() createEmailNotificationDto: CreateEmailSettingsDto) {
     return this.emailNotificationsService.create(createEmailNotificationDto);
   }
 
@@ -23,7 +23,7 @@ export class EmailNotificationsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateEmailNotificationDto: UpdateEmailNotificationDto) {
+  update(@Param('id') id: string, @Body() updateEmailNotificationDto: UpdateEmailSettingsDto) {
     return this.emailNotificationsService.update(+id, updateEmailNotificationDto);
   }
 
