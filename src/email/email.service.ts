@@ -16,7 +16,7 @@ export class EmailService {
   constructor(
     private readonly emailSettingsService: EmailSettingsService,
     private readonly settingsService: SettingsService
-  ) {}
+  ) { }
 
   async onModuleInit() {
     // const token = await this.getToken();
@@ -176,15 +176,44 @@ export class EmailService {
     }
   }
 
-  async sendMail(from: string, to: string[], cc: string[], subject: string, content: string, saveToSentItems = true) {
-    //const message: MsGraphMessage = {
-    //  subject,
-    //  toRecipients: to.map(x => ({
-    //    emailAddress: {
-    //      address: x
-    //    }
-    //  }))
-    //}
+  async sendMail(from: string, to: string[], cc: string[], subject: string, content: string, saveToSentItems = true, token?: string) {
+    const message: MsGraphMessage = {
+      subject,
+      body: {
+        contentType: 'html',
+        content
+      },
+      toRecipients: to.map(x => ({
+        emailAddress: {
+          address: x
+        }
+      })),
+      ccRecipients: cc.map(x => ({
+        emailAddress: {
+          address: x
+        }
+      }))
+    };
+
+    try {
+      const jwt = token || (await this.getToken());
+      const url = `${baseUrl}/users/${from}/sendMail`;
+
+      await axios.post(
+        url,
+        {
+          message,
+          saveToSentItems
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`
+          }
+        }
+      );
+    } catch (e) {
+      throw new CustomError(Errors.MS_GRAPH_REQUEST_FAILED);
+    }
   }
 
   async notify(ticket: Ticket, response: string = null, user: User = null, includeIoc = false) {
@@ -195,28 +224,28 @@ export class EmailService {
     const socSignature = ticketSettings.signature;
 
     let finalHtml: string;
-    
+
     if (response) {
-      finalHtml = 
-      `<HTML><BODY>
+      finalHtml =
+        `<HTML><BODY>
         ${response}
         </br>
-        ${includeIoc? iocTemplate : ''}
+        ${includeIoc ? iocTemplate : ''}
         </br>
         ${user.profile.signature ?? ''}
       </HTML>`;
     } else {
-      finalHtml = 
-      `<HTML>
+      finalHtml =
+        `<HTML>
         ${ticketTemplate}
         </br>
-        ${includeIoc? iocTemplate : ''}
+        ${includeIoc ? iocTemplate : ''}
         </br>
         ${socSignature ?? ''}
       </BODY></HTML>`;
     }
 
 
-
+    
   }
 }

@@ -27,14 +27,14 @@ export interface MsGraphMessage {
     contentType: string;
     content: string;
   };
-  toRecipients: [{
+  toRecipients: {
     emailAddress: {
       address: string;
     };
-  }];
-  ccRecipients: [{
+  }[];
+  ccRecipients: {
     emailAddress: {
       address: string;
     };
-  }];
+  }[];
 }
