@@ -4,6 +4,8 @@ import { UpdateSettingDto } from './dto/update-setting.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Setting } from './entities/setting.entity';
 import { Repository } from 'typeorm';
+import sanitizeHtml from 'sanitize-html';
+import { SANITIZE_CONFIG } from '../email/constants';
 
 @Injectable()
 export class SettingsService {
@@ -17,7 +19,7 @@ export class SettingsService {
   }
 
   findAll() {
-      return this.settingRepository.findOneBy({});
+    return this.settingRepository.findOneBy({});
   }
 
   findOne(id: number) {
@@ -25,7 +27,10 @@ export class SettingsService {
   }
 
   update(id: number, updateSettingDto: UpdateSettingDto) {
-    return this.settingRepository.update(id, updateSettingDto);
+    return this.settingRepository.update(id, {
+      ...updateSettingDto,
+      signature: sanitizeHtml(updateSettingDto.signature, SANITIZE_CONFIG)
+    });
   }
 
   remove(id: number) {

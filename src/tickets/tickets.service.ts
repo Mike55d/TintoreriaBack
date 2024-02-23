@@ -20,6 +20,8 @@ import fs from 'fs/promises';
 import { homedir } from 'os';
 import { v4 as uuid } from 'uuid';
 import { FileE } from './entities/files.entity';
+import sanitizeHtml from 'sanitize-html';
+import { SANITIZE_CONFIG } from '../email/constants';
 
 const allRelations = [
   'requesting_users',
@@ -130,7 +132,8 @@ export class TicketsService {
         ? {
             id: createTicketDto.alertTitle
           }
-        : null
+        : null,
+      eventDescription: sanitizeHtml(createTicketDto.eventDescription, SANITIZE_CONFIG)
     });
     const savedTicket = await this.ticketRepository.save(ticket);
     const ticketNew = await this.ticketRepository.findOne({
@@ -244,7 +247,8 @@ export class TicketsService {
         ? {
             id: updateTicketDto.alertTitle
           }
-        : null
+        : null,
+      eventDescription: sanitizeHtml(updateTicketDto.eventDescription, SANITIZE_CONFIG)
     };
     await this.ticketRepository.save(newTicket);
     const ticketNew = await this.ticketRepository.findOne({
