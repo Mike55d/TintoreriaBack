@@ -23,28 +23,13 @@ export class EmailSettingsController {
     return FAKE_FOLDERS;
   }
 
-  @Post()
-  create(@Body() createEmailNotificationDto: CreateEmailSettingsDto) {
-    return this.emailSettingsService.create(createEmailNotificationDto);
-  }
-
   @Get()
-  findAll() {
-    return this.emailSettingsService.findAll();
+  findOne() {
+    return this.emailSettingsService.find();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.emailSettingsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateEmailNotificationDto: UpdateEmailSettingsDto) {
-    return this.emailSettingsService.update(+id, updateEmailNotificationDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.emailSettingsService.remove(+id);
+  @Patch()
+  update(@Body() updateEmailNotificationDto: UpdateEmailSettingsDto) {
+    return this.emailSettingsService.update(updateEmailNotificationDto);
   }
 }

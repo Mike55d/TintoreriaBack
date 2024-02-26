@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import axios, { AxiosResponse } from 'axios';
 import msal from '@azure/msal-node';
+import mustache from 'mustache';
 import { Email, MailboxFolder, MsGraphMessage } from './email.types';
 import { CustomError } from '../errors/custom-error';
 import { Errors } from '../errors/errors.types';
@@ -16,7 +17,7 @@ export class EmailService {
   constructor(
     private readonly emailSettingsService: EmailSettingsService,
     private readonly settingsService: SettingsService
-  ) { }
+  ) {}
 
   async onModuleInit() {
     // const token = await this.getToken();
@@ -89,7 +90,6 @@ export class EmailService {
           });
         }
       }
-
     } catch (e) {
       throw new CustomError(Errors.MS_GRAPH_REQUEST_FAILED);
     }
@@ -150,12 +150,7 @@ export class EmailService {
     }
   }
 
-  async moveMessage(
-    mailbox: string,
-    message: Email,
-    destination: MailboxFolder,
-    token?: string
-  ) {
+  async moveMessage(mailbox: string, message: Email, destination: MailboxFolder, token?: string) {
     const jwt = token || (await this.getToken());
     const url = `${baseUrl}/users/${mailbox}/messages/${message.id}/move`;
 
@@ -176,7 +171,15 @@ export class EmailService {
     }
   }
 
-  async sendMail(from: string, to: string[], cc: string[], subject: string, content: string, saveToSentItems = true, token?: string) {
+  async sendMail(
+    from: string,
+    to: string[],
+    cc: string[],
+    subject: string,
+    content: string,
+    saveToSentItems = true,
+    token?: string
+  ) {
     const message: MsGraphMessage = {
       subject,
       body: {
@@ -217,17 +220,16 @@ export class EmailService {
   }
 
   async notify(ticket: Ticket, response: string = null, user: User = null, includeIoc = false) {
-    const emailSettings: any = {}//await this.emailSettingsService.find();
-    const ticketSettings = await this.settingsService.findAll();
+    const emailSettings = await this.emailSettingsService.find();
+    const ticketSettings = await this.settingsService.find();
     const ticketTemplate = emailSettings.ticketTemplate;
     const iocTemplate = emailSettings.iocTemplate;
     const socSignature = ticketSettings.signature;
 
-    let finalHtml: string;
+    let htmlTemplate: string;
 
     if (response) {
-      finalHtml =
-        `<HTML><BODY>
+      htmlTemplate = `<HTML><BODY>
         ${response}
         </br>
         ${includeIoc ? iocTemplate : ''}
@@ -235,8 +237,7 @@ export class EmailService {
         ${user.profile.signature ?? ''}
       </HTML>`;
     } else {
-      finalHtml =
-        `<HTML>
+      htmlTemplate = `<HTML>
         ${ticketTemplate}
         </br>
         ${includeIoc ? iocTemplate : ''}
@@ -245,7 +246,21 @@ export class EmailService {
       </BODY></HTML>`;
     }
 
+    const finalHtml = mustache.render(htmlTemplate, {
+      eventDate: 'HOUR',
+      eventTime: 'TIME',
+      eventDescription: ticket.description,
+      impact: ticket.possibleImpact,
+      recommendation: ticket.recommendation
+    });
 
-    
+    await this.sendMail(
+      user.email,
+      ticket.client.emails.split(','),
+      [],
+      ticket.title,
+      finalHtml,
+      true
+    );
   }
 }

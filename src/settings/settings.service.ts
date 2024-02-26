@@ -14,26 +14,32 @@ export class SettingsService {
     private settingRepository: Repository<Setting>
   ) {}
 
-  create(createSettingDto: CreateSettingDto) {
-    return 'This action adds a new setting';
+  async create() {
+    const newSettingConfig = this.settingRepository.create({
+      domain: null,
+      id: 1,
+      signature: null
+    });
+
+    return await this.settingRepository.save(newSettingConfig);
   }
 
-  findAll() {
-    return this.settingRepository.findOneBy({});
+  async find() {
+    const config = await this.settingRepository.find();
+
+    if (!config.length) {
+      return await this.create();
+    } else {
+      return config[0];
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} setting`;
-  }
+  async update(updateSettingDto: UpdateSettingDto) {
+    await this.find();
 
-  update(id: number, updateSettingDto: UpdateSettingDto) {
-    return this.settingRepository.update(id, {
+    return this.settingRepository.update(1, {
       ...updateSettingDto,
       signature: sanitizeHtml(updateSettingDto.signature, SANITIZE_CONFIG)
     });
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} setting`;
   }
 }

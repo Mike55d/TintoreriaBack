@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { CreateEmailSettingsDto } from './dto/create-email-settings.dto';
 import { UpdateEmailSettingsDto } from './dto/update-email-settings.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EmailNotification } from './entities/email-notification.entity';
+import { EmailSetting } from './entities/email-notification.entity';
 import { Repository } from 'typeorm';
 import sanitizeHtml from 'sanitize-html';
 import { SANITIZE_CONFIG } from './constants';
@@ -10,31 +9,37 @@ import { SANITIZE_CONFIG } from './constants';
 @Injectable()
 export class EmailSettingsService {
   constructor(
-    @InjectRepository(EmailNotification)
-    private emailNotificationRepository: Repository<EmailNotification>
+    @InjectRepository(EmailSetting)
+    private emailNotificationRepository: Repository<EmailSetting>
   ) {}
 
-  create(createEmailNotificationDto: CreateEmailSettingsDto) {
-    return 'This action adds a new emailNotification';
+  async create() {
+    const newSettingConfig = this.emailNotificationRepository.create({
+      id: 1,
+      collectorMailbox: process.env.MS_365_DOMAIN
+    });
+
+    return await this.emailNotificationRepository.save(newSettingConfig);
   }
 
-  findAll() {
-    return this.emailNotificationRepository.findOneBy({});
+  async find() {
+    const config = await this.emailNotificationRepository.find();
+
+    if (!config.length) {
+      return await this.create();
+    } else {
+      return config[0];
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} emailNotification`;
-  }
+  async update(updateEmailNotificationDto: UpdateEmailSettingsDto) {
+    await this.find();
 
-  update(id: number, updateEmailNotificationDto: UpdateEmailSettingsDto) {
-    return this.emailNotificationRepository.update(id, {
+    return this.emailNotificationRepository.update(1, {
       ...updateEmailNotificationDto,
       iocTemplate: sanitizeHtml(updateEmailNotificationDto.iocTemplate, SANITIZE_CONFIG),
-      ticketTemplate: sanitizeHtml(updateEmailNotificationDto.ticketTemplate, SANITIZE_CONFIG)
+      ticketTemplate: sanitizeHtml(updateEmailNotificationDto.ticketTemplate, SANITIZE_CONFIG),
+      systemSignature: sanitizeHtml(updateEmailNotificationDto.systemSignature, SANITIZE_CONFIG)
     });
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} emailNotification`;
   }
 }

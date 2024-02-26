@@ -48,7 +48,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { FileE } from './tickets/entities/files.entity';
 import { SettingsModule } from './settings/settings.module';
 import { Setting } from './settings/entities/setting.entity';
-import { EmailNotification } from './email/entities/email-notification.entity';
+import { EmailSetting } from './email/entities/email-notification.entity';
 import { EmailModule } from './email/email.module';
 
 @Module({
@@ -104,7 +104,7 @@ import { EmailModule } from './email/email.module';
         AlertTitle,
         FileE,
         Setting,
-        EmailNotification
+        EmailSetting
       ]
     } as TypeOrmModuleOptions),
     LogsModule,
