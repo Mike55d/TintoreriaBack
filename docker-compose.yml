@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  app:
+    image: adv-tickets-back
+    container_name: adv-tickets-back
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 1300:1300
+    volumes:
+      - .:/app
