@@ -13,7 +13,7 @@ export class Client {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ default: 0 })
   status: number;
 
   @Column({ length: 20, nullable: true })
@@ -64,6 +64,9 @@ export class Client {
   @Column({ nullable: true })
   emails?: string;
 
+  @Column({ nullable: true })
+  glpiId?: number;
+
   get json() {
     return {
       id: this.id,
@@ -81,7 +84,8 @@ export class Client {
       regDate: this.regDate,
       clientAssets: this.clientAssets.map(asset => ({ ...asset, assetType: asset.assetType.id })),
       domain: this.domain,
-      emails: this.emails?.split(',')
+      emails: this.emails?.split(','),
+      glpiId: this.glpiId
     };
   }
 }
