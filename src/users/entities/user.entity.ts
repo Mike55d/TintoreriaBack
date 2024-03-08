@@ -34,7 +34,7 @@ export class User {
   @JoinColumn({ name: 'user_profile' })
   profile: UserProfile;
 
-  @OneToMany(() => UsersToRoles, roles => roles.user ,{ cascade: true })
+  @OneToMany(() => UsersToRoles, roles => roles.user, { cascade: true })
   roles: UsersToRoles[];
 
   @Column({ nullable: true })
@@ -77,6 +77,7 @@ export class User {
       regDate: this.regDate,
       lastUpdate: this.lastUpdate,
       roles: this.roles?.filter(x => x.role).map(x => x.role?.json),
+      role: this.roles?.length ? this.roles[0].role.id : null,
       support: this.support,
       permissions: this.permissions,
       registrar: !this.registrar ? null : this.registrar.registrarInfo
@@ -87,7 +88,7 @@ export class User {
     return {
       id: this.id,
       name: this.name,
-      email: this.email,
+      email: this.email
     };
   }
 
@@ -98,5 +99,4 @@ export class User {
     });
     return [...result.values()];
   }
-
 }

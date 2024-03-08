@@ -47,7 +47,11 @@ export class TicketsController {
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   async create(@Request() req, @Body() createTicketDto: CreateTicketDto) {
-    return await this.ticketsService.create(req.user.id, createTicketDto);
+    try {
+      return await this.ticketsService.create(req.user.id, createTicketDto);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   @Get()

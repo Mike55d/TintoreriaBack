@@ -42,8 +42,12 @@ export class UsersController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @Permissions('users:read')
   async findAll(@Request() req) {
-    const users = await this.usersService.findAll();
-    return users.map(it => it.json);
+    try {
+      const users = await this.usersService.findAll();
+      return users.map(it => it.json);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   @Get('/me')
@@ -103,5 +107,4 @@ export class UsersController {
   updateTableSettings(@Request() req, @Body() params: UpdateUserSettingsDto) {
     return this.usersService.updateTableSettings(req.user.id, params);
   }
-
 }

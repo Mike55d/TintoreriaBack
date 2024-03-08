@@ -18,7 +18,6 @@ export class RolesController {
   @ApiResponse({ status: 201, description: 'The record has been successfully created.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  @Permissions('roles:create')
   async create(@Req() req, @Body() createRoleDto: CreateRoleDto) {
     const { user } = req;
     const result = await this.rolesService.create(createRoleDto);
@@ -29,7 +28,6 @@ export class RolesController {
   @ApiResponse({ status: 200, description: 'Get all records', type: [Role] })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  @Permissions('roles:read')
   async findAll(@Req() req) {
     const { user } = req;
     const result = await this.rolesService.findAll();
@@ -40,7 +38,6 @@ export class RolesController {
   @ApiResponse({ status: 200, description: 'Get one records', type: Role })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  @Permissions('roles:read')
   async findOne(@Param('id') id: string) {
     const result = await this.rolesService.findOne(+id);
     return result.json;
@@ -51,7 +48,6 @@ export class RolesController {
   @ApiResponse({ status: 200, description: 'The record has been successfully updated.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  @Permissions('roles:update')
   async update(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
     await this.rolesService.update(+id, updateRoleDto);
   }
@@ -60,7 +56,6 @@ export class RolesController {
   @ApiResponse({ status: 200, description: 'The record has been successfully deleted.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
-  @Permissions('roles:delete')
   remove(@Param('id') id: string) {
     return this.rolesService.remove(+id);
   }

@@ -43,7 +43,8 @@ export class UsersService {
       where: {
         support: false,
         deleted: false
-      }
+      },
+      relations: ['roles', 'roles.role']
     });
   }
 
