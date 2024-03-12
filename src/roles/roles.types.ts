@@ -50,3 +50,67 @@ export enum BasicRoles {
   SUPERVISOR = 'supervisor',
   CLIENT_READ_ONLY = 'client_read_only'
 }
+
+export const adminPermissions: Permission[] = [
+  'clients:create',
+  'clients:delete',
+  'clients:read',
+  'clients:update',
+  'logs:read',
+  'roles:create',
+  'roles:delete',
+  'roles:read',
+  'roles:update',
+  'users:create',
+  'users:delete',
+  'users:read',
+  'users:update',
+  'ticket:read',
+  'ticket:update',
+  'ticket:delete',
+  'ticket:create',
+  'comments:delete',
+  'settings:read',
+  'settings:update'
+];
+
+export const supervisorPermissions: Permission[] = [
+  'clients:create',
+  'clients:delete',
+  'clients:read',
+  'clients:update',
+  'logs:read',
+  'roles:create',
+  'roles:delete',
+  'roles:read',
+  'roles:update',
+  'ticket:read',
+  'ticket:update',
+  'ticket:delete',
+  'ticket:create',
+  'comments:delete'
+];
+
+export const tecnicianPermissions: Permission[] = [
+  'clients:create',
+  'clients:delete',
+  'clients:read',
+  'clients:update',
+  'logs:read',
+  'roles:create',
+  'roles:delete',
+  'roles:read',
+  'roles:update',
+  'ticket:read',
+  'ticket:update',
+  'ticket:create'
+];
+
+export const readOnlyPermissions: Permission[] = [
+  'clients:read',
+  'logs:read',
+  'roles:read',
+  'users:read',
+  'ticket:read',
+  'settings:read'
+];

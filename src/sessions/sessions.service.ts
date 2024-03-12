@@ -22,8 +22,13 @@ import { Type } from '../tickets/entities/type.entity';
 import { Impact } from '../tickets/entities/impact.entity';
 import { Urgency } from '../tickets/entities/urgency.entity';
 import { Status } from '../tickets/entities/status.entity';
-import { ALL_PERMISSIONS } from '../roles/roles.types';
-import { allPermissions } from '../../migrations/1701366016898-SeedStatusTable';
+import {
+  ALL_PERMISSIONS,
+  adminPermissions,
+  readOnlyPermissions,
+  supervisorPermissions,
+  tecnicianPermissions
+} from '../roles/roles.types';
 
 @Injectable()
 export class SessionsService {
@@ -159,19 +164,19 @@ export class SessionsService {
       const newRoles = this.roleRepository.create([
         {
           name: 'admin',
-          permissions: ALL_PERMISSIONS
+          permissions: adminPermissions
         },
         {
           name: 'readOnly',
-          permissions: ALL_PERMISSIONS
+          permissions: readOnlyPermissions
         },
         {
           name: 'tecnician',
-          permissions: ALL_PERMISSIONS
+          permissions: tecnicianPermissions
         },
         {
           name: 'supervisor',
-          permissions: ALL_PERMISSIONS
+          permissions: supervisorPermissions
         }
       ]);
       this.roleRepository.save(newRoles);
@@ -271,6 +276,7 @@ export class SessionsService {
       const emailUser = userFromToken.userPrincipalName.toLowerCase();
       let user = await this.usersRepository.findOneBy({ email: emailUser });
       if (!user) {
+        await this.createRoles();
         const usersCount = (await this.usersRepository.find({})).length;
         user = this.usersRepository.create({
           name: userFromToken.displayName,
@@ -285,7 +291,6 @@ export class SessionsService {
           }
         });
         user = await this.usersRepository.save(user);
-        await this.createRoles();
         const userRoles = this.usersToRolesRepository.create({
           role: { id: usersCount == 0 ? 1 : 3 },
           user: { id: user.id }

@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export const allPermissions =
+const allPermissions =
   'clients:create,clients:delete,clients:read,clients:update,logs:read,roles:create,roles:delete,roles:read,roles:update,users:create,users:delete,users:read,users:update,ticket:read,ticket:update,ticket:delete,ticket:create,comments:delete';
 
 export class SeedStatusTable1701366016898 implements MigrationInterface {
