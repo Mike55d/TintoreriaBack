@@ -6,6 +6,7 @@ import { PermissionsGuard } from '../auth/guards/permissions.guard';
 import { CreateClientDto } from './dto/create-client.dto';
 import { UpdateClientDto } from './dto/update-client.dto';
 import { Client } from './entities/clients.entity';
+import { Permissions } from '../auth/guards/permissions.decorator';
 
 @Controller('clients')
 @ApiTags('Clients')
@@ -17,6 +18,7 @@ export class ClientsController {
   @ApiResponse({ status: 200, description: 'Get all records', type: [Client] })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @Permissions('clients:read')
   async findAll() {
     const result = await this.clientsService.findAll();
     return result.map(it => it.json);
@@ -26,6 +28,7 @@ export class ClientsController {
   @ApiResponse({ status: 200, description: 'Get one record', type: Client })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @Permissions('clients:read')
   async findOne(@Param('id') id: string) {
     const result = await this.clientsService.findOne(+id);
     return result.json;
@@ -35,6 +38,7 @@ export class ClientsController {
   @ApiResponse({ status: 201, description: 'The record has been successfully created.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @Permissions('clients:create')
   async create(@Body() client: CreateClientDto) {
     const newClient = await this.clientsService.create(client);
     return newClient.json;
@@ -45,6 +49,7 @@ export class ClientsController {
   @ApiResponse({ status: 200, description: 'The record has been successfully updated.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @Permissions('clients:update')
   async update(@Param('id') id: string, @Body() updateClientData: UpdateClientDto) {
     await this.clientsService.update(+id, updateClientData);
   }
@@ -53,6 +58,7 @@ export class ClientsController {
   @ApiResponse({ status: 200, description: 'The record has been successfully deleted.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @Permissions('clients:delete')
   remove(@Param('id') id: string) {
     return this.clientsService.remove(+id);
   }

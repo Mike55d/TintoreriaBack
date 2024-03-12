@@ -1,9 +1,10 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
+export const allPermissions =
+  'clients:create,clients:delete,clients:read,clients:update,logs:read,roles:create,roles:delete,roles:read,roles:update,users:create,users:delete,users:read,users:update,ticket:read,ticket:update,ticket:delete,ticket:create,comments:delete';
+
 export class SeedStatusTable1701366016898 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    const allPermissions =
-      'clients:create,clients:delete,clients:read,clients:update,logs:read,roles:create,roles:delete,roles:read,roles:update,users:create,users:delete,users:read,users:update,ticket:read,ticket:update,ticket:delete,ticket:create,comments:delete';
     await queryRunner.query(
       `INSERT INTO \`prioritys\`(id,description) VALUES (1,'Bajo'),(2,'Medio'),(3,'Alto'),(4,'Critico')`
     );

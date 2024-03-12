@@ -16,6 +16,14 @@ import { StartMicrosoftSessionDto } from './dto/start-microsoft-session.dto';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { UsersToRoles } from '../users/entities/usersToRoles.entity';
+import { Role } from '../roles/entities/role.entity';
+import { Priority } from '../tickets/entities/priority.entity';
+import { Type } from '../tickets/entities/type.entity';
+import { Impact } from '../tickets/entities/impact.entity';
+import { Urgency } from '../tickets/entities/urgency.entity';
+import { Status } from '../tickets/entities/status.entity';
+import { ALL_PERMISSIONS } from '../roles/roles.types';
+import { allPermissions } from '../../migrations/1701366016898-SeedStatusTable';
 
 @Injectable()
 export class SessionsService {
@@ -28,7 +36,19 @@ export class SessionsService {
     private readonly authService: AuthService,
     private readonly httpService: HttpService,
     @InjectRepository(UsersToRoles)
-    private usersToRolesRepository: Repository<UsersToRoles>
+    private usersToRolesRepository: Repository<UsersToRoles>,
+    @InjectRepository(Role)
+    private roleRepository: Repository<Role>,
+    @InjectRepository(Priority)
+    private priorityRepository: Repository<Priority>,
+    @InjectRepository(Type)
+    private typeRepository: Repository<Type>,
+    @InjectRepository(Impact)
+    private impactRepository: Repository<Impact>,
+    @InjectRepository(Urgency)
+    private urgencyRepository: Repository<Urgency>,
+    @InjectRepository(Status)
+    private statusRepository: Repository<Status>
   ) {}
 
   findOne(id: number) {
@@ -133,6 +153,110 @@ export class SessionsService {
     }
   }
 
+  async createRoles() {
+    const roles = await this.roleRepository.find({});
+    if (!roles.length) {
+      const newRoles = this.roleRepository.create([
+        {
+          name: 'admin',
+          permissions: ALL_PERMISSIONS
+        },
+        {
+          name: 'readOnly',
+          permissions: ALL_PERMISSIONS
+        },
+        {
+          name: 'tecnician',
+          permissions: ALL_PERMISSIONS
+        },
+        {
+          name: 'supervisor',
+          permissions: ALL_PERMISSIONS
+        }
+      ]);
+      this.roleRepository.save(newRoles);
+      const prioritys = this.priorityRepository.create([
+        {
+          id: 1,
+          description: 'Bajo'
+        },
+        {
+          id: 2,
+          description: 'Medio'
+        },
+        {
+          id: 3,
+          description: 'Alto'
+        },
+        {
+          id: 4,
+          description: 'Critico'
+        }
+      ]);
+      this.priorityRepository.save(prioritys);
+      const impacts = this.impactRepository.create([
+        {
+          id: 1,
+          description: 'Bajo'
+        },
+        {
+          id: 2,
+          description: 'Medio'
+        },
+        {
+          id: 3,
+          description: 'Alto'
+        },
+        {
+          id: 4,
+          description: 'Critico'
+        }
+      ]);
+      this.impactRepository.save(impacts);
+      const urgencys = this.urgencyRepository.create([
+        {
+          id: 1,
+          description: 'Bajo'
+        },
+        {
+          id: 2,
+          description: 'Medio'
+        },
+        {
+          id: 3,
+          description: 'Alto'
+        },
+        {
+          id: 4,
+          description: 'Critico'
+        }
+      ]);
+      this.urgencyRepository.save(urgencys);
+      const types = this.typeRepository.create([
+        {
+          id: 1,
+          description: 'Incidente'
+        },
+        {
+          id: 2,
+          description: 'Solicitud'
+        }
+      ]);
+      this.typeRepository.save(types);
+      const statuss = this.statusRepository.create([
+        {
+          id: 1,
+          description: 'En espera'
+        },
+        {
+          id: 2,
+          description: 'Resuelto'
+        }
+      ]);
+      this.statusRepository.save(statuss);
+    }
+  }
+
   async createMicrosoftSession(createSessionDto: StartMicrosoftSessionDto) {
     try {
       const userFromToken = (
@@ -161,6 +285,7 @@ export class SessionsService {
           }
         });
         user = await this.usersRepository.save(user);
+        await this.createRoles();
         const userRoles = this.usersToRolesRepository.create({
           role: { id: usersCount == 0 ? 1 : 3 },
           user: { id: user.id }

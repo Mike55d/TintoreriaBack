@@ -9,12 +9,30 @@ import { PreSession } from './entities/pre-session.entity';
 import { User } from '../users/entities/user.entity';
 import { HttpModule } from '@nestjs/axios';
 import { UsersToRoles } from '../users/entities/usersToRoles.entity';
+import { Role } from '../roles/entities/role.entity';
+import { Priority } from '../tickets/entities/priority.entity';
+import { Type } from '../tickets/entities/type.entity';
+import { Impact } from '../tickets/entities/impact.entity';
+import { Urgency } from '../tickets/entities/urgency.entity';
+import { Status } from '../tickets/entities/status.entity';
 
 @Module({
   imports: [
     forwardRef(() => AuthModule),
     UsersModule,
-    TypeOrmModule.forFeature([Session, PreSession, User, Session, UsersToRoles]),
+    TypeOrmModule.forFeature([
+      Session,
+      PreSession,
+      User,
+      Session,
+      UsersToRoles,
+      Role,
+      Priority,
+      Type,
+      Impact,
+      Urgency,
+      Status
+    ]),
     HttpModule
   ],
   controllers: [SessionsController],

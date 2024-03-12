@@ -31,6 +31,7 @@ export class UsersController {
   @ApiResponse({ status: 201, description: 'The record has been successfully created.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @Permissions('users:create')
   async create(@Request() req, @Body() createUserDto: CreateUserDto) {
     const user = await this.usersService.create(req.user, createUserDto);
     return user.json;
@@ -62,6 +63,7 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Get one records', type: User })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @Permissions('users:read')
   async findOne(@Param('id') id: string) {
     const users = await this.usersService.findOne(+id);
     return users.json;
@@ -80,6 +82,7 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'The record has been successfully updated.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @Permissions('users:update')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(+id, updateUserDto);
   }
@@ -88,6 +91,7 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'The password has been successfully updated.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @Permissions('users:update')
   changePassword(@Param('id') id: string, @Body() newPasswordData: newPasswordDataDto) {
     return this.usersService.changePassword(+id, newPasswordData);
   }
@@ -96,6 +100,7 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'The record has been successfully deleted.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @Permissions('users:delete')
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
   }

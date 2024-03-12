@@ -10,13 +10,16 @@ type RolePermission = 'roles:read' | 'roles:update' | 'roles:delete' | 'roles:cr
 
 type TicketsPermission = 'ticket:read' | 'ticket:update' | 'ticket:delete' | 'ticket:create';
 
+type SettingsPermission = 'settings:read' | 'settings:update';
+
 export type Permission =
   | LogsPermission
   | UserPermission
   | ClientPermission
   | RolePermission
   | TicketsPermission
-  | CommentsPermission;
+  | CommentsPermission
+  | SettingsPermission;
 
 export const ALL_PERMISSIONS: Permission[] = [
   'clients:create',
@@ -36,7 +39,9 @@ export const ALL_PERMISSIONS: Permission[] = [
   'ticket:update',
   'ticket:delete',
   'ticket:create',
-  'comments:delete'
+  'comments:delete',
+  'settings:read',
+  'settings:update'
 ];
 
 export enum BasicRoles {

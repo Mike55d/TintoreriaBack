@@ -46,6 +46,7 @@ export class TicketsController {
   @ApiResponse({ status: 201, description: 'The record has been successfully created.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @Permissions('ticket:create')
   async create(@Request() req, @Body() createTicketDto: CreateTicketDto) {
     try {
       return await this.ticketsService.create(req.user.id, createTicketDto);
@@ -58,6 +59,7 @@ export class TicketsController {
   @ApiResponse({ status: 200, description: 'Get all records', type: [Ticket] })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @Permissions('ticket:read')
   async findAll(@Query(ValidationPipe) q: AllTicketsDto) {
     try {
       const tickets = await this.ticketsService.findAll(q);
@@ -71,6 +73,7 @@ export class TicketsController {
   @ApiResponse({ status: 200, description: 'Get one records', type: Ticket })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @Permissions('ticket:read')
   async findOne(@Param('id') id: string) {
     const ticket = await this.ticketsService.findOne(+id);
     return ticket.json;
@@ -81,6 +84,7 @@ export class TicketsController {
   @ApiResponse({ status: 200, description: 'The record has been successfully updated.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @Permissions('ticket:update')
   async update(@Request() req, @Param('id') id: string, @Body() updateTicketDto: UpdateTicketDto) {
     return await this.ticketsService.update(req.user.id, +id, updateTicketDto);
   }
@@ -89,6 +93,7 @@ export class TicketsController {
   @ApiResponse({ status: 200, description: 'The record has been successfully deleted.' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @Permissions('ticket:delete')
   remove(@Param('id') id: string) {
     return this.ticketsService.remove(+id);
   }
@@ -143,6 +148,7 @@ export class TicketsController {
 
   @Post('files')
   @UseInterceptors(AnyFilesInterceptor())
+  @Permissions('ticket:create')
   async uploadFiles(@UploadedFiles() files: Array<Express.Multer.File> = []) {
     try {
       return await this.ticketsService.uploadFiles(files);
@@ -153,6 +159,7 @@ export class TicketsController {
 
   @Public()
   @Get(':filename/file')
+  @Permissions('ticket:read')
   async getLogo(@Param('filename') filename: string, @Response({ passthrough: true }) res) {
     try {
       res.set({
