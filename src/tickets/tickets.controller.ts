@@ -103,8 +103,8 @@ export class TicketsController {
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   @Permissions('comments:delete')
-  removeComment(@Param('id') id: string) {
-    return this.ticketsService.removeComment(+id);
+  removeComment(@Param('id') id: string, @Request() req) {
+    return this.ticketsService.removeComment(+id, req.user);
   }
 
   @Get('resources/status')

@@ -195,6 +195,11 @@ export class TicketsService {
       where: {
         id
       },
+      order: {
+        comments: {
+          id: 'ASC'
+        }
+      },
       relations: allRelations
     });
   }
@@ -272,10 +277,20 @@ export class TicketsService {
     }
   }
 
-  async removeComment(id: number) {
-    const comment = await this.commentRepository.findOneBy({ id });
-    if (comment) {
-      await this.commentRepository.remove(comment);
+  async removeComment(id: number, user: User) {
+    try {
+      const comment = await this.commentRepository.findOne({ where: { id }, relations: ['user'] });
+      if (
+        user?.roles[0].role.name == 'admin' ||
+        user?.roles[0].role.name == 'supervisor' ||
+        (user?.roles[0].role.name == 'tecnician' && user.id == comment.user.id)
+      ) {
+        if (comment) {
+          await this.commentRepository.remove(comment);
+        }
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 

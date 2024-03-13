@@ -88,7 +88,8 @@ export const supervisorPermissions: Permission[] = [
   'ticket:update',
   'ticket:delete',
   'ticket:create',
-  'comments:delete'
+  'comments:delete',
+  'users:read'
 ];
 
 export const tecnicianPermissions: Permission[] = [
@@ -103,7 +104,9 @@ export const tecnicianPermissions: Permission[] = [
   'roles:update',
   'ticket:read',
   'ticket:update',
-  'ticket:create'
+  'ticket:create',
+  'comments:delete',
+  'users:read'
 ];
 
 export const readOnlyPermissions: Permission[] = [
