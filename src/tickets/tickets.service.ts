@@ -24,6 +24,8 @@ import sanitizeHtml from 'sanitize-html';
 import { SANITIZE_CONFIG } from '../email/constants';
 import { CreateHistoricDto } from './dto/create-historic.dto';
 import { historyTypes } from '../historic/historic.types';
+import { Errors } from '../errors/errors.types';
+import { CustomError } from '../errors/custom-error';
 
 const allRelations = [
   'requesting_users',
@@ -395,9 +397,13 @@ export class TicketsService {
     return false;
   }
 
-  replyTicket(createHistoryDto: CreateHistoricDto) {
+  async replyTicket(createHistoryDto: CreateHistoricDto) {
     if (createHistoryDto.user && createHistoryDto.email) {
-      return { message: 'cant create with user and email' };
+      throw new CustomError(Errors.INVALID_RESOURCES, {
+        details: {
+          message: 'Cant create with user and email'
+        }
+      });
     }
     let type;
     if (createHistoryDto.user) {
@@ -413,9 +419,9 @@ export class TicketsService {
         title: createHistoryDto.title,
         type
       });
-      return this.historicRepository.save(history);
+      return await this.historicRepository.save(history);
     } catch (error) {
-      console.log(error);
+      throw new CustomError(Errors.INTERNAL_ERROR);
     }
   }
 
