@@ -28,6 +28,9 @@ export class EmailSetting {
   @Column({ nullable: true, length: 4096 })
   collectorResponse: string;
 
+  @Column({ nullable: true, type: 'datetime' })
+  lastEmailDatetime: Date;
+
   // Email followup
 
   @Column({ type: 'longtext', nullable: true })

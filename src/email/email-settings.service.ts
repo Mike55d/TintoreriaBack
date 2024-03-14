@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UpdateEmailSettingsDto } from './dto/update-email-settings.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EmailSetting } from './entities/email-notification.entity';
-import { Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 import sanitizeHtml from 'sanitize-html';
 import { SANITIZE_CONFIG } from './constants';
 
@@ -16,7 +16,7 @@ export class EmailSettingsService {
   async create() {
     const newSettingConfig = this.emailNotificationRepository.create({
       id: 1,
-      collectorMailbox: process.env.MS_365_DOMAIN
+      systemDomain: process.env.MS_365_DOMAIN
     });
 
     return await this.emailNotificationRepository.save(newSettingConfig);
@@ -33,13 +33,19 @@ export class EmailSettingsService {
   }
 
   async update(updateEmailNotificationDto: UpdateEmailSettingsDto) {
-    await this.find();
+    const currentDate = await this.find();
 
-    return this.emailNotificationRepository.update(1, {
+    const updateData: DeepPartial<EmailSetting> = {
       ...updateEmailNotificationDto,
       iocTemplate: sanitizeHtml(updateEmailNotificationDto.iocTemplate, SANITIZE_CONFIG),
       ticketTemplate: sanitizeHtml(updateEmailNotificationDto.ticketTemplate, SANITIZE_CONFIG),
       systemSignature: sanitizeHtml(updateEmailNotificationDto.systemSignature, SANITIZE_CONFIG)
-    });
+    };
+
+    if (updateEmailNotificationDto.collectorEnabled && !currentDate.lastEmailDatetime) {
+      updateData.lastEmailDatetime = new Date();
+    }
+
+    return this.emailNotificationRepository.update(1, updateData);
   }
 }

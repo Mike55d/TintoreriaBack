@@ -54,6 +54,7 @@ import { ImportExcelModule } from './import-excel/import-excel.module';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     I18nModule.forRoot({
       fallbackLanguage: 'es',
       loaderOptions: {

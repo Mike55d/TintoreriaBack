@@ -31,6 +31,7 @@ import { FileE } from './entities/files.entity';
     ])
   ],
   controllers: [TicketsController],
-  providers: [TicketsService]
+  providers: [TicketsService],
+  exports: [TicketsService]
 })
 export class TicketsModule {}

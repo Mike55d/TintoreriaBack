@@ -11,6 +11,8 @@ export interface Email {
   content: string;
   sentDateTime: string;
   subject: string;
+  conversationId?: string;
+  
   from: {
     email: string;
     name: string

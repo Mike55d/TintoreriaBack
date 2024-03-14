@@ -29,7 +29,7 @@ export class EmailSettingsController {
   }
 
   @Patch()
-  update(@Body() updateEmailNotificationDto: UpdateEmailSettingsDto) {
-    return this.emailSettingsService.update(updateEmailNotificationDto);
+  async update(@Body() updateEmailNotificationDto: UpdateEmailSettingsDto) {
+    await this.emailSettingsService.update(updateEmailNotificationDto);
   }
 }

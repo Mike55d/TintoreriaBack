@@ -25,6 +25,15 @@ export class ClientsService {
     });
   }
 
+  async findByDomain(domain: string) {
+    return this.clientsRepository.findOne({
+      where: {
+        domain
+      },
+      relations: ['clientAssets', 'clientAssets.assetType']
+    });
+  }
+
   async create(client: CreateClientDto) {
     const { clientAssets } = client;
     const clientAssestFormat = clientAssets.map(asset => ({

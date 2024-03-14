@@ -188,6 +188,22 @@ export namespace Errors {
     logSubCategory: LogSubCategory.GENERIC
   };
 
+  export const NO_TICKET_TEMPLATE: ErrorInterface = {
+    title: 'NO_TICKET_TEMPLATE',
+    errorCode: 22,
+    httpError: HttpStatus.BAD_REQUEST,
+    logCategory: LogCategory.OPS,
+    logSubCategory: LogSubCategory.BAD_REQUEST
+  };
+
+  export const NO_IOC_TEMPLATE: ErrorInterface = {
+    title: 'NO_IOC_TEMPLATE',
+    errorCode: 23,
+    httpError: HttpStatus.BAD_REQUEST,
+    logCategory: LogCategory.OPS,
+    logSubCategory: LogSubCategory.BAD_REQUEST
+  };
+
   export const INTERNAL_ERROR: ErrorInterface = {
     title: 'INTERNAL_ERROR',
     errorCode: 999,

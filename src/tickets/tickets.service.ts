@@ -208,6 +208,20 @@ export class TicketsService {
     });
   }
 
+  findByConversationId(conversationId: string) {
+    return this.ticketRepository.findOne({
+      where: {
+        conversationId
+      },
+      order: {
+        comments: {
+          id: 'ASC'
+        }
+      },
+      relations: allRelations
+    });
+  }
+
   async update(userId, id: number, updateTicketDto: UpdateTicketDto) {
     const requesting_users = await this.parseUsersToPersist(updateTicketDto.requesting_users);
     const observer_users = await this.parseUsersToPersist(updateTicketDto.observer_users);
