@@ -188,7 +188,7 @@ export class LogsService implements LoggerService {
       log.statusResponse = resLog.statusCode;
       return await this.logsRepository.save(log);
     } catch (error) {
-      // console.log(error);
+      console.log(error);
     }
   }
 

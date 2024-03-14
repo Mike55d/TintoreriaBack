@@ -22,6 +22,8 @@ import { v4 as uuid } from 'uuid';
 import { FileE } from './entities/files.entity';
 import sanitizeHtml from 'sanitize-html';
 import { SANITIZE_CONFIG } from '../email/constants';
+import { CreateHistoricDto } from './dto/create-historic.dto';
+import { historyTypes } from '../historic/historic.types';
 
 const allRelations = [
   'requesting_users',
@@ -391,6 +393,30 @@ export class TicketsService {
       return true;
     }
     return false;
+  }
+
+  replyTicket(createHistoryDto: CreateHistoricDto) {
+    if (createHistoryDto.user && createHistoryDto.email) {
+      return { message: 'cant create with user and email' };
+    }
+    let type;
+    if (createHistoryDto.user) {
+      type = historyTypes.ANALIST;
+    } else {
+      type = historyTypes.USER;
+    }
+
+    try {
+      const history = this.historicRepository.create({
+        content: sanitizeHtml(createHistoryDto.content, SANITIZE_CONFIG),
+        ticket: { id: createHistoryDto.ticket },
+        title: createHistoryDto.title,
+        type
+      });
+      return this.historicRepository.save(history);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   getAllStatus() {

@@ -35,6 +35,7 @@ import { homedir } from 'os';
 import * as mime from 'mime-types';
 import path from 'path';
 import { Public } from '../auth/guards/is-public.decorator';
+import { CreateHistoricDto } from './dto/create-historic.dto';
 
 @Controller('tickets')
 @ApiTags('Tickets')
@@ -96,6 +97,15 @@ export class TicketsController {
   @Permissions('ticket:delete')
   remove(@Param('id') id: string) {
     return this.ticketsService.remove(+id);
+  }
+
+  @Post('/createHistoryEntry')
+  @ApiResponse({ status: 200, description: 'reply ticket' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  @Permissions('ticket:read')
+  async replyTicket(@Body() createHistoricDto: CreateHistoricDto) {
+    return await this.ticketsService.replyTicket(createHistoricDto);
   }
 
   @Delete('comment/:id')

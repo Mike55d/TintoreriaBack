@@ -4,6 +4,8 @@ import { Historic } from './entities/historic.entity';
 import { Repository } from 'typeorm';
 import { CreateHistoricDto } from './dto/create-historic.dto';
 import { historyTypes } from './historic.types';
+import sanitizeHtml from 'sanitize-html';
+import { SANITIZE_CONFIG } from '../email/constants';
 
 @Injectable()
 export class HistoricService {
@@ -27,7 +29,7 @@ export class HistoricService {
   replyTicket(idUser: number, id: number, createHistoryDto: CreateHistoricDto) {
     try {
       const history = this.historicRepository.create({
-        content: createHistoryDto.message,
+        content: sanitizeHtml(createHistoryDto.message, SANITIZE_CONFIG),
         includeIcs: createHistoryDto.includeIcs,
         user: { id: idUser },
         ticket: { id },
