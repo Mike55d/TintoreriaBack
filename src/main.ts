@@ -64,6 +64,7 @@ async function bootstrap() {
   try {
     await app.listen(process.env.SERVER_HTTP_PORT, process.env.SERVER_HTTP_HOSTNAME);
   } catch (e) {
+    console.log(e);
     process.exit(0);
   }
 
