@@ -9,6 +9,10 @@ import { Ticket } from '../tickets/entities/ticket.entity';
 import { EmailSettingsService } from './email-settings.service';
 import { User } from '../users/entities/user.entity';
 import { SettingsService } from '../settings/settings.service';
+import { Interval } from '@nestjs/schedule';
+import { ClientsService } from '../clients/clients.service';
+import { TicketsService } from '../tickets/tickets.service';
+import { HistoricModule } from '../historic/historic.module';
 
 const baseUrl = 'https://graph.microsoft.com/v1.0';
 
@@ -16,7 +20,9 @@ const baseUrl = 'https://graph.microsoft.com/v1.0';
 export class EmailService {
   constructor(
     private readonly emailSettingsService: EmailSettingsService,
-    private readonly settingsService: SettingsService
+    private readonly settingsService: SettingsService,
+    private readonly clientsService: ClientsService,
+    private readonly ticketsService: TicketsService
   ) {}
 
   async onModuleInit() {
@@ -97,18 +103,24 @@ export class EmailService {
     return mailboxFolders;
   }
 
-  async getAllMailsInFolder(folder: MailboxFolder, token?: string) {
+  async getAllMailsInFolder(folder: MailboxFolder, afterDate?: Date, token?: string) {
     const jwt = token || (await this.getToken());
     const url = `${baseUrl}/users/${folder.mailbox}/mailFolders/${folder.id}/messages`;
 
     let messages: AxiosResponse<any, any>;
 
     try {
-      messages = await axios.get(`${url}`, {
+      const options = {
         headers: {
           Authorization: `Bearer ${jwt}`
         }
-      });
+      };
+
+      if (afterDate) {
+        options['$filter'] = `receivedDateTime ge ${afterDate}`;
+      }
+      
+      messages = await axios.get(`${url}`, options);
     } catch (e) {
       throw new CustomError(Errors.MS_GRAPH_REQUEST_FAILED);
     }
@@ -121,6 +133,7 @@ export class EmailService {
         id: x.id,
         importance: x.importance,
         subject: x.subject,
+        conversationId: x.conversationId,
         from: {
           email: x.sender.emailAddress.address,
           name: x.sender.emailAddress.name
@@ -226,6 +239,14 @@ export class EmailService {
     const iocTemplate = emailSettings.iocTemplate;
     const socSignature = ticketSettings.signature;
 
+    if (includeIoc && !iocTemplate) {
+      throw new CustomError(Errors.NO_IOC_TEMPLATE);
+    }
+
+    if (!response && !ticketTemplate) {
+      throw new CustomError(Errors.NO_TICKET_TEMPLATE);
+    }
+
     let htmlTemplate: string;
 
     if (response) {
@@ -235,9 +256,9 @@ export class EmailService {
         ${includeIoc ? iocTemplate : ''}
         </br>
         ${user.profile.signature ?? ''}
-      </HTML>`;
+      </BODY></HTML>`;
     } else {
-      htmlTemplate = `<HTML>
+      htmlTemplate = `<HTML><BODY>
         ${ticketTemplate}
         </br>
         ${includeIoc ? iocTemplate : ''}
@@ -262,5 +283,103 @@ export class EmailService {
       finalHtml,
       true
     );
+  }
+
+  extractTicketId(subject: string) {
+    const regex = /\[#ADV(\d+)\]/;
+    const resultado = subject.match(regex);
+
+    if (resultado && resultado[1]) {
+      return parseInt(resultado[1], 10); 
+    }
+
+    return null;
+  }
+
+  async createTicketFromEmail(email: Email) {
+    const domain = email.from.email.split('@')[1];
+    const client = await this.clientsService.findByDomain(domain);
+
+    if (!client) {
+      return null;
+    }
+
+    const ticketId = this.extractTicketId(email.subject);
+    let ticket: Ticket = null;
+
+    if (ticketId) {
+      ticket = await this.ticketsService.findOne(ticketId);
+    } else {
+      ticket = await this.ticketsService.findByConversationId(email.conversationId)
+    }
+
+    if (!ticket) {
+      ticket = await this.ticketsService.create(-1, {
+        client: client.id,
+        impact: 1,
+        priority: 1,
+        status: 1,
+        title: email.subject,
+        type: 1,
+        urgency: 1,
+        conversationId: email.conversationId,
+        comments: [
+          {
+            comment: 'Ticket creado por mail collector'
+          }
+        ]
+      });
+    }
+
+    if (!ticket) {
+      return null;
+    }
+
+    await this.ticketsService.replyTicket({
+      content: email.content,
+      ticket: ticket.id,
+      title: "Cliente escribe",
+      email: email.from.email
+    });
+  }
+
+  @Interval(10000)
+  async mailCollectorJob() {
+    try {
+      const emailSettings = await this.emailSettingsService.find();
+      
+      if (!emailSettings.collectorEnabled) {
+        return;
+      }
+
+      const mailbox = `${emailSettings.collectorMailbox}@${emailSettings.systemDomain}`;
+      const mailFolder: MailboxFolder = {
+        id: emailSettings.collectorFolderId,
+        name: emailSettings.collectorFolderName,
+        children: [],
+        mailbox
+      };
+
+      let lastEmailDatetime = emailSettings.lastEmailDatetime;
+      const messages = await this.getAllMailsInFolder(mailFolder, lastEmailDatetime);
+
+      for(const x of messages) {
+        await this.createTicketFromEmail(x);
+
+        if (new Date(x.sentDateTime) > lastEmailDatetime) {
+          lastEmailDatetime = new Date(x.sentDateTime);
+        }
+      }
+
+      await this.emailSettingsService.update({
+        lastEmailDatetime
+      });
+
+      for(const x of messages) {
+        await this.deleteMessage(mailFolder.mailbox, x);
+      }
+    } catch(e) {
+      console.log("Error en mail collector: " + e);
+    }
   }
 }

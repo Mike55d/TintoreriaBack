@@ -99,6 +99,9 @@ export class Ticket {
   })
   alertTitle?: AlertTitle;
 
+  @Column({ nullable: true})
+  conversationId?: string;
+
   get json() {
     return {
       id: this.id,

@@ -5,9 +5,12 @@ import { EmailSettingsController } from './email-settings.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EmailSetting } from './entities/email-notification.entity';
 import { SettingsModule } from '../settings/settings.module';
+import { ClientsModule } from '../clients/clients.module';
+import { TicketsModule } from '../tickets/tickets.module';
+import { HistoricModule } from '../historic/historic.module';
 
 @Module({
-  imports: [SettingsModule, TypeOrmModule.forFeature([EmailSetting])],
+  imports: [SettingsModule, ClientsModule, TicketsModule, TypeOrmModule.forFeature([EmailSetting])],
   providers: [EmailService, EmailSettingsService],
   exports: [EmailService, EmailSettingsService],
   controllers: [EmailSettingsController]

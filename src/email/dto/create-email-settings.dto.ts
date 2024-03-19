@@ -1,5 +1,5 @@
 import { Expose } from 'class-transformer';
-import { IsBoolean, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsBoolean, IsDate, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class CreateEmailSettingsDto {
   @IsOptional()
@@ -11,10 +11,12 @@ export class CreateEmailSettingsDto {
   @IsString()
   systemDomain?: string;
 
+  @IsOptional()
   @IsString()
   @Expose()
   collectorMailbox: string;
 
+  @IsOptional()
   @IsString()
   @Expose()
   collectorFolderId: string;
@@ -34,13 +36,24 @@ export class CreateEmailSettingsDto {
   @Expose()
   collectorAutoResponse?: boolean;
 
+  @IsOptional()
   @IsString()
   @MaxLength(4096)
   @Expose()
   ticketTemplate: string;
 
+  @IsOptional()
+  @IsString()
+  @MaxLength(4096)
+  @Expose()
+  collectorResponse: string;
+
+  @IsOptional()
   @IsString()
   @MaxLength(4096)
   @Expose()
   iocTemplate: string;
+
+  @IsDate()
+  lastEmailDatetime: Date;
 }

@@ -4,7 +4,7 @@ module.exports = {
       script: './dist/main.js',
       name: 'prod-adv-tickets-backend',
       exec_mode: 'cluster',
-      instances: '4',
+      instances: '1',
       env: {
         NODE_ENV: 'prod'
       }

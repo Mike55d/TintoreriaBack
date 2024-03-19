@@ -1,5 +1,5 @@
 import { Expose } from 'class-transformer';
-import { IsString } from 'class-validator';
+import { IsDate, IsString } from 'class-validator';
 
 export class CreateSettingDto {
   @IsString()
@@ -9,4 +9,7 @@ export class CreateSettingDto {
   @IsString()
   @Expose()
   domain?: string;
+
+  @IsDate()
+  lastEmailDateTime?: Date;
 }

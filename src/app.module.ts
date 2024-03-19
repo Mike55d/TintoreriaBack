@@ -55,6 +55,7 @@ import { TicketGlpi } from './tickets/entities/ticket-glpi.entity';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     I18nModule.forRoot({
       fallbackLanguage: 'es',
       loaderOptions: {
