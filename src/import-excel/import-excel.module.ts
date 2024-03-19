@@ -10,10 +10,20 @@ import { ApiConfigService } from '../api-config/api-config.service';
 import { Client } from '../clients/entities/clients.entity';
 import { AlertTitle } from '../categories/entities/alert-title.entity';
 import { AssetFields } from '../assets/entities/asset-fields.entity';
+import { GlpiTicket } from '../tickets/entities/glpi_ticket.entity';
+import { Ticket } from '../tickets/entities/ticket.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Client, Category, AssetTypes, AlertTitle,AssetFields]),
+    TypeOrmModule.forFeature([
+      Client,
+      Category,
+      AssetTypes,
+      AlertTitle,
+      AssetFields,
+      GlpiTicket,
+      Ticket
+    ]),
     MulterModule.registerAsync({
       imports: [ApiConfigModule],
       useFactory: async (config: ApiConfigService) => config.getMulterOptions(),

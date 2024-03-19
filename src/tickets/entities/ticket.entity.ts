@@ -29,7 +29,7 @@ export class Ticket {
   @Column()
   title: string;
 
-  @Column('text', { default: null })
+  @Column('longtext', { default: null })
   description?: string;
 
   @CreateDateColumn()

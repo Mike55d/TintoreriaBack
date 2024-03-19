@@ -7,6 +7,15 @@ import { AssetTypes } from '../assets/entities/asset.entity';
 import readXlsxFile from 'read-excel-file/node';
 import { AlertTitle } from '../categories/entities/alert-title.entity';
 import { AssetFields } from '../assets/entities/asset-fields.entity';
+import { GlpiTicket } from '../tickets/entities/glpi_ticket.entity';
+import { Ticket } from '../tickets/entities/ticket.entity';
+import XlsxTemplate from 'xlsx-template';
+import fs from 'fs/promises';
+import path from 'path';
+import moment from 'moment';
+import { homedir } from 'os';
+import sanitizeHtml from 'sanitize-html';
+import { SANITIZE_CONFIG } from '../email/constants';
 
 const rowJsonClient = {
   ID: {
@@ -80,7 +89,11 @@ export class ImportExcelService {
     @InjectRepository(AssetTypes)
     private assetTypesRepository: Repository<AssetTypes>,
     @InjectRepository(AssetFields)
-    private assetFieldsRepository: Repository<AssetFields>
+    private assetFieldsRepository: Repository<AssetFields>,
+    @InjectRepository(GlpiTicket)
+    private glpiTicketRepository: Repository<GlpiTicket>,
+    @InjectRepository(Ticket)
+    private ticketRepository: Repository<Ticket>
   ) {}
 
   async importProducts(file: Express.Multer.File) {
@@ -167,6 +180,74 @@ export class ImportExcelService {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  convertPriorities(id: number) {
+    switch (id) {
+      case 1:
+        return 4;
+      case 2:
+        return 3;
+      case 3:
+        return 2;
+      case 4:
+        return 1;
+      default:
+        return 1;
+    }
+  }
+
+  async generateFileName(templateName, fileTypeName, values, hideClients?) {
+    let templateRoute = 'templates';
+    const fileName = `${moment(new Date()).format('YYYY-MM-DD-hh-mm-ss')}-${fileTypeName}`;
+    const file = await fs.readFile(path.join('./', templateRoute, templateName));
+    const template = new XlsxTemplate(file);
+    template.substitute(1, values);
+    const dataFile = template.generate();
+    await fs.writeFile(
+      path.join(homedir(), process.env.REPORTS_PATH, fileName),
+      dataFile,
+      'binary'
+    );
+    return fileName;
+  }
+
+  async importTicketsGlpi() {
+    try {
+      const glpi_tickets = await this.glpiTicketRepository.find({});
+      const defaultClient = await this.clientsRepository.findOneBy({ glpiId: 62 });
+      for (let glpi_ticket of glpi_tickets) {
+        const client = await this.clientsRepository.findOneBy({ glpiId: glpi_ticket.userGlpiId });
+        const ticket = this.ticketRepository.create({
+          id: glpi_ticket.id,
+          client: client ?? defaultClient,
+          title: glpi_ticket.title,
+          openingDate: glpi_ticket.dateCreation,
+          description: glpi_ticket.description,
+          eventDate: glpi_ticket.date,
+          assignDate: glpi_ticket.solvedate,
+          status: { id: 1 },
+          priority: { id: this.convertPriorities(glpi_ticket.priority) },
+          urgency: { id: this.convertPriorities(glpi_ticket.urgency) },
+          impact: { id: this.convertPriorities(glpi_ticket.impact) },
+          type: { id: glpi_ticket.type }
+        });
+        await this.ticketRepository.save(ticket);
+      }
+      return `Tickets imported`;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async ticketsToExcel() {
+    const glpi_tickets = await this.glpiTicketRepository.find({ skip: 20000, take: 2000 });
+    const newTickets = glpi_tickets.map(glpiTicket => ({
+      description: sanitizeHtml(glpiTicket.description, SANITIZE_CONFIG) ?? ''
+    }));
+    return await this.generateFileName('template1.xlsx', 'tickets-upload.xlsx', {
+      tickets: newTickets
+    });
   }
 
   findAll() {

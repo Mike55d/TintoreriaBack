@@ -5,10 +5,16 @@ import {
   Param,
   Delete,
   UseInterceptors,
-  UploadedFile
+  UploadedFile,
+  Res,
+  StreamableFile
 } from '@nestjs/common';
 import { ImportExcelService } from './import-excel.service';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Response as ResponseExpress } from 'express';
+import { createReadStream } from 'fs';
+import { homedir } from 'os';
+import path from 'path';
 
 @Controller('import-excel')
 export class ImportExcelController {
@@ -18,6 +24,21 @@ export class ImportExcelController {
   @UseInterceptors(FileInterceptor('file'))
   async create(@UploadedFile() file: Express.Multer.File) {
     return await this.importExcelService.importProducts(file);
+  }
+
+  @Get('/importTickets')
+  importTicketsGlpi() {
+    return this.importExcelService.importTicketsGlpi();
+  }
+
+  @Get('tickets-to-excel')
+  async reworkFile(@Res({ passthrough: true }) res: ResponseExpress) {
+    let fileName = await this.importExcelService.ticketsToExcel();
+    res.set({
+      'Content-Disposition': `attachment; filename="${fileName}"`
+    });
+    const fileToStream = createReadStream(path.join(homedir(), process.env.REPORTS_PATH, fileName));
+    return new StreamableFile(fileToStream);
   }
 
   @Get()

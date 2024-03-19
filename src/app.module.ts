@@ -51,6 +51,7 @@ import { Setting } from './settings/entities/setting.entity';
 import { EmailSetting } from './email/entities/email-notification.entity';
 import { EmailModule } from './email/email.module';
 import { ImportExcelModule } from './import-excel/import-excel.module';
+import { GlpiTicket } from './tickets/entities/glpi_ticket.entity';
 
 @Module({
   imports: [
@@ -105,7 +106,8 @@ import { ImportExcelModule } from './import-excel/import-excel.module';
         AlertTitle,
         FileE,
         Setting,
-        EmailSetting
+        EmailSetting,
+        // GlpiTicket
       ]
     } as TypeOrmModuleOptions),
     LogsModule,
