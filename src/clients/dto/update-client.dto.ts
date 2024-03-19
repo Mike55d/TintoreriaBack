@@ -6,7 +6,6 @@ import {
   IsOptional,
   IsString,
   MaxLength,
-  ValidateIf,
   ValidateNested
 } from 'class-validator';
 import { CreateClientAssetDto } from '../../client-asset/dto/create-client-asset.dto';
@@ -16,6 +15,7 @@ export class UpdateClientDto {
   @Expose()
   status: number;
 
+  @IsOptional()
   @IsString()
   @MaxLength(32)
   @Expose()
@@ -26,48 +26,49 @@ export class UpdateClientDto {
   @Expose()
   name: string;
 
+  @IsOptional()
   @IsString()
   @MaxLength(128)
   @Expose()
   trademark: string | null;
 
-  @ValidateIf((_, value) => value !== null)
+  @IsOptional()
   @IsString()
   @MaxLength(128)
   @Expose()
   country: string;
 
-  @ValidateIf((_, value) => value !== null)
+  @IsOptional()
   @IsString()
   @MaxLength(256)
   @Expose()
   address: string | null;
 
-  @ValidateIf((_, value) => value !== null)
+  @IsOptional()
   @IsString()
   @MaxLength(64)
   @Expose()
   phone: string | null;
 
-  @ValidateIf((_, value) => value !== null)
+  @IsOptional()
   @IsString()
   @MaxLength(128)
   @Expose()
   email: string | null;
 
-  @ValidateIf((_, value) => value !== null)
+  @IsOptional()
   @IsString()
   @MaxLength(128)
   @Expose()
   contactName: string | null;
 
-  @ValidateIf((_, value) => value !== null)
+  @IsOptional()
   @IsString()
   @MaxLength(128)
   @Expose()
   contactPhone: string | null;
 
-  @ValidateIf((_, value) => value !== null)
+  @IsOptional()
   @IsString()
   @MaxLength(2048)
   @Expose()
@@ -97,6 +98,7 @@ export class UpdateClientDto {
   @Expose()
   clientAssets: CreateClientAssetDto[];
 
+  @IsOptional()
   @IsString()
   @MaxLength(2048)
   @Expose()
