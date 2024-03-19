@@ -7,7 +7,6 @@ import { AssetTypes } from '../assets/entities/asset.entity';
 import readXlsxFile from 'read-excel-file/node';
 import { AlertTitle } from '../categories/entities/alert-title.entity';
 import { AssetFields } from '../assets/entities/asset-fields.entity';
-import { GlpiTicket } from '../tickets/entities/glpi_ticket.entity';
 import { Ticket } from '../tickets/entities/ticket.entity';
 import XlsxTemplate from 'xlsx-template';
 import fs from 'fs/promises';
@@ -16,6 +15,7 @@ import moment from 'moment';
 import { homedir } from 'os';
 import sanitizeHtml from 'sanitize-html';
 import { SANITIZE_CONFIG } from '../email/constants';
+import { TicketGlpi } from '../tickets/entities/ticket-glpi.entity';
 
 const rowJsonClient = {
   ID: {
@@ -90,10 +90,10 @@ export class ImportExcelService {
     private assetTypesRepository: Repository<AssetTypes>,
     @InjectRepository(AssetFields)
     private assetFieldsRepository: Repository<AssetFields>,
-    @InjectRepository(GlpiTicket)
-    private glpiTicketRepository: Repository<GlpiTicket>,
     @InjectRepository(Ticket)
-    private ticketRepository: Repository<Ticket>
+    private ticketRepository: Repository<Ticket>,
+    @InjectRepository(TicketGlpi, 'glpi')
+    private ticketGlpiRepository: Repository<TicketGlpi>
   ) {}
 
   async importProducts(file: Express.Multer.File) {
@@ -214,16 +214,16 @@ export class ImportExcelService {
 
   async importTicketsGlpi() {
     try {
-      const glpi_tickets = await this.glpiTicketRepository.find({});
+      const glpi_tickets = await this.ticketGlpiRepository.find({});
       const defaultClient = await this.clientsRepository.findOneBy({ glpiId: 62 });
       for (let glpi_ticket of glpi_tickets) {
-        const client = await this.clientsRepository.findOneBy({ glpiId: glpi_ticket.userGlpiId });
+        const client = await this.clientsRepository.findOneBy({ glpiId: glpi_ticket.entitiesId });
         const ticket = this.ticketRepository.create({
           id: glpi_ticket.id,
           client: client ?? defaultClient,
-          title: glpi_ticket.title,
+          title: glpi_ticket.name,
           openingDate: glpi_ticket.dateCreation,
-          description: glpi_ticket.description,
+          description: glpi_ticket.content,
           eventDate: glpi_ticket.date,
           assignDate: glpi_ticket.solvedate,
           status: { id: 1 },
@@ -234,16 +234,16 @@ export class ImportExcelService {
         });
         await this.ticketRepository.save(ticket);
       }
-      return `Tickets imported`;
+      return { message: `Tickets imported` };
     } catch (error) {
       console.log(error);
     }
   }
 
   async ticketsToExcel() {
-    const glpi_tickets = await this.glpiTicketRepository.find({ skip: 20000, take: 2000 });
+    const glpi_tickets = await this.ticketGlpiRepository.find({});
     const newTickets = glpi_tickets.map(glpiTicket => ({
-      description: sanitizeHtml(glpiTicket.description, SANITIZE_CONFIG) ?? ''
+      description: sanitizeHtml(glpiTicket.content, SANITIZE_CONFIG)
     }));
     return await this.generateFileName('template1.xlsx', 'tickets-upload.xlsx', {
       tickets: newTickets

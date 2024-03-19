@@ -51,7 +51,7 @@ import { Setting } from './settings/entities/setting.entity';
 import { EmailSetting } from './email/entities/email-notification.entity';
 import { EmailModule } from './email/email.module';
 import { ImportExcelModule } from './import-excel/import-excel.module';
-import { GlpiTicket } from './tickets/entities/glpi_ticket.entity';
+import { TicketGlpi } from './tickets/entities/ticket-glpi.entity';
 
 @Module({
   imports: [
@@ -106,9 +106,22 @@ import { GlpiTicket } from './tickets/entities/glpi_ticket.entity';
         AlertTitle,
         FileE,
         Setting,
-        EmailSetting,
-        // GlpiTicket
+        EmailSetting
       ]
+    } as TypeOrmModuleOptions),
+    TypeOrmModule.forRoot({
+      name: 'glpi',
+      namingStrategy: DbNamingStrategy.strategy,
+      type: process.env.GLPI_CONNECTION,
+      host: process.env.GLPI_HOST,
+      port: +process.env.GLPI_PORT,
+      username: process.env.GLPI_USERNAME,
+      password: process.env.GLPI_PASSWORD,
+      database: process.env.GLPI_DATABASE,
+      synchronize: process.env.GLPI_SYNCHRONIZE === 'true',
+      logging: process.env.GLPI_LOGGING,
+      retryAttempts: +process.env.GLPI_RETRY_ATTEMPTS,
+      entities: [TicketGlpi]
     } as TypeOrmModuleOptions),
     LogsModule,
     RolesModule,
