@@ -8,9 +8,10 @@ import { SettingsModule } from '../settings/settings.module';
 import { ClientsModule } from '../clients/clients.module';
 import { TicketsModule } from '../tickets/tickets.module';
 import { HistoricModule } from '../historic/historic.module';
+import { UsersModule } from '../users/users.module';
 
 @Module({
-  imports: [SettingsModule, ClientsModule, TicketsModule, TypeOrmModule.forFeature([EmailSetting])],
+  imports: [SettingsModule, UsersModule, ClientsModule, TicketsModule, TypeOrmModule.forFeature([EmailSetting])],
   providers: [EmailService, EmailSettingsService],
   exports: [EmailService, EmailSettingsService],
   controllers: [EmailSettingsController]

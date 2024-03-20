@@ -13,6 +13,7 @@ import { Interval } from '@nestjs/schedule';
 import { ClientsService } from '../clients/clients.service';
 import { TicketsService } from '../tickets/tickets.service';
 import { HistoricModule } from '../historic/historic.module';
+import { UsersService } from '../users/users.service';
 
 const baseUrl = 'https://graph.microsoft.com/v1.0';
 
@@ -22,7 +23,8 @@ export class EmailService {
     private readonly emailSettingsService: EmailSettingsService,
     private readonly settingsService: SettingsService,
     private readonly clientsService: ClientsService,
-    private readonly ticketsService: TicketsService
+    private readonly ticketsService: TicketsService,
+    private readonly usersService: UsersService
   ) {}
 
   async onModuleInit() {
@@ -232,6 +234,32 @@ export class EmailService {
     }
   }
 
+  fillVariables(htmlTemplate: string, ticket: Ticket) {
+    const timeBasedGreetings = (dateTime?: Date) => {
+      const date = dateTime ?? new Date();
+      const hour = date.getHours();
+
+      if (hour > 5 && hour < 12) {
+        return 'Buenos días';
+      } else if (hour >= 12 && hour < 19) {
+        return 'Buenas tardes';
+      } else {
+        return 'Buenas noches';
+      }
+    };
+
+    return mustache.render(htmlTemplate, {
+      ticketId: ticket.id,
+      clientName: ticket.client.name,
+      eventDate: 'HOUR',
+      eventTime: 'TIME',
+      eventDescription: ticket.description,
+      impact: ticket.possibleImpact,
+      recommendation: ticket.recommendation,
+      timeBasedGreetings: timeBasedGreetings()
+    });
+  }
+
   async notify(ticket: Ticket, response: string = null, user: User = null, includeIoc = false) {
     const emailSettings = await this.emailSettingsService.find();
     const ticketSettings = await this.settingsService.find();
@@ -267,13 +295,7 @@ export class EmailService {
       </BODY></HTML>`;
     }
 
-    const finalHtml = mustache.render(htmlTemplate, {
-      eventDate: 'HOUR',
-      eventTime: 'TIME',
-      eventDescription: ticket.description,
-      impact: ticket.possibleImpact,
-      recommendation: ticket.recommendation
-    });
+    const finalHtml = this.fillVariables(htmlTemplate, ticket);
 
     await this.sendMail(
       user.email,
@@ -299,6 +321,7 @@ export class EmailService {
   async createTicketFromEmail(email: Email) {
     const domain = email.from.email.split('@')[1];
     const client = await this.clientsService.findByDomain(domain);
+    const emailSettings = await this.emailSettingsService.find();
 
     if (!client) {
       return null;
@@ -329,6 +352,18 @@ export class EmailService {
           }
         ]
       });
+
+      if (emailSettings.collectorAutoResponse) {
+        const systemUser = await this.usersService.findOne(-1);
+        await this.sendMail(
+          systemUser.email,
+          ticket.client.emails.split(','),
+          [],
+          ticket.title,
+          this.fillVariables(emailSettings.collectorResponse, ticket),
+          true
+        );
+      } 
     }
 
     if (!ticket) {
