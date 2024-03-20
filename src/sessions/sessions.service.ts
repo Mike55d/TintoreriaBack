@@ -295,7 +295,10 @@ export class SessionsService {
           role: { id: usersCount == 0 ? 1 : 3 },
           user: { id: user.id }
         });
-        this.usersToRolesRepository.save(userRoles);
+        await this.usersToRolesRepository.save(userRoles);
+      } else {
+        user.name = userFromToken.displayName;
+        await this.usersRepository.save(user);
       }
       const deviceId = uuid();
       const token = this.authService.createTokenForDevice(user, deviceId);
