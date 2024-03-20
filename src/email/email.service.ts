@@ -353,6 +353,8 @@ export class EmailService {
         ]
       });
 
+      ticket = await this.ticketsService.findOne(ticket.id);
+
       if (emailSettings.collectorAutoResponse) {
         const systemUser = await this.usersService.findOne(-1);
         await this.sendMail(

@@ -54,6 +54,5 @@ export class CreateEmailSettingsDto {
   @Expose()
   iocTemplate: string;
 
-  @IsDate()
   lastEmailDatetime: Date;
 }

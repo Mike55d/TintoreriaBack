@@ -10,6 +10,5 @@ export class CreateSettingDto {
   @Expose()
   domain?: string;
 
-  @IsDate()
   lastEmailDateTime?: Date;
 }
