@@ -54,6 +54,11 @@ export class ClientsService {
       ...asset,
       assetType: { id: asset.assetType }
     }));
+
+    if (!data.emails) {
+      data.emails = [];
+    }
+
     return this.clientsRepository.save({
       id,
       ...data,
