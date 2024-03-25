@@ -39,7 +39,8 @@ export class EmailSettingsService {
       ...updateEmailNotificationDto,
       iocTemplate: sanitizeHtml(updateEmailNotificationDto.iocTemplate, SANITIZE_CONFIG),
       ticketTemplate: sanitizeHtml(updateEmailNotificationDto.ticketTemplate, SANITIZE_CONFIG),
-      systemSignature: sanitizeHtml(updateEmailNotificationDto.systemSignature, SANITIZE_CONFIG)
+      systemSignature: sanitizeHtml(updateEmailNotificationDto.systemSignature, SANITIZE_CONFIG),
+      collectorResponse: sanitizeHtml(updateEmailNotificationDto.collectorResponse, SANITIZE_CONFIG)
     };
 
     if (updateEmailNotificationDto.collectorEnabled && !currentDate.lastEmailDatetime) {

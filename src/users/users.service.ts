@@ -10,7 +10,8 @@ import { newPasswordDataDto } from './dto/new-password-data.dto';
 import { UsersToRoles } from './entities/usersToRoles.entity';
 import { UpdateUserSettingsDto } from './dto/update-settings-profile.dto';
 import { UserProfile } from './entities/user-profile.entity';
-
+import sanitizeHtml from 'sanitize-html';
+import { SANITIZE_CONFIG } from '../email/constants';
 @Injectable()
 export class UsersService {
   constructor(
@@ -74,7 +75,10 @@ export class UsersService {
   async updateProfile(id: number, profile: UpdateUserProfileDto) {
     let user = await this.findOne(id);
     user = this.usersRepository.merge(user, {
-      profile
+      profile: {
+        ...profile,
+        signature: sanitizeHtml(profile.signature, SANITIZE_CONFIG)
+      }
     });
     await this.usersRepository.save(user);
   }

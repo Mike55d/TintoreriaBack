@@ -219,6 +219,7 @@ export class CreateTicketDto {
   @IsNumber()
   @IsOptional()
   alertTitle?: number;
-
+  
+  @IsOptional()
   conversationId?: string;
 }
