@@ -310,7 +310,7 @@ export class SessionsService {
         fcmToken: null
       });
       session = await this.sessionsRepository.save(session);
-      return this.findOne(session.id);
+      return (await this.findOne(session.id)).json;
     } catch (error) {
       throw new CustomError(Errors.AUTH_UNSUCCESSFUL);
     }
