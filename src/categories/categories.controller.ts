@@ -31,4 +31,9 @@ export class CategoriesController {
   remove(@Param('id') id: string) {
     return this.categoriesService.remove(+id);
   }
+
+  @Get('alert-titles/get-alert-titles')
+  findAllAlertTitles() {
+    return this.categoriesService.findAllAlertTitles();
+  }
 }

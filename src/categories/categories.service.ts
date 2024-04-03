@@ -4,12 +4,15 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './entities/category.entity';
 import { Repository } from 'typeorm';
+import { AlertTitle } from './entities/alert-title.entity';
 
 @Injectable()
 export class CategoriesService {
   constructor(
     @InjectRepository(Category)
-    private categoryRepository: Repository<Category>
+    private categoryRepository: Repository<Category>,
+    @InjectRepository(AlertTitle)
+    private alertTitleRepository: Repository<AlertTitle>
   ) {}
 
   create(createAssetDto: CreateCategoryDto) {
@@ -35,5 +38,13 @@ export class CategoriesService {
   async remove(id: number) {
     const asset = await this.categoryRepository.findBy({ id });
     return await this.categoryRepository.remove(asset);
+  }
+
+  async findAllAlertTitles() {
+    try {
+      return await this.alertTitleRepository.find({});
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
