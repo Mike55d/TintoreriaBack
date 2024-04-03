@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import axios, { AxiosResponse } from 'axios';
 import msal from '@azure/msal-node';
 import mustache from 'mustache';
@@ -12,7 +12,6 @@ import { SettingsService } from '../settings/settings.service';
 import { Interval } from '@nestjs/schedule';
 import { ClientsService } from '../clients/clients.service';
 import { TicketsService } from '../tickets/tickets.service';
-import { HistoricModule } from '../historic/historic.module';
 import { UsersService } from '../users/users.service';
 
 const baseUrl = 'https://graph.microsoft.com/v1.0';
@@ -23,6 +22,7 @@ export class EmailService {
     private readonly emailSettingsService: EmailSettingsService,
     private readonly settingsService: SettingsService,
     private readonly clientsService: ClientsService,
+    @Inject(forwardRef(() => TicketsService))
     private readonly ticketsService: TicketsService,
     private readonly usersService: UsersService
   ) {}
@@ -234,7 +234,7 @@ export class EmailService {
     }
   }
 
-  fillVariables(htmlTemplate: string, ticket: Ticket) {
+  fillVariables(htmlTemplate: string, ticket: Ticket, includeIoc: boolean, iocTemplate?: string) {
     const timeBasedGreetings = (dateTime?: Date) => {
       const date = dateTime ?? new Date();
       const hour = date.getHours();
@@ -249,6 +249,8 @@ export class EmailService {
     };
 
     return mustache.render(htmlTemplate, {
+      includeIoc,
+      iocs: this.renderIocs(ticket, iocTemplate),
       ticketId: ticket.id,
       clientName: ticket.client.name,
       eventDate: 'HOUR',
@@ -257,6 +259,12 @@ export class EmailService {
       impact: ticket.possibleImpact,
       recommendation: ticket.recommendation,
       timeBasedGreetings: timeBasedGreetings()
+    });
+  }
+
+  renderIocs(ticket: Ticket, iocTemplate: string) {
+    return mustache.render(iocTemplate, {
+      iocs: []
     });
   }
 
@@ -281,7 +289,7 @@ export class EmailService {
       htmlTemplate = `<HTML><BODY>
         ${response}
         </br>
-        ${includeIoc ? iocTemplate : ''}
+        ${includeIoc ? this.renderIocs(ticket, iocTemplate) : ''}
         </br>
         ${user.profile.signature ?? ''}
       </BODY></HTML>`;
@@ -289,13 +297,11 @@ export class EmailService {
       htmlTemplate = `<HTML><BODY>
         ${ticketTemplate}
         </br>
-        ${includeIoc ? iocTemplate : ''}
-        </br>
         ${socSignature ?? ''}
       </BODY></HTML>`;
     }
 
-    const finalHtml = this.fillVariables(htmlTemplate, ticket);
+    const finalHtml = this.fillVariables(htmlTemplate, ticket, includeIoc, iocTemplate);
 
     await this.sendMail(
       user.email,
@@ -336,8 +342,10 @@ export class EmailService {
       ticket = await this.ticketsService.findByConversationId(email.conversationId)
     }
 
+    const systemUser = await this.usersService.findOne(-1);
+
     if (!ticket) {
-      ticket = await this.ticketsService.create(-1, {
+      ticket = await this.ticketsService.create(systemUser, {
         client: client.id,
         impact: 1,
         priority: 1,
@@ -362,7 +370,7 @@ export class EmailService {
           ticket.client.emails.split(','),
           [],
           ticket.title,
-          this.fillVariables(emailSettings.collectorResponse, ticket),
+          this.fillVariables(emailSettings.collectorResponse, ticket, false),
           true
         );
       } 

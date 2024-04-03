@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TicketsService } from './tickets.service';
 import { TicketsController } from './tickets.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -13,9 +13,11 @@ import { CommentTicket } from './entities/comment-ticket.entity';
 import { SlAlert } from './entities/sl-alert.entity';
 import { Historic } from '../historic/entities/historic.entity';
 import { FileE } from './entities/files.entity';
+import { EmailModule } from '../email/email.module';
 
 @Module({
   imports: [
+    forwardRef(() => EmailModule),
     TypeOrmModule.forFeature([
       Ticket,
       Status,

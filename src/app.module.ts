@@ -124,6 +124,10 @@ import { TicketGlpi } from './tickets/entities/ticket-glpi.entity';
       retryAttempts: +process.env.GLPI_RETRY_ATTEMPTS,
       entities: [TicketGlpi]
     } as TypeOrmModuleOptions),
+    ScheduleModule.forRoot(),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'organization_logos')
+    }),
     LogsModule,
     RolesModule,
     UsersModule,
@@ -135,17 +139,13 @@ import { TicketGlpi } from './tickets/entities/ticket-glpi.entity';
     LogsModule,
     WebsocketModule,
     ErrorsModule,
-    ScheduleModule.forRoot(),
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'organization_logos')
-    }),
+    EmailModule,
     TicketsModule,
     AssetsModule,
     ClientAssetModule,
     HistoricModule,
     CategoriesModule,
     SettingsModule,
-    EmailModule,
     ImportExcelModule
   ],
   providers: [ApiConfigService]

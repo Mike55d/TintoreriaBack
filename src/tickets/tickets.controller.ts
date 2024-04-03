@@ -50,7 +50,7 @@ export class TicketsController {
   @Permissions('ticket:create')
   async create(@Request() req, @Body() createTicketDto: CreateTicketDto) {
     try {
-      return await this.ticketsService.create(req.user.id, createTicketDto);
+      return await this.ticketsService.create(req.user, createTicketDto);
     } catch (error) {
       console.log(error);
     }
