@@ -127,6 +127,10 @@ import { NotifcationsTitleAlert } from './notifcations-title-alert/entities/noti
       retryAttempts: +process.env.GLPI_RETRY_ATTEMPTS,
       entities: [TicketGlpi]
     } as TypeOrmModuleOptions),
+    ScheduleModule.forRoot(),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'organization_logos')
+    }),
     LogsModule,
     RolesModule,
     UsersModule,
@@ -138,10 +142,7 @@ import { NotifcationsTitleAlert } from './notifcations-title-alert/entities/noti
     LogsModule,
     WebsocketModule,
     ErrorsModule,
-    ScheduleModule.forRoot(),
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'organization_logos')
-    }),
+    EmailModule,
     TicketsModule,
     AssetsModule,
     ClientAssetModule,
@@ -150,7 +151,8 @@ import { NotifcationsTitleAlert } from './notifcations-title-alert/entities/noti
     SettingsModule,
     EmailModule,
     ImportExcelModule,
-    NotifcationsTitleAlertModule
+    NotifcationsTitleAlertModule,
+    ImportExcelModule
   ],
   providers: [ApiConfigService]
 })

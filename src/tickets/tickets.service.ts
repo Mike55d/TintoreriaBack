@@ -26,6 +26,7 @@ import { CreateHistoricDto } from './dto/create-historic.dto';
 import { historyTypes } from '../historic/historic.types';
 import { Errors } from '../errors/errors.types';
 import { CustomError } from '../errors/custom-error';
+import { EmailService } from '../email/email.service';
 
 const allRelations = [
   'requesting_users',
@@ -52,6 +53,7 @@ type UsersRequest = { id?: number; user?: number; email?: string };
 @Injectable()
 export class TicketsService {
   constructor(
+    private readonly emailService: EmailService,
     @InjectRepository(Ticket)
     private ticketRepository: Repository<Ticket>,
     @InjectRepository(Status)
@@ -90,7 +92,8 @@ export class TicketsService {
     return usersFormat;
   }
 
-  async create(userId: number, createTicketDto: CreateTicketDto) {
+  async create(user: User, createTicketDto: CreateTicketDto) {
+    const userId = user.id;
     const requesting_users = await this.parseUsersToPersist(createTicketDto.requesting_users);
     const observer_users = await this.parseUsersToPersist(createTicketDto.observer_users);
     const assigned_users = await this.parseUsersToPersist(createTicketDto.assigned_users);
@@ -150,7 +153,8 @@ export class TicketsService {
       user: { id: userId },
       ticket: { id: savedTicket.id }
     });
-    this.historicRepository.save(historicRecord);
+    await this.historicRepository.save(historicRecord);
+    this.emailService.notify(savedTicket, null, user, true);
     return savedTicket;
   }
 

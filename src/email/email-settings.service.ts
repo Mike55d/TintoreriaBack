@@ -36,12 +36,24 @@ export class EmailSettingsService {
     const currentDate = await this.find();
 
     const updateData: DeepPartial<EmailSetting> = {
-      ...updateEmailNotificationDto,
-      iocTemplate: sanitizeHtml(updateEmailNotificationDto.iocTemplate, SANITIZE_CONFIG),
-      ticketTemplate: sanitizeHtml(updateEmailNotificationDto.ticketTemplate, SANITIZE_CONFIG),
-      systemSignature: sanitizeHtml(updateEmailNotificationDto.systemSignature, SANITIZE_CONFIG),
-      collectorResponse: sanitizeHtml(updateEmailNotificationDto.collectorResponse, SANITIZE_CONFIG)
+      ...updateEmailNotificationDto
     };
+
+    if (updateEmailNotificationDto.iocTemplate) {
+      updateData.iocTemplate = updateEmailNotificationDto.iocTemplate;
+    }
+
+    if (updateEmailNotificationDto.iocTemplate) {
+      updateData.ticketTemplate = updateEmailNotificationDto.ticketTemplate;
+    }
+
+    if (updateEmailNotificationDto.iocTemplate) {
+      updateData.systemSignature = updateEmailNotificationDto.systemSignature;
+    }
+
+    if (updateEmailNotificationDto.iocTemplate) {
+      updateData.collectorResponse = updateEmailNotificationDto.collectorResponse;
+    }
 
     if (updateEmailNotificationDto.collectorEnabled && !currentDate.lastEmailDatetime) {
       updateData.lastEmailDatetime = new Date();
