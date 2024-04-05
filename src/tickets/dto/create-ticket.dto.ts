@@ -219,7 +219,14 @@ export class CreateTicketDto {
   @IsNumber()
   @IsOptional()
   alertTitle?: number;
-  
+
   @IsOptional()
   conversationId?: string;
+
+  @ApiProperty({
+    example: '3484543843'
+  })
+  @Expose()
+  @IsString()
+  refNumber: string;
 }

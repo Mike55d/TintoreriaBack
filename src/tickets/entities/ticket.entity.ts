@@ -19,7 +19,6 @@ import { Client } from '../../clients/entities/clients.entity';
 import { ClientAsset } from '../../client-asset/entities/client-asset.entity';
 import { Category } from '../../categories/entities/category.entity';
 import { AlertTitle } from '../../categories/entities/alert-title.entity';
-import { FileE } from './files.entity';
 
 @Entity()
 export class Ticket {
@@ -99,8 +98,11 @@ export class Ticket {
   })
   alertTitle?: AlertTitle;
 
-  @Column({ nullable: true})
+  @Column({ nullable: true })
   conversationId?: string;
+
+  @Column()
+  refNumber: string;
 
   get json() {
     return {
@@ -135,7 +137,8 @@ export class Ticket {
       client: this.client,
       asset: this.asset,
       category: this?.category,
-      alertTitle: this?.alertTitle
+      alertTitle: this?.alertTitle,
+      refNumber: this.refNumber
     };
   }
 }
