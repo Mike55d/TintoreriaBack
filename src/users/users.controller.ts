@@ -20,6 +20,7 @@ import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { newPasswordDataDto } from './dto/new-password-data.dto';
 import { User } from './entities/user.entity';
 import { UpdateUserSettingsDto } from './dto/update-settings-profile.dto';
+import { SetTicketsFilterDto } from './dto/set-tickets-filter.dto';
 
 @Controller('users')
 @ApiTags('Users')
@@ -111,5 +112,13 @@ export class UsersController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   updateTableSettings(@Request() req, @Body() params: UpdateUserSettingsDto) {
     return this.usersService.updateTableSettings(req.user.id, params);
+  }
+
+  @Patch('me/ticketfilters')
+  @ApiResponse({ status: 200, description: 'The record has been successfully updated.' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  updateTicketFilters(@Request() req, @Body() params: SetTicketsFilterDto) {
+    return this.usersService.updateTicketFilters(req.user.id, params);
   }
 }

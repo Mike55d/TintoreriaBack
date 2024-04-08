@@ -12,6 +12,7 @@ import { UpdateUserSettingsDto } from './dto/update-settings-profile.dto';
 import { UserProfile } from './entities/user-profile.entity';
 import sanitizeHtml from 'sanitize-html';
 import { SANITIZE_CONFIG } from '../email/constants';
+import { SetTicketsFilterDto } from './dto/set-tickets-filter.dto';
 @Injectable()
 export class UsersService {
   constructor(
@@ -114,6 +115,15 @@ export class UsersService {
   }
 
   async updateTableSettings(idUser: number, params: UpdateUserSettingsDto) {
+    const user = await this.usersRepository.findOneBy({ id: idUser });
+    const userProfile = await this.usersProfileRepository.findOneBy({ id: user.profile.id });
+    return await this.usersProfileRepository.save({
+      ...userProfile,
+      ...params
+    });
+  }
+
+  async updateTicketFilters(idUser: number, params: SetTicketsFilterDto) {
     const user = await this.usersRepository.findOneBy({ id: idUser });
     const userProfile = await this.usersProfileRepository.findOneBy({ id: user.profile.id });
     return await this.usersProfileRepository.save({

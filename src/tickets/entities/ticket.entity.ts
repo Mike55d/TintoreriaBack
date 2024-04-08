@@ -101,8 +101,8 @@ export class Ticket {
   @Column({ nullable: true })
   conversationId?: string;
 
-  @Column()
-  refNumber: string;
+  @Column({ nullable: true })
+  refNumber?: string;
 
   get json() {
     return {

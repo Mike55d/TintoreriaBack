@@ -25,6 +25,9 @@ export class UserProfile {
   @Column({ type: 'longtext', nullable: true })
   signature: string;
 
+  @Column({ type: 'longtext', nullable: true })
+  filters?: string;
+
   get json(): any {
     return {
       trustedDomains: this.trustedDomains,
@@ -32,7 +35,8 @@ export class UserProfile {
       darkMode: this.darkMode,
       columns: this.columns.split(','),
       take: this.take,
-      signature: this.signature
+      signature: this.signature,
+      filters: this.filters
     };
   }
 }

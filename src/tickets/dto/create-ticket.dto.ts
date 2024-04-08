@@ -228,5 +228,6 @@ export class CreateTicketDto {
   })
   @Expose()
   @IsString()
-  refNumber: string;
+  @IsOptional()
+  refNumber?: string;
 }
