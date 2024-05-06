@@ -13,7 +13,15 @@ export class AssetsService {
   ) {}
 
   create(createAssetDto: CreateAssetTypeDto) {
-    const assetField = this.assetTypesRepository.create(createAssetDto);
+    console.log(createAssetDto);
+    const assetField = this.assetTypesRepository.create({
+      ...createAssetDto,
+      assetFields: createAssetDto.assetFields.map(field => ({
+        name: field.name,
+        optional: field.optional,
+        type: field.type
+      }))
+    });
     return this.assetTypesRepository.save(assetField);
   }
 
@@ -28,7 +36,12 @@ export class AssetsService {
   update(id: number, updateAssetDto: UpdateAssetDto) {
     return this.assetTypesRepository.save({
       id,
-      ...updateAssetDto
+      ...updateAssetDto,
+      assetFields: updateAssetDto.assetFields.map(field => ({
+        name: field.name,
+        optional: field.optional,
+        type: field.type
+      }))
     });
   }
 

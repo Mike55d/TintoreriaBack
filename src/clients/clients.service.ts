@@ -13,7 +13,9 @@ export class ClientsService {
   ) {}
 
   async findAll() {
-    return this.clientsRepository.find({ relations: ['clientAssets', 'clientAssets.assetType'] });
+    return this.clientsRepository.find({
+      relations: ['clientAssets', 'clientAssets.assetType', 'distributionLists']
+    });
   }
 
   async findOne(id: number) {
@@ -21,7 +23,7 @@ export class ClientsService {
       where: {
         id
       },
-      relations: ['clientAssets', 'clientAssets.assetType']
+      relations: ['clientAssets', 'clientAssets.assetType', 'distributionLists']
     });
   }
 
@@ -30,7 +32,7 @@ export class ClientsService {
       where: {
         domain
       },
-      relations: ['clientAssets', 'clientAssets.assetType']
+      relations: ['clientAssets', 'clientAssets.assetType', 'distributionLists']
     });
   }
 

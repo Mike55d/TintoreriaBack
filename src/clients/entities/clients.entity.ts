@@ -7,6 +7,7 @@ import {
   OneToMany
 } from 'typeorm';
 import { ClientAsset } from '../../client-asset/entities/client-asset.entity';
+import { DistributionList } from '../../distribution-lists/entities/distributionList.entity';
 
 @Entity()
 export class Client {
@@ -67,6 +68,9 @@ export class Client {
   @Column({ nullable: true })
   glpiId?: number;
 
+  @OneToMany(() => DistributionList, distributionLists => distributionLists.client)
+  distributionLists: DistributionList[];
+
   get json() {
     return {
       id: this.id,
@@ -85,7 +89,8 @@ export class Client {
       clientAssets: this.clientAssets.map(asset => ({ ...asset, assetType: asset.assetType.id })),
       domain: this.domain,
       emails: this.emails?.split(','),
-      glpiId: this.glpiId
+      glpiId: this.glpiId,
+      distributionLists: this.distributionLists
     };
   }
 }

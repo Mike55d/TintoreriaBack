@@ -54,6 +54,8 @@ import { ImportExcelModule } from './import-excel/import-excel.module';
 import { TicketGlpi } from './tickets/entities/ticket-glpi.entity';
 import { NotifcationsTitleAlertModule } from './notifcations-title-alert/notifcations-title-alert.module';
 import { NotifcationsTitleAlert } from './notifcations-title-alert/entities/notifcations-title-alert.entity';
+import { DistributionList } from './distribution-lists/entities/distributionList.entity';
+import { DistributionListsModule } from './distribution-lists/distribution-lists.module';
 
 @Module({
   imports: [
@@ -110,7 +112,8 @@ import { NotifcationsTitleAlert } from './notifcations-title-alert/entities/noti
         FileE,
         Setting,
         EmailSetting,
-        NotifcationsTitleAlert
+        NotifcationsTitleAlert,
+        DistributionList
       ]
     } as TypeOrmModuleOptions),
     TypeOrmModule.forRoot({
@@ -152,7 +155,8 @@ import { NotifcationsTitleAlert } from './notifcations-title-alert/entities/noti
     EmailModule,
     ImportExcelModule,
     NotifcationsTitleAlertModule,
-    ImportExcelModule
+    ImportExcelModule,
+    DistributionListsModule
   ],
   providers: [ApiConfigService]
 })
