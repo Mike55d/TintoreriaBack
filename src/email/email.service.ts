@@ -121,7 +121,7 @@ export class EmailService {
       if (afterDate) {
         options['$filter'] = `receivedDateTime ge ${afterDate}`;
       }
-      
+
       messages = await axios.get(`${url}`, options);
     } catch (e) {
       throw new CustomError(Errors.MS_GRAPH_REQUEST_FAILED);
@@ -302,6 +302,9 @@ export class EmailService {
     }
 
     const finalHtml = this.fillVariables(htmlTemplate, ticket, includeIoc, iocTemplate);
+    if (!ticket.client.emails) {
+      return;
+    }
 
     await this.sendMail(
       user.email,
@@ -318,7 +321,7 @@ export class EmailService {
     const resultado = subject.match(regex);
 
     if (resultado && resultado[1]) {
-      return parseInt(resultado[1], 10); 
+      return parseInt(resultado[1], 10);
     }
 
     return null;
@@ -339,7 +342,7 @@ export class EmailService {
     if (ticketId) {
       ticket = await this.ticketsService.findOne(ticketId);
     } else {
-      ticket = await this.ticketsService.findByConversationId(email.conversationId)
+      ticket = await this.ticketsService.findByConversationId(email.conversationId);
     }
 
     const systemUser = await this.usersService.findOne(-1);
@@ -373,7 +376,7 @@ export class EmailService {
           this.fillVariables(emailSettings.collectorResponse, ticket, false),
           true
         );
-      } 
+      }
     }
 
     if (!ticket) {
@@ -383,7 +386,7 @@ export class EmailService {
     await this.ticketsService.replyTicket({
       content: email.content,
       ticket: ticket.id,
-      title: "Cliente escribe",
+      title: 'Cliente escribe',
       email: email.from.email
     });
   }
@@ -392,7 +395,7 @@ export class EmailService {
   async mailCollectorJob() {
     try {
       const emailSettings = await this.emailSettingsService.find();
-      
+
       if (!emailSettings.collectorEnabled) {
         return;
       }
@@ -408,7 +411,7 @@ export class EmailService {
       let lastEmailDatetime = emailSettings.lastEmailDatetime;
       const messages = await this.getAllMailsInFolder(mailFolder, lastEmailDatetime);
 
-      for(const x of messages) {
+      for (const x of messages) {
         await this.createTicketFromEmail(x);
 
         if (new Date(x.sentDateTime) > lastEmailDatetime) {
@@ -420,11 +423,11 @@ export class EmailService {
         lastEmailDatetime
       });
 
-      for(const x of messages) {
+      for (const x of messages) {
         await this.deleteMessage(mailFolder.mailbox, x);
       }
-    } catch(e) {
-      console.log("Error en mail collector: " + e);
+    } catch (e) {
+      console.log('Error en mail collector: ' + e);
     }
   }
 }
