@@ -42,7 +42,8 @@ export class DistributionListsService {
     return this.distributionListRepository.save({
       id,
       name: updateDistributionListDto.name,
-      alertTitle: { id: parseInt(updateDistributionListDto.alertTitle) }
+      alertTitle: { id: parseInt(updateDistributionListDto.alertTitle) },
+      emails: updateDistributionListDto.emails.join(',')
     });
   }
 
