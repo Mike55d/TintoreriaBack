@@ -1,4 +1,5 @@
 import { IOptions } from 'sanitize-html';
+import sanitizeHtml from 'sanitize-html';
 
 export const FAKE_FOLDERS = [
   {
@@ -148,7 +149,23 @@ export const SANITIZE_CONFIG: IOptions = {
   allowedTags: false, // Permitir todas las etiquetas
   allowedAttributes: false, // Permitir todos los atributos
   exclusiveFilter: (frame: any) => {
+    const tags = ['script', 'input', 'textarea', 'button', 'select'];
     // Filtrar las etiquetas que no deseas permitir
-    return frame.tag === 'script';
+    return tags.includes(frame.tag);
+  },
+  transformTags: {
+    // Transformar cualquier etiqueta que tenga atributos peligrosos a una etiqueta segura (en este caso, eliminará los eventos de JavaScript)
+    '*': (tagName: string, attribs: { [key: string]: string }) => {
+      // Eliminar eventos de JavaScript
+      Object.keys(attribs).forEach(attr => {
+        if (attr.startsWith('on')) {
+          delete attribs[attr];
+        }
+      });
+      return {
+        tagName,
+        attribs
+      };
+    }
   }
 };
