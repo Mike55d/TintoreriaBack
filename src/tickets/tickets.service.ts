@@ -154,7 +154,11 @@ export class TicketsService {
       ticket: { id: savedTicket.id }
     });
     await this.historicRepository.save(historicRecord);
-    this.emailService.notify(savedTicket, null, user, true);
+
+    if (user.id != -1) {
+      this.emailService.notify(ticketNew, null, user, true);
+    }
+    
     return savedTicket;
   }
 

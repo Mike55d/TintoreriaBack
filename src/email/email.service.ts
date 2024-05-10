@@ -28,6 +28,9 @@ export class EmailService {
   ) {}
 
   async onModuleInit() {
+    mustache.escape = function(value: string) {
+      return value;
+    }
     // const token = await this.getToken();
     // const folders = await this.listMailFolders('carlos.alvarez@adv-ic.com', token);
     // const inbox = folders.find(x => x.name === 'Bandeja de entrada');
@@ -234,7 +237,15 @@ export class EmailService {
     }
   }
 
-  fillVariables(htmlTemplate: string, ticket: Ticket, includeIoc: boolean, iocTemplate?: string) {
+  clearEditText(text: string) {
+    if (!text) {
+      return text;
+    }
+    
+    return text.replace('-!edit-', '').replace('-!code-', '');
+  }
+
+  fillVariables(htmlTemplate: string, ticket: Ticket, includeIocs: boolean, iocTemplate?: string) {
     const timeBasedGreetings = (dateTime?: Date) => {
       const date = dateTime ?? new Date();
       const hour = date.getHours();
@@ -249,13 +260,13 @@ export class EmailService {
     };
 
     return mustache.render(htmlTemplate, {
-      includeIoc,
-      iocs: this.renderIocs(ticket, iocTemplate),
+      includeIocs,
+      iocs: includeIocs ? this.renderIocs(ticket, iocTemplate) : undefined,
       ticketId: ticket.id,
       clientName: ticket.client.name,
       eventDate: 'HOUR',
       eventTime: 'TIME',
-      eventDescription: ticket.description,
+      eventDescription: this.clearEditText(ticket.eventDescription),
       impact: ticket.possibleImpact,
       recommendation: ticket.recommendation,
       timeBasedGreetings: timeBasedGreetings()
@@ -263,17 +274,43 @@ export class EmailService {
   }
 
   renderIocs(ticket: Ticket, iocTemplate: string) {
-    return mustache.render(iocTemplate, {
-      iocs: []
+    iocTemplate = this.clearEditText(iocTemplate);
+    const iocs = JSON.parse(ticket.indicesIC);
+
+    if (!iocs) {
+      return '';
+    }
+
+    const formattedIocs = iocs.rows.map(row => {
+      delete row.id;
+      delete row.isNew;
+
+      const fields = [];
+
+      for(const fieldName of Object.keys(row)) {
+        fields.push({
+          fieldName,
+          fieldValue: row[fieldName]
+        });
+      } 
+
+      return {
+        fields
+      };
     });
+
+    const renderResult = mustache.render(iocTemplate, {
+      iocs: formattedIocs
+    });
+
+    return renderResult;
   }
 
   async notify(ticket: Ticket, response: string = null, user: User = null, includeIoc = false) {
     const emailSettings = await this.emailSettingsService.find();
-    const ticketSettings = await this.settingsService.find();
     const ticketTemplate = emailSettings.ticketTemplate;
     const iocTemplate = emailSettings.iocTemplate;
-    const socSignature = ticketSettings.signature;
+    const socSignature = emailSettings.systemSignature;
 
     if (includeIoc && !iocTemplate) {
       throw new CustomError(Errors.NO_IOC_TEMPLATE);
@@ -287,17 +324,17 @@ export class EmailService {
 
     if (response) {
       htmlTemplate = `<HTML><BODY>
-        ${response}
+        ${this.clearEditText(response)}
         </br>
         ${includeIoc ? this.renderIocs(ticket, iocTemplate) : ''}
         </br>
-        ${user.profile.signature ?? ''}
+        ${this.clearEditText(user.profile.signature)}
       </BODY></HTML>`;
     } else {
       htmlTemplate = `<HTML><BODY>
-        ${ticketTemplate}
+        ${this.clearEditText(ticketTemplate)}
         </br>
-        ${socSignature ?? ''}
+        ${this.clearEditText(socSignature)}
       </BODY></HTML>`;
     }
 
@@ -310,7 +347,7 @@ export class EmailService {
       user.email,
       ticket.client.emails.split(','),
       [],
-      ticket.title,
+      `[#ADV${ticket.id}] - ${ticket.title}`,
       finalHtml,
       true
     );
@@ -367,13 +404,18 @@ export class EmailService {
       ticket = await this.ticketsService.findOne(ticket.id);
 
       if (emailSettings.collectorAutoResponse) {
-        const systemUser = await this.usersService.findOne(-1);
+        const htmlTemplate = `<HTML><BODY>
+          ${this.clearEditText(emailSettings.collectorResponse)}
+          </br>
+          ${this.clearEditText(emailSettings.systemSignature)}
+          </BODY></HTML>`;
+
         await this.sendMail(
-          systemUser.email,
+          `${emailSettings.collectorMailbox}@${emailSettings.systemDomain}`,
           ticket.client.emails.split(','),
           [],
-          ticket.title,
-          this.fillVariables(emailSettings.collectorResponse, ticket, false),
+          `[#ADV${ticket.id}] - ${ticket.title}`,
+          this.fillVariables(htmlTemplate, ticket, false),
           true
         );
       }
