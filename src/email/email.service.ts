@@ -13,6 +13,7 @@ import { Interval } from '@nestjs/schedule';
 import { ClientsService } from '../clients/clients.service';
 import { TicketsService } from '../tickets/tickets.service';
 import { UsersService } from '../users/users.service';
+import { format } from 'date-fns';
 
 const baseUrl = 'https://graph.microsoft.com/v1.0';
 
@@ -264,8 +265,8 @@ export class EmailService {
       iocs: includeIocs ? this.renderIocs(ticket, iocTemplate) : undefined,
       ticketId: ticket.id,
       clientName: ticket.client.name,
-      eventDate: 'HOUR',
-      eventTime: 'TIME',
+      eventDate: format(ticket.openingDate, 'dd/MM/yyyy'),
+      eventTime: format(ticket.openingDate, 'HH:mm:ss'),
       eventDescription: this.clearEditText(ticket.eventDescription),
       impact: ticket.possibleImpact,
       recommendation: ticket.recommendation,
@@ -347,7 +348,7 @@ export class EmailService {
       user.email,
       ticket.client.emails.split(','),
       [],
-      `[#ADV${ticket.id}] - ${ticket.title}`,
+      `[#ADV${ticket.id}] - ${ticket.alertTitle?.description ?? ticket.title}`,
       finalHtml,
       true
     );
@@ -414,7 +415,7 @@ export class EmailService {
           `${emailSettings.collectorMailbox}@${emailSettings.systemDomain}`,
           ticket.client.emails.split(','),
           [],
-          `[#ADV${ticket.id}] - ${ticket.title}`,
+          `[#ADV${ticket.id}] - ${ticket.alertTitle?.description ?? ticket.title}`,
           this.fillVariables(htmlTemplate, ticket, false),
           true
         );
