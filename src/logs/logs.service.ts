@@ -146,7 +146,7 @@ export class LogsService implements LoggerService {
     this.currentContext = context;
   }
 
-  async create(id: string, req: Request) {
+  async create(id: string, req: Request, resBody?: any, statusRes?: number) {
     try {
       const token = req?.headers?.authorization?.split(' ')[1];
       const entity = req?.originalUrl?.split('/')[2]?.split('?')[0];
@@ -164,29 +164,30 @@ export class LogsService implements LoggerService {
             body: req.body,
             Headers: req.rawHeaders,
             path: req.originalUrl,
-            user: user,
+            user: user?.email,
             method: req.method
           },
-          idReq: id
+          idReq: id,
+          response: {
+            body: entity == 'logs' ? {} : resBody
+          }
         },
         message: 'Api request successful',
         logId: id,
-        user_email: session ? session.user.email : null,
+        user_email: session ? session.user?.email : null,
         method: req.method,
-        entity
+        entity,
+        statusResponse: statusRes.toString()
       });
       return await this.logsRepository.save(newLog);
     } catch (error) {
-      // console.log(error);
+      console.log(error);
     }
   }
 
-  async addResponse(id: string, resLog: any) {
+  async findOne(logId: string) {
     try {
-      const log = await this.logsRepository.findOneBy({ logId: id });
-      log.details = { ...log?.details, ...resLog };
-      log.statusResponse = resLog.statusCode;
-      return await this.logsRepository.save(log);
+      return await this.logsRepository.findOneBy({ logId });
     } catch (error) {
       console.log(error);
     }

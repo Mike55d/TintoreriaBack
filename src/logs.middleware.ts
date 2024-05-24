@@ -9,58 +9,22 @@ export const LOG_ID_HEADER = 'X-Log-Id';
 export class LogsMiddleware implements NestMiddleware {
   constructor(private readonly logsService: LogsService) {}
 
-  async use(req: any, res: Response, next: NextFunction) {
+  async use(req: any, res: any, next: NextFunction) {
     const id = uuid();
-    await this.logsService.create(id, req);
     res.set(LOG_ID_HEADER, id);
-    this.getResponseLog(req, res, id);
+    const originalJson = res.json;
+    const logsService = this.logsService;
+    res.json = function (body) {
+      originalJson.call(this, body);
+      logsService.create(id, req, body, res.statusCode);
+      return body;
+    };
+    setTimeout(async () => {
+      const log = await logsService.findOne(id);
+      if (!log) {
+        logsService.create(id, req, {}, res.statusCode);
+      }
+    }, 1000);
     next();
   }
-
-  getResponseLog = (req: Request, res: Response, id: string) => {
-    const rawResponse = res.write;
-    const rawResponseEnd = res.end;
-    const chunkBuffers = [];
-    res.write = (...chunks) => {
-      const resArgs = [];
-      for (let i = 0; i < chunks.length; i++) {
-        resArgs[i] = chunks[i];
-        if (!resArgs[i]) {
-          res.once('drain', res.write);
-          i--;
-        }
-      }
-      if (resArgs[0]) {
-        chunkBuffers.push(Buffer.from(resArgs[0]));
-      }
-      return rawResponse.apply(res, resArgs);
-    };
-    // console.log(`Done writing, beginning res.end`);
-    res.end = (...chunk) => {
-      const resArgs = [];
-      for (let i = 0; i < chunk.length; i++) {
-        resArgs[i] = chunk[i];
-      }
-      if (resArgs[0]) {
-        chunkBuffers.push(Buffer.from(resArgs[0]));
-      }
-      const body = Buffer.concat(chunkBuffers).toString('utf8');
-      // res.setHeader('origin', 'restjs-req-res-logging-repo');
-      let bodyParsed;
-      try {
-        bodyParsed = JSON.parse(body);
-      } catch (error) {
-        bodyParsed = body;
-      }
-      const responseLog = {
-        statusCode: res.statusCode,
-        body: bodyParsed,
-        headers: res.getHeaders()
-      };
-      // console.log('res: ', responseLog);
-      rawResponseEnd.apply(res, resArgs);
-      this.logsService.addResponse(id, responseLog);
-      return responseLog as unknown as Response;
-    };
-  };
 }
