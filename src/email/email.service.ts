@@ -14,6 +14,11 @@ import { ClientsService } from '../clients/clients.service';
 import { TicketsService } from '../tickets/tickets.service';
 import { UsersService } from '../users/users.service';
 import { format } from 'date-fns';
+import { v4 as uuid } from 'uuid';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Log } from '../logs/entities/logs.entity';
+import { Repository } from 'typeorm';
+import { LogCategory, LogLevel, LogSubCategory } from '../logs/logs.types';
 
 const baseUrl = 'https://graph.microsoft.com/v1.0';
 
@@ -25,13 +30,15 @@ export class EmailService {
     private readonly clientsService: ClientsService,
     @Inject(forwardRef(() => TicketsService))
     private readonly ticketsService: TicketsService,
-    private readonly usersService: UsersService
+    private readonly usersService: UsersService,
+    @InjectRepository(Log)
+    private readonly logsRepository: Repository<Log>
   ) {}
 
   async onModuleInit() {
-    mustache.escape = function(value: string) {
+    mustache.escape = function (value: string) {
       return value;
-    }
+    };
     // const token = await this.getToken();
     // const folders = await this.listMailFolders('carlos.alvarez@adv-ic.com', token);
     // const inbox = folders.find(x => x.name === 'Bandeja de entrada');
@@ -242,7 +249,7 @@ export class EmailService {
     if (!text) {
       return text;
     }
-    
+
     return text.replace('-!edit-', '').replace('-!code-', '');
   }
 
@@ -288,12 +295,12 @@ export class EmailService {
 
       const fields = [];
 
-      for(const fieldName of Object.keys(row)) {
+      for (const fieldName of Object.keys(row)) {
         fields.push({
           fieldName,
           fieldValue: row[fieldName]
         });
-      } 
+      }
 
       return {
         fields
@@ -436,6 +443,7 @@ export class EmailService {
 
   @Interval(10000)
   async mailCollectorJob() {
+    const id = uuid();
     try {
       const emailSettings = await this.emailSettingsService.find();
 
@@ -469,7 +477,35 @@ export class EmailService {
       for (const x of messages) {
         await this.deleteMessage(mailFolder.mailbox, x);
       }
+      const newLog = this.logsRepository.create({
+        level: LogLevel.INFO,
+        category: LogCategory.GENERIC,
+        subCategory: LogSubCategory.GENERIC,
+        details: {
+          emailSettings,
+          mailbox,
+          mailFolder
+        },
+        message: 'Email collector successful',
+        logId: id,
+        user_email: null,
+        method: null,
+        entity: 'emailCollector'
+      });
+      await this.logsRepository.save(newLog);
     } catch (e) {
+      const newLog = this.logsRepository.create({
+        level: LogLevel.INFO,
+        category: LogCategory.GENERIC,
+        subCategory: LogSubCategory.GENERIC,
+        details: { error: e },
+        message: 'Email collector error',
+        logId: id,
+        user_email: null,
+        method: null,
+        entity: 'emailCollector'
+      });
+      await this.logsRepository.save(newLog);
       console.log('Error en mail collector: ' + e);
     }
   }
