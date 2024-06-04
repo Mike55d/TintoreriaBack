@@ -56,6 +56,8 @@ import { NotifcationsTitleAlertModule } from './notifcations-title-alert/notifca
 import { NotifcationsTitleAlert } from './notifcations-title-alert/entities/notifcations-title-alert.entity';
 import { DistributionList } from './distribution-lists/entities/distributionList.entity';
 import { DistributionListsModule } from './distribution-lists/distribution-lists.module';
+import { ExternalApplication } from './external-application/entities/external-application.entity';
+import { ExternalApplicationModule } from './external-application/external-application.module';
 
 @Module({
   imports: [
@@ -113,7 +115,8 @@ import { DistributionListsModule } from './distribution-lists/distribution-lists
         Setting,
         EmailSetting,
         NotifcationsTitleAlert,
-        DistributionList
+        DistributionList,
+        ExternalApplication
       ]
     } as TypeOrmModuleOptions),
     TypeOrmModule.forRoot({
@@ -156,7 +159,8 @@ import { DistributionListsModule } from './distribution-lists/distribution-lists
     ImportExcelModule,
     NotifcationsTitleAlertModule,
     ImportExcelModule,
-    DistributionListsModule
+    DistributionListsModule,
+    ExternalApplicationModule
   ],
   providers: [ApiConfigService]
 })

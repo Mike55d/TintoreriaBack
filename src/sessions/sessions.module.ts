@@ -15,6 +15,7 @@ import { Type } from '../tickets/entities/type.entity';
 import { Impact } from '../tickets/entities/impact.entity';
 import { Urgency } from '../tickets/entities/urgency.entity';
 import { Status } from '../tickets/entities/status.entity';
+import { ExternalApplication } from '../external-application/entities/external-application.entity';
 
 @Module({
   imports: [
@@ -31,7 +32,8 @@ import { Status } from '../tickets/entities/status.entity';
       Type,
       Impact,
       Urgency,
-      Status
+      Status,
+      ExternalApplication
     ]),
     HttpModule
   ],

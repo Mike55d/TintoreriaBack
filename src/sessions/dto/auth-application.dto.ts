@@ -7,11 +7,11 @@ export class AuthApplication {
   @IsString()
   @IsNotEmpty()
   @Expose()
-  clientId: string;
+  appId: string;
 
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
   @Expose()
-  clientSecret: string;
+  appSecret: string;
 }

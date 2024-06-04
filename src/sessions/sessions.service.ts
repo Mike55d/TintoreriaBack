@@ -29,6 +29,8 @@ import {
   supervisorPermissions,
   tecnicianPermissions
 } from '../roles/roles.types';
+import { AuthApplication } from './dto/auth-application.dto';
+import { ExternalApplication } from '../external-application/entities/external-application.entity';
 
 @Injectable()
 export class SessionsService {
@@ -53,7 +55,9 @@ export class SessionsService {
     @InjectRepository(Urgency)
     private urgencyRepository: Repository<Urgency>,
     @InjectRepository(Status)
-    private statusRepository: Repository<Status>
+    private statusRepository: Repository<Status>,
+    @InjectRepository(ExternalApplication)
+    private externalApplicationRepository: Repository<ExternalApplication>
   ) {}
 
   findOne(id: number) {
@@ -312,6 +316,40 @@ export class SessionsService {
       session = await this.sessionsRepository.save(session);
       return (await this.findOne(session.id)).json;
     } catch (error) {
+      throw new CustomError(Errors.AUTH_UNSUCCESSFUL);
+    }
+  }
+
+  async authApplication(body: AuthApplication) {
+    try {
+      const app = await this.externalApplicationRepository.findOne({
+        where: {
+          clientId: body.appId,
+          clientSecret: body.appSecret
+        }
+      });
+      if (!app) {
+        throw new CustomError(Errors.AUTH_UNSUCCESSFUL);
+      }
+      const user = await this.usersRepository.findOne({
+        where: {
+          roles: { role: { name: 'admin' } }
+        }
+      });
+      const deviceId = uuid();
+      const token = this.authService.createTokenForDevice(user, deviceId);
+      let session = this.sessionsRepository.create({
+        app,
+        token,
+        confirmed: true,
+        deviceId: deviceId,
+        fcmToken: null,
+        user
+      });
+      session = await this.sessionsRepository.save(session);
+      return this.findOne(session.id);
+    } catch (error) {
+      console.log(error);
       throw new CustomError(Errors.AUTH_UNSUCCESSFUL);
     }
   }

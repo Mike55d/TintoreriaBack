@@ -1,10 +1,11 @@
-import { Controller, Post, Body, Param, Get, Query } from '@nestjs/common';
+import { Controller, Post, Body, Param, Get, Query, Request } from '@nestjs/common';
 import { SessionsService } from './sessions.service';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { StartSessionDto } from './dto/start-session.dto';
 import { ConfirmSessionDto } from './dto/confirm-session.dto';
 import { StartMicrosoftSessionDto } from './dto/start-microsoft-session.dto';
 import { Session } from './entities/session.entity';
+import { AuthApplication } from './dto/auth-application.dto';
 
 @Controller('sessions')
 @ApiTags('Sessions')
@@ -29,5 +30,10 @@ export class SessionsController {
   @ApiResponse({ status: 401, description: 'Unauthorized ' })
   async createMicrosoftSession(@Body() createSessionDto: StartMicrosoftSessionDto) {
     return await this.sessionsService.createMicrosoftSession(createSessionDto);
+  }
+
+  @Post('token')
+  async authApplication( @Body() body: AuthApplication) {
+    return await this.sessionsService.authApplication(body);
   }
 }
