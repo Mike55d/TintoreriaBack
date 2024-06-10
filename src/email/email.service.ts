@@ -267,6 +267,13 @@ export class EmailService {
       }
     };
 
+    const priorities = [
+      "Bajo",
+      "Medio",
+      "Alto",
+      "Crítico"
+    ];
+
     return mustache.render(htmlTemplate, {
       includeIocs,
       iocs: includeIocs ? this.renderIocs(ticket, iocTemplate) : undefined,
@@ -277,7 +284,8 @@ export class EmailService {
       eventDescription: this.clearEditText(ticket.eventDescription),
       impact: ticket.possibleImpact,
       recommendation: ticket.recommendation,
-      timeBasedGreetings: timeBasedGreetings()
+      timeBasedGreetings: timeBasedGreetings(),
+      urgency: priorities[ticket.urgency.id]
     });
   }
 
