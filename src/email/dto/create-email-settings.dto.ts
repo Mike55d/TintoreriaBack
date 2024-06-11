@@ -38,19 +38,18 @@ export class CreateEmailSettingsDto {
 
   @IsOptional()
   @IsString()
-  @MaxLength(4096)
   @Expose()
   ticketTemplate: string;
 
   @IsOptional()
   @IsString()
-  @MaxLength(4096)
+  @MaxLength(8192)
   @Expose()
   collectorResponse: string;
 
   @IsOptional()
   @IsString()
-  @MaxLength(4096)
+  @MaxLength(8192)
   @Expose()
   iocTemplate: string;
 
