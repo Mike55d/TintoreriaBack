@@ -19,7 +19,8 @@ export class AssetsService {
       assetFields: createAssetDto.assetFields.map(field => ({
         name: field.name,
         optional: field.optional,
-        type: field.type
+        type: field.type,
+        section: field.section
       }))
     });
     return this.assetTypesRepository.save(assetField);
@@ -40,7 +41,8 @@ export class AssetsService {
       assetFields: updateAssetDto.assetFields.map(field => ({
         name: field.name,
         optional: field.optional,
-        type: field.type
+        type: field.type,
+        section: field.section
       }))
     });
   }

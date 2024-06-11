@@ -20,4 +20,7 @@ export class AssetFields {
     onDelete: 'CASCADE'
   })
   AssetType: AssetTypes;
+
+  @Column({ default: 'origin' })
+  section: string;
 }

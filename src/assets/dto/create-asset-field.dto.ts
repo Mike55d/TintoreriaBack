@@ -24,4 +24,10 @@ export class CreateAssetFieldDto {
   @IsOptional()
   @Expose()
   optional?: boolean;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  @Expose()
+  section: string;
 }
