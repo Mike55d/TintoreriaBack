@@ -36,9 +36,9 @@ export class EmailSetting {
   @Column({ type: 'longtext', nullable: true })
   systemSignature: string;
 
-  @Column({ nullable: true, length: 4096 })
+  @Column({ nullable: true, type: 'text' })
   ticketTemplate: string;
 
-  @Column({ nullable: true, length: 4096 })
+  @Column({ nullable: true, type: 'text' })
   iocTemplate: string;
 }

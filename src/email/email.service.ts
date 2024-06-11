@@ -279,13 +279,22 @@ export class EmailService {
       iocs: includeIocs ? this.renderIocs(ticket, iocTemplate) : undefined,
       ticketId: ticket.id,
       clientName: ticket.client.name,
-      eventDate: format(ticket.openingDate, 'dd/MM/yyyy'),
-      eventTime: format(ticket.openingDate, 'HH:mm:ss'),
+      eventDate: format(ticket.eventDate, 'dd/MM/yyyy'),
+      eventTime: format(ticket.eventDate, 'HH:mm:ss'),
+      regDate: format(ticket.openingDate, 'dd/MM/yyyy'),
+      regTime: format(ticket.openingDate, 'HH:mm:ss'),
       eventDescription: this.clearEditText(ticket.eventDescription),
-      impact: ticket.possibleImpact,
+      possibleImpact: ticket.possibleImpact,
       recommendation: ticket.recommendation,
       timeBasedGreetings: timeBasedGreetings(),
-      urgency: priorities[ticket.urgency.id]
+      urgency: ticket.urgency.description,
+      priority: ticket.priority.description,
+      impact: ticket.impact.description,
+      status: ticket.status.description,
+      category: ticket.category.description,
+      alertTitle: ticket.alertTitle.description,
+      assetName: ticket.asset.name,
+      assetIp: ticket.asset.ip
     });
   }
 
