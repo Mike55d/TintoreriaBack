@@ -4,12 +4,16 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateAssetTypeDto } from './dto/create-asset-type.dto';
 import { AssetTypes } from './entities/asset.entity';
+import { AssetFields } from './entities/asset-fields.entity';
+import { ChangeSectionDto } from './dto/change-section.dto';
 
 @Injectable()
 export class AssetsService {
   constructor(
     @InjectRepository(AssetTypes)
-    private assetTypesRepository: Repository<AssetTypes>
+    private assetTypesRepository: Repository<AssetTypes>,
+    @InjectRepository(AssetFields)
+    private assetFieldsRepository: Repository<AssetFields>
   ) {}
 
   create(createAssetDto: CreateAssetTypeDto) {
@@ -54,5 +58,11 @@ export class AssetsService {
 
   getAssetAndFields(id: number) {
     return this.assetTypesRepository.findOne({ where: { id }, relations: ['assetFields'] });
+  }
+
+  changeSectionAssetField(id: number, changeSectionDto: ChangeSectionDto) {
+    return this.assetFieldsRepository.update(id, {
+      section: changeSectionDto.section
+    });
   }
 }

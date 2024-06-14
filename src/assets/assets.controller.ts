@@ -6,6 +6,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth,guard';
 import { PermissionsGuard } from '../auth/guards/permissions.guard';
 import { CreateAssetTypeDto } from './dto/create-asset-type.dto';
 import { AssetTypes } from './entities/asset.entity';
+import { ChangeSectionDto } from './dto/change-section.dto';
 
 @Controller('assets')
 @ApiTags('Assets')
@@ -60,5 +61,17 @@ export class AssetsController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   async getAssetAndFields(@Param('id') id: string) {
     return await this.assetsService.getAssetAndFields(+id);
+  }
+
+  @Patch('changeSectionAssetField/:id')
+  @ApiBody({ type: ChangeSectionDto })
+  @ApiResponse({ status: 200, description: 'The record has been successfully updated.' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  async changeSectionAssetField(
+    @Param('id') id: string,
+    @Body() changeSectionDto: ChangeSectionDto
+  ) {
+    return await this.assetsService.changeSectionAssetField(+id, changeSectionDto);
   }
 }
