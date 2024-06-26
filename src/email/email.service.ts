@@ -294,7 +294,8 @@ export class EmailService {
       category: ticket.category.description,
       alertTitle: ticket.alertTitle.description,
       assetName: ticket.asset.name,
-      assetIp: ticket.asset.ip
+      assetIp: ticket.asset.ip,
+      ref: ticket.refNumber
     });
   }
 
