@@ -17,8 +17,17 @@ import { format } from 'date-fns';
 import { v4 as uuid } from 'uuid';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Log } from '../logs/entities/logs.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { LogCategory, LogLevel, LogSubCategory } from '../logs/logs.types';
+import { getApps } from 'firebase-admin/app';
+import * as firebase from 'firebase-admin';
+import * as path from 'path';
+import { Notification } from '../notifications/entities/notification.entity';
+
+if (!getApps().length)
+  firebase.initializeApp({
+    credential: firebase.credential.cert(path.join(__dirname, '..', 'firebase-adminsdk.json'))
+  });
 
 const baseUrl = 'https://graph.microsoft.com/v1.0';
 
@@ -32,7 +41,11 @@ export class EmailService {
     private readonly ticketsService: TicketsService,
     private readonly usersService: UsersService,
     @InjectRepository(Log)
-    private readonly logsRepository: Repository<Log>
+    private readonly logsRepository: Repository<Log>,
+    @InjectRepository(Notification)
+    private readonly notificationsRepository: Repository<Notification>,
+    @InjectRepository(User)
+    private readonly usersRepository: Repository<User>
   ) {}
 
   async onModuleInit() {
@@ -267,12 +280,7 @@ export class EmailService {
       }
     };
 
-    const priorities = [
-      "Bajo",
-      "Medio",
-      "Alto",
-      "Crítico"
-    ];
+    const priorities = ['Bajo', 'Medio', 'Alto', 'Crítico'];
 
     return mustache.render(htmlTemplate, {
       includeIocs,
@@ -428,6 +436,8 @@ export class EmailService {
 
       ticket = await this.ticketsService.findOne(ticket.id);
 
+      this.sendNotification('Nuevo Ticket', 'Ticket creado por mail collector', ticket.id);
+
       if (emailSettings.collectorAutoResponse) {
         const htmlTemplate = `<HTML><BODY>
           ${this.clearEditText(emailSettings.collectorResponse)}
@@ -456,6 +466,7 @@ export class EmailService {
       title: 'Cliente escribe',
       email: email.from.email
     });
+    this.sendNotification('Cliente escribe', 'Ticket respondido por el cliente', ticket.id);
   }
 
   @Interval(10000)
@@ -524,6 +535,39 @@ export class EmailService {
       });
       await this.logsRepository.save(newLog);
       console.log('Error en mail collector: ' + e);
+    }
+  }
+
+  async sendNotification(title: string, body: string, ticket_id: number) {
+    try {
+      const users = await this.usersRepository.find({
+        where: {
+          roles: { role: { name: In(['admin', 'tecnician', 'supervisor']) } }
+        }
+      });
+
+      for (const user of users) {
+        const newNotification = this.notificationsRepository.create({
+          title,
+          body,
+          user: { id: user.id },
+          ticket: { id: ticket_id }
+        });
+        await this.notificationsRepository.save(newNotification);
+        if (user && user.deviceToken) {
+          await firebase
+            .messaging()
+            .send({
+              notification: { title, body },
+              token: user.deviceToken
+            })
+            .catch((error: any) => {
+              console.error(error);
+            });
+        }
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 }

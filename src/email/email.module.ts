@@ -9,6 +9,8 @@ import { ClientsModule } from '../clients/clients.module';
 import { TicketsModule } from '../tickets/tickets.module';
 import { UsersModule } from '../users/users.module';
 import { Log } from '../logs/entities/logs.entity';
+import { User } from '../users/entities/user.entity';
+import { Notification } from '../notifications/entities/notification.entity';
 
 @Module({
   imports: [
@@ -16,7 +18,7 @@ import { Log } from '../logs/entities/logs.entity';
     SettingsModule,
     UsersModule,
     ClientsModule,
-    TypeOrmModule.forFeature([EmailSetting,Log])
+    TypeOrmModule.forFeature([EmailSetting, Log, Notification, User])
   ],
   providers: [EmailService, EmailSettingsService],
   exports: [EmailService, EmailSettingsService],

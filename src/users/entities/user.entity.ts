@@ -64,6 +64,9 @@ export class User {
   @Column({ default: false })
   support: boolean;
 
+  @Column()
+  deviceToken?: string;
+
   currentSession: Partial<Session>;
 
   get json() {

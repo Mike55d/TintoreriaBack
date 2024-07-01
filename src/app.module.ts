@@ -58,6 +58,8 @@ import { DistributionList } from './distribution-lists/entities/distributionList
 import { DistributionListsModule } from './distribution-lists/distribution-lists.module';
 import { ExternalApplication } from './external-application/entities/external-application.entity';
 import { ExternalApplicationModule } from './external-application/external-application.module';
+import { NotificationsModule } from './notifications/notifications.module';
+import { Notification } from './notifications/entities/notification.entity';
 
 @Module({
   imports: [
@@ -116,7 +118,8 @@ import { ExternalApplicationModule } from './external-application/external-appli
         EmailSetting,
         NotifcationsTitleAlert,
         DistributionList,
-        ExternalApplication
+        ExternalApplication,
+        Notification
       ]
     } as TypeOrmModuleOptions),
     TypeOrmModule.forRoot({
@@ -160,7 +163,8 @@ import { ExternalApplicationModule } from './external-application/external-appli
     NotifcationsTitleAlertModule,
     ImportExcelModule,
     DistributionListsModule,
-    ExternalApplicationModule
+    ExternalApplicationModule,
+    NotificationsModule
   ],
   providers: [ApiConfigService]
 })

@@ -13,6 +13,7 @@ import { UserProfile } from './entities/user-profile.entity';
 import sanitizeHtml from 'sanitize-html';
 import { SANITIZE_CONFIG } from '../email/constants';
 import { SetTicketsFilterDto } from './dto/set-tickets-filter.dto';
+import { SetDeviceTokenDto } from './dto/set-device-token.dto';
 @Injectable()
 export class UsersService {
   constructor(
@@ -129,6 +130,12 @@ export class UsersService {
     return await this.usersProfileRepository.save({
       ...userProfile,
       ...params
+    });
+  }
+
+  async updateDeviceToken(idUser: number, params: SetDeviceTokenDto) {
+    return await this.usersRepository.update(idUser, {
+      deviceToken: params.token
     });
   }
 }

@@ -48,6 +48,7 @@
     "dotenv": "^16.0.1",
     "electron-log": "^4.4.8",
     "express": "^4.17.3",
+    "firebase": "9",
     "firebase-admin": "^10.3.0",
     "googleapis": "^105.0.0",
     "i18n": "^0.15.0",

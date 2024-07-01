@@ -320,7 +320,7 @@ export class TicketsService {
     }
   }
 
-  @Cron('45 * * * * *')
+  // @Cron('45 * * * * *')
   async expiredLicenses() {
     const tickets = await this.ticketRepository.find({
       relations: ['type', 'priority'],

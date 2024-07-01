@@ -21,6 +21,7 @@ import { newPasswordDataDto } from './dto/new-password-data.dto';
 import { User } from './entities/user.entity';
 import { UpdateUserSettingsDto } from './dto/update-settings-profile.dto';
 import { SetTicketsFilterDto } from './dto/set-tickets-filter.dto';
+import { SetDeviceTokenDto } from './dto/set-device-token.dto';
 
 @Controller('users')
 @ApiTags('Users')
@@ -120,5 +121,13 @@ export class UsersController {
   @ApiResponse({ status: 401, description: 'Unauthorized.' })
   updateTicketFilters(@Request() req, @Body() params: SetTicketsFilterDto) {
     return this.usersService.updateTicketFilters(req.user.id, params);
+  }
+
+  @Patch('me/deviceToken')
+  @ApiResponse({ status: 200, description: 'The record has been successfully updated.' })
+  @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized.' })
+  updateDeviceToken(@Request() req, @Body() params: SetDeviceTokenDto) {
+    return this.usersService.updateDeviceToken(req.user.id, params);
   }
 }
