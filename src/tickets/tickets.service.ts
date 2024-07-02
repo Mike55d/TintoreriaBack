@@ -158,7 +158,7 @@ export class TicketsService {
     if (user.id != -1) {
       this.emailService.notify(ticketNew, null, user, true);
     }
-    
+
     return savedTicket;
   }
 
@@ -320,7 +320,7 @@ export class TicketsService {
     }
   }
 
-  // @Cron('45 * * * * *')
+  @Cron('45 * * * * *')
   async expiredLicenses() {
     const tickets = await this.ticketRepository.find({
       relations: ['type', 'priority'],
@@ -379,11 +379,19 @@ export class TicketsService {
           where: { roles: { role: { id: 1 } } }
         });
         for (let user of usersAdmin) {
-          const alert = this.slAlertRepository.create({
-            ticket,
-            user
+          const existAlert = this.slAlertRepository.findOne({
+            where: {
+              ticket: { id: ticket.id },
+              user: { id: user.id }
+            }
           });
-          this.slAlertRepository.save(alert);
+          if (!existAlert) {
+            const alert = this.slAlertRepository.create({
+              ticket,
+              user
+            });
+            this.slAlertRepository.save(alert);
+          }
         }
       }
     } catch (error) {

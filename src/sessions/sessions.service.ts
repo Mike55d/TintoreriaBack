@@ -347,7 +347,13 @@ export class SessionsService {
         user
       });
       session = await this.sessionsRepository.save(session);
-      return this.findOne(session.id);
+      session = await this.findOne(session.id);
+      return {
+        token: session.token,
+        user: session.user.name,
+        email: session.user.email,
+        lastConnection: session.user.lastConnection
+      };
     } catch (error) {
       console.log(error);
       throw new CustomError(Errors.AUTH_UNSUCCESSFUL);
