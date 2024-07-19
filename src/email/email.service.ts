@@ -23,6 +23,7 @@ import { getApps } from 'firebase-admin/app';
 import * as firebase from 'firebase-admin';
 import * as path from 'path';
 import { Notification } from '../notifications/entities/notification.entity';
+import { NotificationsService } from '../notifications/notifications.service';
 
 if (!getApps().length)
   firebase.initializeApp({
@@ -45,7 +46,8 @@ export class EmailService {
     @InjectRepository(Notification)
     private readonly notificationsRepository: Repository<Notification>,
     @InjectRepository(User)
-    private readonly usersRepository: Repository<User>
+    private readonly usersRepository: Repository<User>,
+    private readonly notificationsService: NotificationsService
   ) {}
 
   async onModuleInit() {
@@ -437,7 +439,7 @@ export class EmailService {
 
       ticket = await this.ticketsService.findOne(ticket.id);
 
-      this.sendNotification('Nuevo Ticket', 'Ticket creado por mail collector', ticket.id);
+      this.notificationsService.sendNotification('Nuevo Ticket', 'Ticket creado por mail collector', ticket.id);
 
       if (emailSettings.collectorAutoResponse) {
         const htmlTemplate = `<HTML><BODY>
@@ -467,7 +469,7 @@ export class EmailService {
       title: 'Cliente escribe',
       email: email.from.email
     });
-    this.sendNotification('Cliente escribe', 'Ticket respondido por el cliente', ticket.id);
+    this.notificationsService.sendNotification('Cliente escribe', 'Ticket respondido por el cliente', ticket.id);
   }
 
   @Interval(10000)
@@ -539,36 +541,4 @@ export class EmailService {
     }
   }
 
-  async sendNotification(title: string, body: string, ticket_id: number) {
-    try {
-      const users = await this.usersRepository.find({
-        where: {
-          roles: { role: { name: In(['admin', 'tecnician', 'supervisor']) } }
-        }
-      });
-
-      for (const user of users) {
-        const newNotification = this.notificationsRepository.create({
-          title,
-          body,
-          user: { id: user.id },
-          ticket: { id: ticket_id }
-        });
-        await this.notificationsRepository.save(newNotification);
-        if (user && user.deviceToken) {
-          await firebase
-            .messaging()
-            .send({
-              notification: { title, body },
-              token: user.deviceToken
-            })
-            .catch((error: any) => {
-              console.error(error);
-            });
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
 }

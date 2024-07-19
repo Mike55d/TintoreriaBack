@@ -9,6 +9,8 @@ import { Logger, VersioningType, VERSION_NEUTRAL } from '@nestjs/common';
 import { RedisIoAdapter } from './redis.adapter';
 import { LogsService } from './logs/logs.service';
 import { homedir } from 'os';
+import * as firebase from 'firebase-admin';
+import { getApps } from 'firebase-admin/app';
 
 async function bootstrap() {
   let httpsOptions: Record<string, any> = undefined;
@@ -60,7 +62,11 @@ async function bootstrap() {
 
   fs.writeFileSync(path.join(__dirname, '../public/docs/openapi.json'), JSON.stringify(document));
   //SwaggerModule.setup('docs', app, document);
-
+  if (!getApps().length) {
+    firebase.initializeApp({
+      credential: firebase.credential.cert(path.join(__dirname, '..', 'firebase-adminsdk.json'))
+    });
+  }
   try {
     await app.listen(process.env.SERVER_HTTP_PORT, process.env.SERVER_HTTP_HOSTNAME);
   } catch (e) {

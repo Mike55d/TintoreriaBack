@@ -11,6 +11,7 @@ import { UsersModule } from '../users/users.module';
 import { Log } from '../logs/entities/logs.entity';
 import { User } from '../users/entities/user.entity';
 import { Notification } from '../notifications/entities/notification.entity';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { Notification } from '../notifications/entities/notification.entity';
     ClientsModule,
     TypeOrmModule.forFeature([EmailSetting, Log, Notification, User])
   ],
-  providers: [EmailService, EmailSettingsService],
+  providers: [EmailService, EmailSettingsService, NotificationsService],
   exports: [EmailService, EmailSettingsService],
   controllers: [EmailSettingsController]
 })
