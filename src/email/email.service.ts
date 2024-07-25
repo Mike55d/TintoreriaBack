@@ -25,11 +25,6 @@ import * as path from 'path';
 import { Notification } from '../notifications/entities/notification.entity';
 import { NotificationsService } from '../notifications/notifications.service';
 
-if (!getApps().length)
-  firebase.initializeApp({
-    credential: firebase.credential.cert(path.join(__dirname, '..', 'firebase-adminsdk.json'))
-  });
-
 const baseUrl = 'https://graph.microsoft.com/v1.0';
 
 @Injectable()

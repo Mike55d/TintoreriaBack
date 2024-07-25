@@ -60,6 +60,8 @@ import { ExternalApplication } from './external-application/entities/external-ap
 import { ExternalApplicationModule } from './external-application/external-application.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { Notification } from './notifications/entities/notification.entity';
+import { LogsForwardingModule } from './logs-forwarding/logs-forwarding.module';
+import { LogsForwarding } from './logs-forwarding/entities/logs-forwarding.entity';
 
 @Module({
   imports: [
@@ -119,7 +121,8 @@ import { Notification } from './notifications/entities/notification.entity';
         NotifcationsTitleAlert,
         DistributionList,
         ExternalApplication,
-        Notification
+        Notification,
+        LogsForwarding
       ]
     } as TypeOrmModuleOptions),
     TypeOrmModule.forRoot({
@@ -164,7 +167,8 @@ import { Notification } from './notifications/entities/notification.entity';
     ImportExcelModule,
     DistributionListsModule,
     ExternalApplicationModule,
-    NotificationsModule
+    NotificationsModule,
+    LogsForwardingModule
   ],
   providers: [ApiConfigService]
 })
