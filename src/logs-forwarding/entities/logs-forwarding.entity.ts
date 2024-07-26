@@ -58,8 +58,8 @@ export class LogsForwarding {
       method: this.method,
       content_type: this.content_type,
       body: this.body,
-      fields: JSON.parse(this.fields),
-      headers: this.headers
+      fields: JSON.parse(this.fields) ?? [],
+      headers: JSON.parse(this.headers) ?? []
     };
   }
 }

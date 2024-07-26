@@ -56,6 +56,32 @@ export class LogsForwardingService {
     return `This action removes a #${id} logsForwarding`;
   }
 
+  convertToCef(jsonData: any, logsForwarding: LogsForwarding): string {
+    const cefVersion = '0'; // Versión de CEF
+    const deviceVendor = 'YourDeviceVendor'; // Proveedor del dispositivo
+    const deviceProduct = 'YourDeviceProduct'; // Producto del dispositivo
+    const deviceVersion = '1.0'; // Versión del dispositivo
+    const signatureId = '1234'; // ID del evento
+    const name = 'Api request'; // Nombre del evento
+    const severity = logsForwarding.severity; // Severidad del evento (0-10)
+
+    const cefHeader = `CEF:${cefVersion}|${deviceVendor}|${deviceProduct}|${deviceVersion}|${signatureId}|${name}|${severity}`;
+    const cefBody = this.jsonToCefAttributes(jsonData);
+
+    return `${cefHeader} ${cefBody}`;
+  }
+
+  private jsonToCefAttributes(jsonData: any): string {
+    const attributes = [];
+    for (const key in jsonData) {
+      if (jsonData.hasOwnProperty(key)) {
+        const value = jsonData[key];
+        attributes.push(`${key}=${value}`);
+      }
+    }
+    return attributes.join(' ');
+  }
+
   async forwardLog(message: any) {
     const logsForwarding = await this.logsForwardingRepository.findOneBy({});
     if (!logsForwarding) return;
@@ -74,9 +100,11 @@ export class LogsForwardingService {
         facility: logsForwarding.facility,
         severity: logsForwarding.severity
       };
+      const formatMessage =
+        logsForwarding.format == 'CEF' ? this.convertToCef(message, logsForwarding) : message;
       client.log(message, optionsLog, function (error) {
         if (error) {
-          console.error(error);
+          // console.error(error);
         } else {
           console.log('sent message successfully');
         }
@@ -85,9 +113,14 @@ export class LogsForwardingService {
       const method = logsForwarding.method.toLowerCase();
       try {
         let payload = {};
+        let formatHeaders = { 'Content-Type': logsForwarding.content_type };
         let fields = JSON.parse(logsForwarding.fields);
-        fields = fields.forEach(field => {
+        let headers = JSON.parse(logsForwarding.headers);
+        fields.forEach(field => {
           payload[field.key] = field.value;
+        });
+        headers.forEach(header => {
+          formatHeaders[header.key] = header.value;
         });
         const responseLogForward = await axios[method](
           logsForwarding.url,
@@ -95,13 +128,11 @@ export class LogsForwardingService {
             ? JSON.parse(logsForwarding.body)
             : payload,
           {
-            headers: {
-              'Content-Type': logsForwarding.content_type
-            }
+            headers: formatHeaders
           }
         );
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
     }
   }
