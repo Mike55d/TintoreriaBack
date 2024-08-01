@@ -117,22 +117,23 @@ export class LogsForwardingService {
         let fields = JSON.parse(logsForwarding.fields);
         let headers = JSON.parse(logsForwarding.headers);
         fields.forEach(field => {
-          payload[field.key] = field.value;
+          payload[field.key] = field.value.replace('{{log}}', message);
         });
+        // console.log(payload);
         headers.forEach(header => {
           formatHeaders[header.key] = header.value;
         });
         const responseLogForward = await axios[method](
           logsForwarding.url,
           logsForwarding.content_type == 'application/json'
-            ? JSON.parse(logsForwarding.body)
+            ? JSON.parse(logsForwarding.body.replace('{{log}}', message))
             : payload,
           {
             headers: formatHeaders
           }
         );
       } catch (error) {
-        // console.log(error);
+        console.log(error);
       }
     }
   }

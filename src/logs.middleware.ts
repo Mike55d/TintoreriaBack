@@ -19,10 +19,10 @@ export class LogsMiddleware implements NestMiddleware {
     const originalJson = res.json;
     const logsService = this.logsService;
     const logsForwardingService = this.logsForwardingService;
-    res.json = function (body) {
+    res.json = async function (body) {
       originalJson.call(this, body);
-      logsService.create(id, req, body, res.statusCode);
-      logsForwardingService.forwardLog(JSON.stringify(body));
+      const log = await logsService.create(id, req, body, res.statusCode);
+      logsForwardingService.forwardLog(JSON.stringify(log));
       return body;
     };
     setTimeout(async () => {
