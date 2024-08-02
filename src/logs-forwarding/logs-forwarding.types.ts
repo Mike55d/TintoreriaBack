@@ -1,0 +1,4 @@
+enum typeLogsForwarding {
+    SYSLOG,
+    API
+}

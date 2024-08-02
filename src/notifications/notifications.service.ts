@@ -2,18 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { UpdateNotificationDto } from './dto/update-notification.dto';
 import * as firebase from 'firebase-admin';
-import * as path from 'path';
 import { Notification } from './entities/notification.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
-import { getApps } from 'firebase-admin/app';
 import { Interval } from '@nestjs/schedule';
 import { User } from '../users/entities/user.entity';
-
-if (!getApps().length)
-  firebase.initializeApp({
-    credential: firebase.credential.cert(path.join(__dirname, '../..', 'firebase-adminsdk.json'))
-  });
 
 @Injectable()
 export class NotificationsService {

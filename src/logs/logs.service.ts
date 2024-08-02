@@ -161,16 +161,16 @@ export class LogsService implements LoggerService {
         subCategory: LogSubCategory.GENERIC,
         details: {
           request: {
-            body: req.body,
-            Headers: req.rawHeaders,
+            // body: req.body,
+            // Headers: req.rawHeaders,
             path: req.originalUrl,
             user: user?.email,
             method: req.method
           },
           idReq: id,
-          response: {
-            body: entity == 'logs' ? {} : resBody
-          }
+          // response: {
+          //   body: entity == 'logs' ? {} : resBody
+          // }
         },
         message: 'Api request successful',
         logId: id,
