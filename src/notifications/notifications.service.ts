@@ -12,7 +12,7 @@ import { User } from '../users/entities/user.entity';
 
 if (!getApps().length)
   firebase.initializeApp({
-    credential: firebase.credential.cert(path.join(__dirname, '..', 'firebase-adminsdk.json'))
+    credential: firebase.credential.cert(path.join(__dirname, '../..', 'firebase-adminsdk.json'))
   });
 
 @Injectable()
