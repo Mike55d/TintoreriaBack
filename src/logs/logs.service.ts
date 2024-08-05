@@ -193,22 +193,37 @@ export class LogsService implements LoggerService {
     }
   }
 
-  findAll(query: FindLogsDto) {
+  async findAll(query: FindLogsDto) {
     try {
-      const { skip, take, entity, method, user, from, to } = query;
-      const logs = this.logsRepository.find({
-        skip,
-        take,
-        where: {
-          entity,
-          method,
-          user_email: user,
-          regDate: Between(from, to)
+      let { skip, take, entity, method, user, from, to } = query;
+      const whereClausule = {
+        entity,
+        method,
+        user_email: user,
+        regDate: undefined
+      };
+      
+      if (from || to) {
+        if (!from) {
+          from = new Date(2020, 0, 1);
+        } else if (!to) {
+          to = new Date();
+        }
+
+        whereClausule.regDate = Between(from, to)
+      }
+
+      const logs = await this.logsRepository.find({
+        skip: skip ?? 0,
+        take: take ?? 0,
+        where: whereClausule,
+        order: {
+          regDate: 'DESC'
         }
       });
       return logs;
     } catch (error) {
-      // console.log(error);
+      throw error;
     }
   }
 }
