@@ -38,7 +38,7 @@ export class LogsForwardingService {
   async findAll() {
     try {
       const logsForwarding = await this.logsForwardingRepository.findOneBy({});
-      return logsForwarding.json;
+      return logsForwarding?.json;
     } catch (error) {
       console.log(error);
     }
