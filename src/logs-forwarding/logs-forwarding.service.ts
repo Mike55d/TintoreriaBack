@@ -110,6 +110,7 @@ export class LogsForwardingService {
         console.error(error);
       });
       var optionsLog = {
+        appName: process.env.APP_NAME,
         facility: logsForwarding.facility,
         severity: logsForwarding.severity
       };
