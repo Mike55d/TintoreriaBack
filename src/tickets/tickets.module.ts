@@ -10,7 +10,6 @@ import { Urgency } from './entities/urgency.entity';
 import { Ticket } from './entities/ticket.entity';
 import { User } from '../users/entities/user.entity';
 import { CommentTicket } from './entities/comment-ticket.entity';
-import { SlAlert } from './entities/sl-alert.entity';
 import { Historic } from '../historic/entities/historic.entity';
 import { FileE } from './entities/files.entity';
 import { EmailModule } from '../email/email.module';
@@ -27,7 +26,6 @@ import { EmailModule } from '../email/email.module';
       Urgency,
       User,
       CommentTicket,
-      SlAlert,
       Historic,
       FileE
     ])

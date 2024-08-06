@@ -35,6 +35,19 @@ export class LogsForwardingService {
     }
   }
 
+  async toggleActive() {
+    const logsForwarding = await this.logsForwardingRepository.findOneBy({});
+    if (logsForwarding) {
+      try {
+        return await this.logsForwardingRepository.update(logsForwarding.id, {
+          active: !logsForwarding.active
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
+
   async findAll() {
     try {
       const logsForwarding = await this.logsForwardingRepository.findOneBy({});
@@ -84,7 +97,7 @@ export class LogsForwardingService {
 
   async forwardLog(message: any) {
     const logsForwarding = await this.logsForwardingRepository.findOneBy({});
-    if (!logsForwarding) return;
+    if (!logsForwarding || !logsForwarding?.active) return;
     if (logsForwarding.type == 0) {
       var options = {
         syslogHostname: logsForwarding.domain,

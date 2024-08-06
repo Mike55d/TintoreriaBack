@@ -36,7 +36,6 @@ import { CommentTicket } from './tickets/entities/comment-ticket.entity';
 import { AssetsModule } from './assets/assets.module';
 import { AssetTypes } from './assets/entities/asset.entity';
 import { AssetFields } from './assets/entities/asset-fields.entity';
-import { SlAlert } from './tickets/entities/sl-alert.entity';
 import { ClientAssetModule } from './client-asset/client-asset.module';
 import { ClientAsset } from './client-asset/entities/client-asset.entity';
 import { LogsMiddleware } from './logs.middleware';
@@ -110,7 +109,6 @@ import { LogsForwarding } from './logs-forwarding/entities/logs-forwarding.entit
         CommentTicket,
         AssetTypes,
         AssetFields,
-        SlAlert,
         ClientAsset,
         Historic,
         Category,

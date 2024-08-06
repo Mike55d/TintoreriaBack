@@ -1,5 +1,5 @@
 import { Expose } from 'class-transformer';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateLogsForwardingDto {
   @Expose()
@@ -65,4 +65,5 @@ export class CreateLogsForwardingDto {
   @IsString()
   @IsOptional()
   headers?: string;
+  
 }

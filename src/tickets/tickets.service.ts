@@ -11,8 +11,6 @@ import { Urgency } from './entities/urgency.entity';
 import { Ticket } from './entities/ticket.entity';
 import { User } from '../users/entities/user.entity';
 import { CommentTicket } from './entities/comment-ticket.entity';
-import { Cron } from '@nestjs/schedule';
-import { SlAlert } from './entities/sl-alert.entity';
 import { AllTicketsDto } from './dto/all-tickets.dto';
 import { Historic } from '../historic/entities/historic.entity';
 import path from 'path';
@@ -70,8 +68,6 @@ export class TicketsService {
     private userRepository: Repository<User>,
     @InjectRepository(CommentTicket)
     private commentRepository: Repository<CommentTicket>,
-    @InjectRepository(SlAlert)
-    private slAlertRepository: Repository<SlAlert>,
     @InjectRepository(Historic)
     private historicRepository: Repository<Historic>,
     @InjectRepository(FileE)
@@ -313,85 +309,6 @@ export class TicketsService {
       ) {
         if (comment) {
           await this.commentRepository.remove(comment);
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  @Cron('45 * * * * *')
-  async expiredLicenses() {
-    const tickets = await this.ticketRepository.find({
-      relations: ['type', 'priority'],
-      where: {
-        status: { id: 1 }
-      }
-    });
-    const ticketsExpired = tickets.filter(ticket => {
-      const deadline = ticket.openingDate;
-      if (ticket.type.id == 1) {
-        switch (ticket.priority.id) {
-          case 1:
-            deadline.setMinutes(ticket.openingDate.getMinutes() + 120);
-            return this.compareDates(deadline);
-          case 2:
-            deadline.setMinutes(ticket.openingDate.getMinutes() + 40);
-            return this.compareDates(deadline);
-          case 3:
-            deadline.setMinutes(ticket.openingDate.getMinutes() + 20);
-            return this.compareDates(deadline);
-          case 4:
-            return true;
-          default:
-            break;
-        }
-      } else {
-        switch (ticket.priority.id) {
-          case 1:
-            deadline.setHours(ticket.openingDate.getHours() + 8);
-            return this.compareDates(deadline);
-          case 2:
-            deadline.setHours(ticket.openingDate.getHours() + 4);
-            return this.compareDates(deadline);
-          case 3:
-            deadline.setMinutes(ticket.openingDate.getMinutes() + 30);
-            return this.compareDates(deadline);
-          case 4:
-            return true;
-          default:
-            break;
-        }
-      }
-    });
-    try {
-      for (let ticket of ticketsExpired) {
-        const lastAlert = await this.slAlertRepository.findOne({
-          where: { ticket: { id: ticket.id } },
-          order: { id: 'DESC' }
-        });
-        const deadlineAlert = lastAlert?.regDate;
-        if (deadlineAlert) {
-          deadlineAlert.setMinutes(lastAlert.regDate.getMinutes() + 10);
-        }
-        if (lastAlert && new Date() < deadlineAlert) return;
-        const usersAdmin = await this.userRepository.find({
-          where: { roles: { role: { id: 1 } } }
-        });
-        for (let user of usersAdmin) {
-          const existAlert = this.slAlertRepository.findOne({
-            where: {
-              ticket: { id: ticket.id },
-              user: { id: user.id }
-            }
-          });
-          if (!existAlert) {
-            const alert = this.slAlertRepository.create({
-              ticket,
-              user
-            });
-            this.slAlertRepository.save(alert);
-          }
         }
       }
     } catch (error) {

@@ -44,6 +44,9 @@ export class LogsForwarding {
   @Column({ nullable: true })
   headers: string;
 
+  @Column({ default: true })
+  active: boolean;
+
   get json() {
     return {
       id: this.id,
@@ -59,7 +62,8 @@ export class LogsForwarding {
       content_type: this.content_type,
       body: this.body,
       fields: JSON.parse(this.fields) ?? [],
-      headers: JSON.parse(this.headers) ?? []
+      headers: JSON.parse(this.headers) ?? [],
+      active: this.active
     };
   }
 }

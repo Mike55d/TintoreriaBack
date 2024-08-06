@@ -17,6 +17,11 @@ export class LogsForwardingController {
     return this.logsForwardingService.findAll();
   }
 
+  @Get('/toggleActive')
+  toggleActive() {
+    return this.logsForwardingService.toggleActive();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.logsForwardingService.findOne(+id);
