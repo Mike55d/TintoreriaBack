@@ -100,6 +100,8 @@ export class LogsForwardingService {
     if (!logsForwarding || !logsForwarding?.active) return;
     if (logsForwarding.type == 0) {
       var options = {
+        appName: process.env.APP_NAME,
+        rfc3164: false,
         syslogHostname: logsForwarding.domain,
         transport: logsForwarding.protocol == 'TCP' ? 1 : 2,
         port: logsForwarding.port
@@ -110,10 +112,8 @@ export class LogsForwardingService {
         console.error(error);
       });
       var optionsLog = {
-        appName: process.env.APP_NAME,
         facility: logsForwarding.facility,
-        severity: logsForwarding.severity,
-        rfc3164: false
+        severity: logsForwarding.severity
       };
       const formatMessage =
         logsForwarding.format == 'CEF' ? this.convertToCef(message, logsForwarding) : message;
