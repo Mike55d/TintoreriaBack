@@ -115,7 +115,7 @@ export class LogsForwardingService {
       };
       const formatMessage =
         logsForwarding.format == 'CEF' ? this.convertToCef(message, logsForwarding) : message;
-      client.log(message, optionsLog, function (error) {
+      client.log(formatMessage, optionsLog, function (error) {
         if (error) {
           // console.error(error);
         } else {
