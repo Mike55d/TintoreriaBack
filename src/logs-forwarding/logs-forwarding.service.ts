@@ -112,7 +112,8 @@ export class LogsForwardingService {
       var optionsLog = {
         appName: process.env.APP_NAME,
         facility: logsForwarding.facility,
-        severity: logsForwarding.severity
+        severity: logsForwarding.severity,
+        rfc3164: false
       };
       const formatMessage =
         logsForwarding.format == 'CEF' ? this.convertToCef(message, logsForwarding) : message;
