@@ -61,6 +61,8 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { Notification } from './notifications/entities/notification.entity';
 import { LogsForwardingModule } from './logs-forwarding/logs-forwarding.module';
 import { LogsForwarding } from './logs-forwarding/entities/logs-forwarding.entity';
+import { AtentionTimeModule } from './atention-time/atention-time.module';
+import { AtentionTime } from './atention-time/entities/atention-time.entity';
 
 @Module({
   imports: [
@@ -120,7 +122,8 @@ import { LogsForwarding } from './logs-forwarding/entities/logs-forwarding.entit
         DistributionList,
         ExternalApplication,
         Notification,
-        LogsForwarding
+        LogsForwarding,
+        AtentionTime
       ]
     } as TypeOrmModuleOptions),
     TypeOrmModule.forRoot({
@@ -166,7 +169,8 @@ import { LogsForwarding } from './logs-forwarding/entities/logs-forwarding.entit
     DistributionListsModule,
     ExternalApplicationModule,
     NotificationsModule,
-    LogsForwardingModule
+    LogsForwardingModule,
+    AtentionTimeModule
   ],
   providers: [ApiConfigService]
 })

@@ -1,5 +1,5 @@
 import { Expose } from 'class-transformer';
-import { IsNumber, IsOptional, IsString, Max, IsArray } from 'class-validator';
+import { IsNumber, IsOptional, IsString, Max, IsArray, IsBoolean } from 'class-validator';
 
 export class AllTicketsDto {
   @IsNumber()
@@ -27,4 +27,9 @@ export class AllTicketsDto {
   @IsOptional()
   @Expose()
   filters?: string[];
+
+  @IsBoolean()
+  @IsOptional()
+  @Expose()
+  sla?: boolean;
 }

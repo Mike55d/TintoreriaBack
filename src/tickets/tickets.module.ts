@@ -13,6 +13,7 @@ import { CommentTicket } from './entities/comment-ticket.entity';
 import { Historic } from '../historic/entities/historic.entity';
 import { FileE } from './entities/files.entity';
 import { EmailModule } from '../email/email.module';
+import { AtentionTime } from '../atention-time/entities/atention-time.entity';
 
 @Module({
   imports: [
@@ -27,7 +28,8 @@ import { EmailModule } from '../email/email.module';
       User,
       CommentTicket,
       Historic,
-      FileE
+      FileE,
+      AtentionTime
     ])
   ],
   controllers: [TicketsController],

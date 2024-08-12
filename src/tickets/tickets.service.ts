@@ -25,6 +25,8 @@ import { historyTypes } from '../historic/historic.types';
 import { Errors } from '../errors/errors.types';
 import { CustomError } from '../errors/custom-error';
 import { EmailService } from '../email/email.service';
+import moment from 'moment';
+import { AtentionTime } from '../atention-time/entities/atention-time.entity';
 
 const allRelations = [
   'requesting_users',
@@ -71,7 +73,9 @@ export class TicketsService {
     @InjectRepository(Historic)
     private historicRepository: Repository<Historic>,
     @InjectRepository(FileE)
-    private fileERepository: Repository<FileE>
+    private fileERepository: Repository<FileE>,
+    @InjectRepository(AtentionTime)
+    private atentionTimeERepository: Repository<AtentionTime>
   ) {}
 
   async parseUsersToPersist(users: UsersRequest[]) {
@@ -190,11 +194,58 @@ export class TicketsService {
           query[filter[3].toLowerCase() + 'Where'](`tickets.${filter[0]} ${filter[1]} ${field}`);
         }
       });
+      if (q.sla) {
+        if (q.skip == 0) {
+          await this.expiredTickets();
+        }
+        query
+          .andWhere('tickets.hoursExpired > 0')
+          .orderBy('tickets.priority', 'DESC')
+          .addOrderBy('tickets.hoursExpired', 'DESC');
+      }
       const data = await query.getMany();
       const rows = await query.getCount();
       return { data: data.map(x => x.json), rows };
     } catch (error) {
       console.log(error);
+    }
+  }
+
+  async expiredTickets() {
+    const tickets = await this.ticketRepository.find({
+      relations: ['type', 'priority'],
+      where: {
+        status: { id: 1 }
+      },
+      order: { id: 'DESC' },
+      take: 10
+    });
+    const atentionTime = await this.atentionTimeERepository.find({
+      relations: ['type', 'priority']
+    });
+    if (!atentionTime.length) return;
+    for (let ticket of tickets) {
+      {
+        const deadline = ticket.openingDate;
+        let isExpired = false;
+        const atTime = atentionTime.find(at => at.type.id == ticket.type.id && at.priority.id == 1);
+        const timeType = atTime.typeTime == 0 ? 'Minutes' : 'Hours';
+        deadline[`set${timeType}`](ticket.openingDate[`get${timeType}`]() + atTime.time);
+        isExpired = this.compareDates(deadline);
+        if (isExpired) {
+          try {
+            var now = moment(new Date()); //todays date
+            var end = moment(deadline); // another date
+            var duration = moment.duration(now.diff(end));
+            var hours = duration.asHours();
+            await this.ticketRepository.update(ticket.id, {
+              hoursExpired: Math.trunc(hours)
+            });
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      }
     }
   }
 

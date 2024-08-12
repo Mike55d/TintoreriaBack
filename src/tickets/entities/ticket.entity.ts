@@ -104,6 +104,9 @@ export class Ticket {
   @Column({ nullable: true })
   refNumber?: string;
 
+  @Column()
+  hoursExpired: number;
+
   get json() {
     return {
       id: this.id,
@@ -138,7 +141,8 @@ export class Ticket {
       asset: this.asset,
       category: this?.category,
       alertTitle: this?.alertTitle,
-      refNumber: this.refNumber
+      refNumber: this.refNumber,
+      hoursExpired: this.hoursExpired
     };
   }
 }
