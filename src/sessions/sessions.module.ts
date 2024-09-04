@@ -10,12 +10,6 @@ import { User } from '../users/entities/user.entity';
 import { HttpModule } from '@nestjs/axios';
 import { UsersToRoles } from '../users/entities/usersToRoles.entity';
 import { Role } from '../roles/entities/role.entity';
-import { Priority } from '../tickets/entities/priority.entity';
-import { Type } from '../tickets/entities/type.entity';
-import { Impact } from '../tickets/entities/impact.entity';
-import { Urgency } from '../tickets/entities/urgency.entity';
-import { Status } from '../tickets/entities/status.entity';
-import { ExternalApplication } from '../external-application/entities/external-application.entity';
 
 @Module({
   imports: [
@@ -28,12 +22,6 @@ import { ExternalApplication } from '../external-application/entities/external-a
       Session,
       UsersToRoles,
       Role,
-      Priority,
-      Type,
-      Impact,
-      Urgency,
-      Status,
-      ExternalApplication
     ]),
     HttpModule
   ],

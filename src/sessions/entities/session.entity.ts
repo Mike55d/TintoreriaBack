@@ -7,7 +7,6 @@ import {
   UpdateDateColumn
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
-import { ExternalApplication } from '../../external-application/entities/external-application.entity';
 
 @Entity()
 export class Session {
@@ -41,9 +40,6 @@ export class Session {
   @UpdateDateColumn()
   lastUpdate: Date;
 
-  @ManyToOne(() => ExternalApplication)
-  app: ExternalApplication;
-
   get json() {
     return {
       id: this.id,
@@ -51,7 +47,6 @@ export class Session {
       deviceId: this.deviceId,
       regDate: this.regDate,
       user: this.user.json,
-      app: this.app
     };
   }
 }

@@ -17,20 +17,6 @@ import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { UsersToRoles } from '../users/entities/usersToRoles.entity';
 import { Role } from '../roles/entities/role.entity';
-import { Priority } from '../tickets/entities/priority.entity';
-import { Type } from '../tickets/entities/type.entity';
-import { Impact } from '../tickets/entities/impact.entity';
-import { Urgency } from '../tickets/entities/urgency.entity';
-import { Status } from '../tickets/entities/status.entity';
-import {
-  ALL_PERMISSIONS,
-  adminPermissions,
-  readOnlyPermissions,
-  supervisorPermissions,
-  tecnicianPermissions
-} from '../roles/roles.types';
-import { AuthApplication } from './dto/auth-application.dto';
-import { ExternalApplication } from '../external-application/entities/external-application.entity';
 
 @Injectable()
 export class SessionsService {
@@ -46,18 +32,6 @@ export class SessionsService {
     private usersToRolesRepository: Repository<UsersToRoles>,
     @InjectRepository(Role)
     private roleRepository: Repository<Role>,
-    @InjectRepository(Priority)
-    private priorityRepository: Repository<Priority>,
-    @InjectRepository(Type)
-    private typeRepository: Repository<Type>,
-    @InjectRepository(Impact)
-    private impactRepository: Repository<Impact>,
-    @InjectRepository(Urgency)
-    private urgencyRepository: Repository<Urgency>,
-    @InjectRepository(Status)
-    private statusRepository: Repository<Status>,
-    @InjectRepository(ExternalApplication)
-    private externalApplicationRepository: Repository<ExternalApplication>
   ) {}
 
   findOne(id: number) {
@@ -162,110 +136,6 @@ export class SessionsService {
     }
   }
 
-  async createRoles() {
-    const roles = await this.roleRepository.find({});
-    if (!roles.length) {
-      const newRoles = this.roleRepository.create([
-        {
-          name: 'admin',
-          permissions: adminPermissions
-        },
-        {
-          name: 'readOnly',
-          permissions: readOnlyPermissions
-        },
-        {
-          name: 'tecnician',
-          permissions: tecnicianPermissions
-        },
-        {
-          name: 'supervisor',
-          permissions: supervisorPermissions
-        }
-      ]);
-      this.roleRepository.save(newRoles);
-      const prioritys = this.priorityRepository.create([
-        {
-          id: 1,
-          description: 'Bajo'
-        },
-        {
-          id: 2,
-          description: 'Medio'
-        },
-        {
-          id: 3,
-          description: 'Alto'
-        },
-        {
-          id: 4,
-          description: 'Critico'
-        }
-      ]);
-      this.priorityRepository.save(prioritys);
-      const impacts = this.impactRepository.create([
-        {
-          id: 1,
-          description: 'Bajo'
-        },
-        {
-          id: 2,
-          description: 'Medio'
-        },
-        {
-          id: 3,
-          description: 'Alto'
-        },
-        {
-          id: 4,
-          description: 'Critico'
-        }
-      ]);
-      this.impactRepository.save(impacts);
-      const urgencys = this.urgencyRepository.create([
-        {
-          id: 1,
-          description: 'Bajo'
-        },
-        {
-          id: 2,
-          description: 'Medio'
-        },
-        {
-          id: 3,
-          description: 'Alto'
-        },
-        {
-          id: 4,
-          description: 'Critico'
-        }
-      ]);
-      this.urgencyRepository.save(urgencys);
-      const types = this.typeRepository.create([
-        {
-          id: 1,
-          description: 'Incidente'
-        },
-        {
-          id: 2,
-          description: 'Solicitud'
-        }
-      ]);
-      this.typeRepository.save(types);
-      const statuss = this.statusRepository.create([
-        {
-          id: 1,
-          description: 'En espera'
-        },
-        {
-          id: 2,
-          description: 'Resuelto'
-        }
-      ]);
-      this.statusRepository.save(statuss);
-    }
-  }
-
   async createMicrosoftSession(createSessionDto: StartMicrosoftSessionDto) {
     try {
       const userFromToken = (
@@ -280,7 +150,6 @@ export class SessionsService {
       const emailUser = userFromToken.userPrincipalName.toLowerCase();
       let user = await this.usersRepository.findOneBy({ email: emailUser });
       if (!user) {
-        await this.createRoles();
         const usersCount = (await this.usersRepository.find({})).length;
         user = this.usersRepository.create({
           name: userFromToken.displayName,
@@ -320,43 +189,4 @@ export class SessionsService {
     }
   }
 
-  async authApplication(body: AuthApplication) {
-    try {
-      const app = await this.externalApplicationRepository.findOne({
-        where: {
-          clientId: body.appId,
-          clientSecret: body.appSecret
-        }
-      });
-      if (!app) {
-        throw new CustomError(Errors.AUTH_UNSUCCESSFUL);
-      }
-      const user = await this.usersRepository.findOne({
-        where: {
-          roles: { role: { name: 'admin' } }
-        }
-      });
-      const deviceId = uuid();
-      const token = this.authService.createTokenForDevice(user, deviceId);
-      let session = this.sessionsRepository.create({
-        app,
-        token,
-        confirmed: true,
-        deviceId: deviceId,
-        fcmToken: null,
-        user
-      });
-      session = await this.sessionsRepository.save(session);
-      session = await this.findOne(session.id);
-      return {
-        token: session.token,
-        user: session.user.name,
-        email: session.user.email,
-        lastConnection: session.user.lastConnection
-      };
-    } catch (error) {
-      console.log(error);
-      throw new CustomError(Errors.AUTH_UNSUCCESSFUL);
-    }
-  }
 }

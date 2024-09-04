@@ -5,7 +5,6 @@ import { StartSessionDto } from './dto/start-session.dto';
 import { ConfirmSessionDto } from './dto/confirm-session.dto';
 import { StartMicrosoftSessionDto } from './dto/start-microsoft-session.dto';
 import { Session } from './entities/session.entity';
-import { AuthApplication } from './dto/auth-application.dto';
 
 @Controller('sessions')
 @ApiTags('Sessions')
@@ -32,8 +31,4 @@ export class SessionsController {
     return await this.sessionsService.createMicrosoftSession(createSessionDto);
   }
 
-  @Post('token')
-  async authApplication( @Body() body: AuthApplication) {
-    return await this.sessionsService.authApplication(body);
-  }
 }
