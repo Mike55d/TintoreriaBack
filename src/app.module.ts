@@ -22,6 +22,10 @@ import { EmailSetting } from './email/entities/email-notification.entity';
 import { EmailModule } from './email/email.module';
 import { Role } from './roles/entities/role.entity';
 import { Session } from './sessions/entities/session.entity';
+import { ClientsModule } from './clients/clients.module';
+import { Client } from './clients/entities/client.entity';
+import { CompanyModule } from './company/company.module';
+import { Company } from './company/entities/company.entity';
 
 @Module({
   imports: [
@@ -51,7 +55,7 @@ import { Session } from './sessions/entities/session.entity';
       synchronize: process.env.TYPEORM_SYNCHRONIZE === 'true',
       logging: process.env.TYPEORM_LOGGING,
       retryAttempts: +process.env.TYPEORM_RETRY_ATTEMPTS,
-      entities: [User, UserProfile, Log, UsersToRoles, EmailSetting, Role,Session]
+      entities: [User, UserProfile, Log, UsersToRoles, EmailSetting, Role, Session, Client, Company]
     } as TypeOrmModuleOptions),
     TypeOrmModule.forRoot({
       name: 'glpi',
@@ -79,7 +83,9 @@ import { Session } from './sessions/entities/session.entity';
     WebsocketModule,
     ErrorsModule,
     EmailModule,
-    EmailModule
+    EmailModule,
+    ClientsModule,
+    CompanyModule
   ],
   providers: [ApiConfigService]
 })
