@@ -26,6 +26,14 @@ import { ClientsModule } from './clients/clients.module';
 import { Client } from './clients/entities/client.entity';
 import { CompanyModule } from './company/company.module';
 import { Company } from './company/entities/company.entity';
+import { GarmentsModule } from './garments/garments.module';
+import { PricesModule } from './prices/prices.module';
+import { Garment } from './garments/entities/garment.entity';
+import { Currency } from './currencies/entities/currency.entity';
+import { Price } from './prices/entities/price.entity';
+import { SettingsModule } from './settings/settings.module';
+import { Settings } from './settings/entities/settings.entity';
+import { CurrenciesModule } from './currencies/currencies.module';
 
 @Module({
   imports: [
@@ -55,7 +63,21 @@ import { Company } from './company/entities/company.entity';
       synchronize: process.env.TYPEORM_SYNCHRONIZE === 'true',
       logging: process.env.TYPEORM_LOGGING,
       retryAttempts: +process.env.TYPEORM_RETRY_ATTEMPTS,
-      entities: [User, UserProfile, Log, UsersToRoles, EmailSetting, Role, Session, Client, Company]
+      entities: [
+        User,
+        UserProfile,
+        Log,
+        UsersToRoles,
+        EmailSetting,
+        Role,
+        Session,
+        Client,
+        Company,
+        Garment,
+        Currency,
+        Price,
+        Settings
+      ]
     } as TypeOrmModuleOptions),
     TypeOrmModule.forRoot({
       name: 'glpi',
@@ -85,7 +107,11 @@ import { Company } from './company/entities/company.entity';
     EmailModule,
     EmailModule,
     ClientsModule,
-    CompanyModule
+    CompanyModule,
+    GarmentsModule,
+    PricesModule,
+    SettingsModule,
+    CurrenciesModule
   ],
   providers: [ApiConfigService]
 })
