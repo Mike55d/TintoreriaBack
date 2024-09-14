@@ -11,4 +11,5 @@ export class Garment {
 
   @OneToMany(() => Price, Price => Price.garment, { cascade: true })
   prices: Price[];
+  
 }

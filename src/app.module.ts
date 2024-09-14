@@ -34,6 +34,9 @@ import { Price } from './prices/entities/price.entity';
 import { SettingsModule } from './settings/settings.module';
 import { Settings } from './settings/entities/settings.entity';
 import { CurrenciesModule } from './currencies/currencies.module';
+import { OrdersModule } from './orders/orders.module';
+import { Order } from './orders/entities/order.entity';
+import { GarmentsOrder } from './orders/entities/garmentsOrder.entity';
 
 @Module({
   imports: [
@@ -76,7 +79,9 @@ import { CurrenciesModule } from './currencies/currencies.module';
         Garment,
         Currency,
         Price,
-        Settings
+        Settings,
+        Order,
+        GarmentsOrder
       ]
     } as TypeOrmModuleOptions),
     TypeOrmModule.forRoot({
@@ -111,7 +116,8 @@ import { CurrenciesModule } from './currencies/currencies.module';
     GarmentsModule,
     PricesModule,
     SettingsModule,
-    CurrenciesModule
+    CurrenciesModule,
+    OrdersModule
   ],
   providers: [ApiConfigService]
 })

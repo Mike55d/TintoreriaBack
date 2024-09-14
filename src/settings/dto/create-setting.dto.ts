@@ -1,5 +1,5 @@
 import { Expose } from 'class-transformer';
-import { IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateSettingDto {
   @Expose()
@@ -11,6 +11,7 @@ export class CreateSettingDto {
   general_price: number;
 
   @Expose()
+  @IsOptional()
   @IsNumber()
-  currencyId: number;
+  currencyId?: number;
 }
