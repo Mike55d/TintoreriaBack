@@ -7,10 +7,10 @@ export class CreateGarmentDto {
   @IsString()
   name: string;
 
-  @IsArray()
-  @IsOptional()
-  @ValidateNested({ each: true })
-  @Type(() => UpdatePriceDto)
-  @Expose()
-  prices?: UpdatePriceDto[];
+  // @IsArray()
+  // @IsOptional()
+  // @ValidateNested({ each: true })
+  // @Type(() => UpdatePriceDto)
+  // @Expose()
+  // prices?: UpdatePriceDto[];
 }

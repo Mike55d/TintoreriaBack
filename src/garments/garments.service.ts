@@ -13,14 +13,8 @@ export class GarmentsService {
   ) {}
 
   async create(createGarmentDto: CreateGarmentDto) {
-    const prices = createGarmentDto.prices.map(price => ({
-      ...price,
-      currency: {
-        id: price.currencyId
-      }
-    }));
     try {
-      const garment = this.garmentsRepository.create({ ...createGarmentDto, prices });
+      const garment = this.garmentsRepository.create({ ...createGarmentDto });
       return await this.garmentsRepository.save(garment);
     } catch (error) {
       console.log(error);
@@ -28,29 +22,20 @@ export class GarmentsService {
   }
 
   async findAll() {
-    return await this.garmentsRepository.find({ relations: ['prices', 'prices.currency'] });
+    return await this.garmentsRepository.find({});
   }
 
   async findOne(id: number) {
     return await this.garmentsRepository.find({
-      where: { id },
-      relations: ['prices', 'prices.currency']
+      where: { id }
     });
   }
 
   async update(id: number, updateGarmentDto: UpdateGarmentDto) {
-    // console.log(updateGarmentDto);
     try {
-      const prices = updateGarmentDto.prices.map(price => ({
-        ...price,
-        currency: {
-          id: price.currencyId
-        }
-      }));
       return await this.garmentsRepository.save({
         id,
-        ...updateGarmentDto,
-        prices
+        ...updateGarmentDto
       });
     } catch (error) {
       console.log(error);
