@@ -66,6 +66,7 @@ export class GeneralPricesService {
               .select('price.price', 'price')
               .addSelect('price.type', 'type')
               .addSelect('price.garment_id')
+              .addSelect('price.currency_id','currencyId')
               .from(Price, 'price')
               .where('price.currency_id = :currencyId', { currencyId }),
           'price',
