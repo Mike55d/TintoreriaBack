@@ -13,8 +13,7 @@ export class UpdatePriceDto {
 
   @Expose()
   @IsOptional()
-  @IsNumber()
-  type: number;
+  type?: number | null;
 
   @Expose()
   @IsOptional()

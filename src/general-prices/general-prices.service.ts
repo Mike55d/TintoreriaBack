@@ -20,24 +20,6 @@ export class GeneralPricesService {
 
   async create(createGeneralPriceDto: CreateGeneralPriceDto) {
     try {
-      // for (let genPrice of createGeneralPriceDto.prices) {
-      //   const generalPrice = await this.generalPricesRepository.findOne({
-      //     where: { currency: { id: genPrice.currencyId } }
-      //   });
-      //   if (!generalPrice) {
-      //     const newGeneralPrice = this.generalPricesRepository.create({
-      //       ...genPrice,
-      //       currency: { id: genPrice.currencyId }
-      //     });
-      //     await this.generalPricesRepository.save(newGeneralPrice);
-      //   } else {
-      //     await this.generalPricesRepository.update(generalPrice.id, {
-      //       ...genPrice,
-      //       currency: { id: genPrice.currencyId }
-      //     });
-      //   }
-      // }
-
       const generalPrices = createGeneralPriceDto.generalPrices.map(generalPrice =>
         this.generalPricesRepository.create({
           id: generalPrice.id,
@@ -55,7 +37,7 @@ export class GeneralPricesService {
           id: price.id,
           currency: { id: price.currencyId },
           garment: { id: price.garmentId },
-          type: price.type,
+          type: price.type ?? undefined,
           price: price.price
         })
       );
