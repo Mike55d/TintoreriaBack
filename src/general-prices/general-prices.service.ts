@@ -20,26 +20,40 @@ export class GeneralPricesService {
 
   async create(createGeneralPriceDto: CreateGeneralPriceDto) {
     try {
-      const generalPrice = await this.generalPricesRepository.findOne({
-        where: { currency: { id: createGeneralPriceDto.currencyId } }
-      });
-      if (!generalPrice) {
-        const newGeneralPrice = this.generalPricesRepository.create({
-          ...createGeneralPriceDto,
-          currency: { id: createGeneralPriceDto.currencyId }
-        });
-        await this.generalPricesRepository.save(newGeneralPrice);
-      } else {
-        await this.generalPricesRepository.update(generalPrice.id, {
-          ...createGeneralPriceDto,
-          currency: { id: createGeneralPriceDto.currencyId }
-        });
-      }
+      // for (let genPrice of createGeneralPriceDto.prices) {
+      //   const generalPrice = await this.generalPricesRepository.findOne({
+      //     where: { currency: { id: genPrice.currencyId } }
+      //   });
+      //   if (!generalPrice) {
+      //     const newGeneralPrice = this.generalPricesRepository.create({
+      //       ...genPrice,
+      //       currency: { id: genPrice.currencyId }
+      //     });
+      //     await this.generalPricesRepository.save(newGeneralPrice);
+      //   } else {
+      //     await this.generalPricesRepository.update(generalPrice.id, {
+      //       ...genPrice,
+      //       currency: { id: genPrice.currencyId }
+      //     });
+      //   }
+      // }
 
-      const prices = createGeneralPriceDto.prices.map(price =>
+      const generalPrices = createGeneralPriceDto.generalPrices.map(generalPrice =>
+        this.generalPricesRepository.create({
+          id: generalPrice.id,
+          currency: {
+            id: generalPrice.currencyId
+          },
+          generalPrice: generalPrice.generalPrice,
+          ironingDiscount: generalPrice.ironingDiscount
+        })
+      );
+      this.generalPricesRepository.save(generalPrices);
+
+      const prices = createGeneralPriceDto.garmentsWithPrice.map(price =>
         this.pricesRepository.create({
           id: price.id,
-          currency: { id: createGeneralPriceDto.currencyId },
+          currency: { id: price.currencyId },
           garment: { id: price.garmentId },
           type: price.type,
           price: price.price
@@ -66,14 +80,15 @@ export class GeneralPricesService {
               .select('price.price', 'price')
               .addSelect('price.type', 'type')
               .addSelect('price.garment_id')
-              .addSelect('price.currency_id','currencyId')
+              .addSelect('price.currency_id', 'currencyId')
+              .addSelect('price.id', 'id')
               .from(Price, 'price')
               .where('price.currency_id = :currencyId', { currencyId }),
           'price',
           'price.garment_id = garment.id'
         )
         .addSelect('garment.name', 'name')
-        .addSelect('garment.id', 'id')
+        .addSelect('garment.id', 'garmentId')
         .getRawMany();
       return { generalPrice, garmentsWithPrice };
     } catch (error) {

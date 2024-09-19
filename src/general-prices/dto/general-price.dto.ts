@@ -1,7 +1,7 @@
 import { Expose } from 'class-transformer';
 import { IsNumber, IsOptional } from 'class-validator';
 
-export class UpdatePriceDto {
+export class GeneralPriceDto {
   @Expose()
   @IsNumber()
   @IsOptional()
@@ -9,19 +9,13 @@ export class UpdatePriceDto {
 
   @Expose()
   @IsNumber()
-  garmentId: number;
-
-  @Expose()
-  @IsOptional()
-  @IsNumber()
-  type: number;
-
-  @Expose()
-  @IsOptional()
-  @IsNumber()
-  price: number;
-
-  @Expose()
-  @IsNumber()
   currencyId: number;
+
+  @Expose()
+  @IsNumber()
+  generalPrice: number;
+
+  @Expose()
+  @IsNumber()
+  ironingDiscount: number;
 }
