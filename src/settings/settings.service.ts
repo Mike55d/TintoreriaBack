@@ -16,9 +16,13 @@ export class SettingsService {
     try {
       const settings = await this.settingsRepository.findOneBy({});
       if (settings) {
-        return await this.settingsRepository.update(settings.id, createSettingDto);
+        return await this.settingsRepository.update(settings.id, {
+          currency: { id: createSettingDto.currencyId }
+        });
       } else {
-        const newSettings = this.settingsRepository.create(createSettingDto);
+        const newSettings = this.settingsRepository.create({
+          currency: { id: createSettingDto.currencyId }
+        });
         return await this.settingsRepository.save(newSettings);
       }
     } catch (error) {
@@ -26,8 +30,16 @@ export class SettingsService {
     }
   }
 
-  findAll() {
-    return this.settingsRepository.findOneBy({});
+  async findAll() {
+    try {
+      const settings = await this.settingsRepository.findOne({
+        relations: ['currency'],
+        where: {}
+      });
+      return settings.json;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   findOne(id: number) {

@@ -15,4 +15,10 @@ export class Settings {
   @ManyToOne(() => Currency)
   currency: Currency;
 
+  get json() {
+    return {
+      id: this.id,
+      currencyId: this.currency?.id
+    };
+  }
 }
