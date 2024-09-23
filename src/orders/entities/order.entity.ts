@@ -23,7 +23,9 @@ export class Order {
   @ManyToOne(() => Currency)
   currency: Currency;
 
-  @OneToMany(() => GarmentsOrder, garmentsOrder => garmentsOrder.order, { cascade: true })
+  @OneToMany(() => GarmentsOrder, garmentsOrder => garmentsOrder.order, {
+    cascade: true,
+  })
   garments: GarmentsOrder[];
 
   @Column()

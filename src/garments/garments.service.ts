@@ -26,7 +26,7 @@ export class GarmentsService {
   }
 
   async findOne(id: number) {
-    return await this.garmentsRepository.find({
+    return await this.garmentsRepository.findOne({
       where: { id }
     });
   }

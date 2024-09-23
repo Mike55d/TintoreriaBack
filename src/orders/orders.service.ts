@@ -51,11 +51,7 @@ export class OrdersService {
   async findOne(id: number) {
     try {
       const order = await this.ordersRepository.findOne({
-        relations: [
-          'garments',
-          'garments.garment',
-          'currency'
-        ],
+        relations: ['garments', 'garments.garment', 'currency'],
         where: { id }
       });
       return order.json;
@@ -84,7 +80,15 @@ export class OrdersService {
     }
   }
 
-  remove(id: number) {
+  async remove(id: number) {
+    const order = await this.ordersRepository.findOneBy({ id });
+    if (order) {
+      try {
+        return await this.ordersRepository.remove(order);
+      } catch (error) {
+        console.log(error);
+      }
+    }
     return `This action removes a #${id} order`;
   }
 }

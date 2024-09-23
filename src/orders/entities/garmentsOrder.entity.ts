@@ -24,7 +24,10 @@ export class GarmentsOrder {
   @ManyToOne(() => Garment)
   garment: Garment;
 
-  @ManyToOne(() => Order, order => order.garments, { orphanedRowAction: 'delete' })
+  @ManyToOne(() => Order, order => order.garments, {
+    orphanedRowAction: 'delete',
+    onDelete: 'CASCADE'
+  })
   order: Order;
 
   @Column({ default: 0 })
