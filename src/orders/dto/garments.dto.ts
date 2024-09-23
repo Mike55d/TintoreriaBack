@@ -17,4 +17,12 @@ export class GarmentsDto {
   @Expose()
   @IsNumber()
   garmentId: number;
+
+  @Expose()
+  @IsNumber()
+  price: number;
+
+  @Expose()
+  @IsNumber()
+  total: number;
 }

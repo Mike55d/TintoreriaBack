@@ -26,13 +26,17 @@ export class Order {
   @OneToMany(() => GarmentsOrder, garmentsOrder => garmentsOrder.order, { cascade: true })
   garments: GarmentsOrder[];
 
+  @Column()
+  total: number;
+
   get json() {
     return {
       id: this.id,
       status: this.status,
       created_at: this.created_at,
       currencyId: this.currency.id,
-      garments: this.garments
+      garments: this.garments,
+      total: this.total
     };
   }
 }

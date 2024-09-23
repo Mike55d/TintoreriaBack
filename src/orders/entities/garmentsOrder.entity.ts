@@ -26,4 +26,10 @@ export class GarmentsOrder {
 
   @ManyToOne(() => Order, order => order.garments, { orphanedRowAction: 'delete' })
   order: Order;
+
+  @Column({ default: 0 })
+  price: number;
+
+  @Column({ default: 0 })
+  total: number;
 }

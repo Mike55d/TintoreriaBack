@@ -18,7 +18,9 @@ export class OrdersService {
       const garments: any = createOrderDto.garments.map(garment => ({
         quantity: garment.quantity,
         ironingOnly: garment.ironingOnly,
-        garment: { id: garment.garmentId }
+        garment: { id: garment.garmentId },
+        price: garment.price,
+        total: garment.total
       }));
       const order = this.ordersRepository.create({
         garments,
@@ -52,8 +54,6 @@ export class OrdersService {
         relations: [
           'garments',
           'garments.garment',
-          'garments.garment.prices',
-          'garments.garment.prices.currency',
           'currency'
         ],
         where: { id }
@@ -70,7 +70,9 @@ export class OrdersService {
         id: garment.id,
         quantity: garment.quantity,
         ironingOnly: garment.ironingOnly,
-        garment: { id: garment.garmentId }
+        garment: { id: garment.garmentId },
+        price: garment.price,
+        total: garment.total
       }));
       return await this.ordersRepository.save({
         id,
