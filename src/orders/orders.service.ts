@@ -7,6 +7,9 @@ import { Order } from './entities/order.entity';
 import { GetClientsDto } from '../clients/dto/get-clients.dto';
 import { ChangeStatusDto } from './dto/change-status.dto';
 import { History } from './entities/history.entity';
+import { Cron, CronExpression } from '@nestjs/schedule';
+import moment from 'moment';
+import { Status } from './orders.type';
 
 @Injectable()
 export class OrdersService {
@@ -29,7 +32,7 @@ export class OrdersService {
       const order = this.ordersRepository.create({
         garments,
         status: 0,
-        endDate: createOrderDto.endDate,
+        endDate: createOrderDto.endDate ?? null,
         currency: { id: createOrderDto.currencyId }
       });
       return await this.ordersRepository.save(order);
@@ -78,7 +81,7 @@ export class OrdersService {
       return await this.ordersRepository.save({
         id,
         garments,
-        endDate: updateOrderDto.endDate,
+        endDate: updateOrderDto.endDate ?? null,
         currency: { id: updateOrderDto.currencyId }
       });
     } catch (error) {
@@ -107,5 +110,28 @@ export class OrdersService {
     return await this.ordersRepository.update(id, {
       status: changeStatusDto.statusId
     });
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_10AM)
+  async ordersLate() {
+    try {
+      const ordersOutTime = await this.ordersRepository
+        .createQueryBuilder('order')
+        .where('order.endDate is not null')
+        .andWhere('order.status != 3')
+        .andWhere('order.endDate < :today', { today: new Date() })
+        .getMany();
+      for (let order of ordersOutTime) {
+        await this.ordersRepository.update(order.id, { status: Status.LATE });
+        const newHistory = this.historyRepository.create({
+          order: { id: order.id },
+          status: Status.LATE
+        });
+        await this.historyRepository.save(newHistory);
+      }
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
   }
 }

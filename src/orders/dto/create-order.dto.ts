@@ -8,6 +8,7 @@ export class CreateOrderDto {
   currencyId: number;
 
   @Expose()
+  @IsOptional()
   @IsDate()
   endDate: Date;
 
