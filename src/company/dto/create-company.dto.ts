@@ -1,5 +1,5 @@
 import { Expose } from 'class-transformer';
-import { IsEmail, IsString } from 'class-validator';
+import { IsEmail, IsNumber, IsString } from 'class-validator';
 
 export class CreateCompanyDto {
   @Expose()
@@ -29,4 +29,8 @@ export class CreateCompanyDto {
   @Expose()
   @IsString()
   country: string;
+
+  @Expose()
+  @IsNumber()
+  currencyId: number;
 }

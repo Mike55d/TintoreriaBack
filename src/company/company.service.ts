@@ -15,7 +15,12 @@ export class CompanyService {
 
   async create(createCompanyDto: CreateCompanyDto) {
     try {
-      const company = this.companiesRepository.create(createCompanyDto);
+      const currencyId = createCompanyDto.currencyId;
+      delete createCompanyDto.currencyId;
+      const company = this.companiesRepository.create({
+        ...createCompanyDto,
+        currency: { id: currencyId }
+      });
       return await this.companiesRepository.save(company);
     } catch (error) {
       console.log(error);
@@ -27,22 +32,36 @@ export class CompanyService {
     const data = await this.companiesRepository.find({
       skip: query.skip,
       take: query.take,
-      order: { id: 'DESC' }
+      order: { id: 'DESC' },
+      relations: ['currency']
     });
     const count = await this.companiesRepository.count();
-    return { data, count };
+    return { data: data.map(x => x.json), count };
   }
 
   async findOne(id: number) {
-    return await this.companiesRepository.findOne({ where: { id } });
+    const company = await this.companiesRepository.findOne({
+      where: { id },
+      relations: ['currency']
+    });
+    return company.json;
   }
 
   async update(id: number, updateCompanyDto: UpdateCompanyDto) {
-    return await this.companiesRepository.update(id, updateCompanyDto);
+    try {
+      const currencyId = updateCompanyDto.currencyId;
+      delete updateCompanyDto.currencyId;
+      return await this.companiesRepository.update(id, {
+        ...updateCompanyDto,
+        currency: { id: currencyId }
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async remove(id: number) {
-    const company = await this.findOne(id);
+    const company = await this.companiesRepository.findOneBy({ id });
 
     if (company) {
       await this.companiesRepository.remove(company);
