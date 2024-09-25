@@ -1,11 +1,15 @@
 import { Expose, Type } from 'class-transformer';
-import { IsArray, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { IsArray, IsDate, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { GarmentsDto } from './garments.dto';
 
 export class CreateOrderDto {
   @Expose()
   @IsNumber()
   currencyId: number;
+
+  @Expose()
+  @IsDate()
+  endDate: Date;
 
   @IsArray()
   @IsOptional()

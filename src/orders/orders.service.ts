@@ -29,6 +29,7 @@ export class OrdersService {
       const order = this.ordersRepository.create({
         garments,
         status: 0,
+        endDate: createOrderDto.endDate,
         currency: { id: createOrderDto.currencyId }
       });
       return await this.ordersRepository.save(order);
@@ -77,6 +78,7 @@ export class OrdersService {
       return await this.ordersRepository.save({
         id,
         garments,
+        endDate: updateOrderDto.endDate,
         currency: { id: updateOrderDto.currencyId }
       });
     } catch (error) {
