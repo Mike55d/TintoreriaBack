@@ -18,7 +18,7 @@ export class Order {
   @Column({ default: 1 })
   status: number;
 
-  @Column()
+  @Column({ default: 0 })
   payType: number;
 
   @Column({ nullable: true })
@@ -35,7 +35,7 @@ export class Order {
   })
   garments: GarmentsOrder[];
 
-  @Column()
+  @Column({ nullable: true })
   total: number;
 
   @OneToMany(() => History, history => history.order, {
