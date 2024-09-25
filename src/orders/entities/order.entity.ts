@@ -15,7 +15,7 @@ export class Order {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ default: 1 })
   status: number;
 
   @Column()
