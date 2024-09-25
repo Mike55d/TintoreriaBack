@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { Currency } from '../../currencies/entities/currency.entity';
 import { GarmentsOrder } from './garmentsOrder.entity';
+import { History } from './history.entity';
 
 @Entity()
 export class Order {
@@ -17,6 +18,12 @@ export class Order {
   @Column()
   status: number;
 
+  @Column()
+  payType: number;
+
+  @Column({ nullable: true })
+  endDate: Date;
+
   @CreateDateColumn()
   created_at: Date;
 
@@ -24,12 +31,17 @@ export class Order {
   currency: Currency;
 
   @OneToMany(() => GarmentsOrder, garmentsOrder => garmentsOrder.order, {
-    cascade: true,
+    cascade: true
   })
   garments: GarmentsOrder[];
 
   @Column()
   total: number;
+
+  @OneToMany(() => History, history => history.order, {
+    cascade: true
+  })
+  historyEntries: History[];
 
   get json() {
     return {
@@ -38,7 +50,10 @@ export class Order {
       created_at: this.created_at,
       currencyId: this.currency.id,
       garments: this.garments,
-      total: this.total
+      total: this.total,
+      endDate: this.endDate,
+      payType: this.payType,
+      historyEntries: this.historyEntries
     };
   }
 }

@@ -39,6 +39,7 @@ import { Order } from './orders/entities/order.entity';
 import { GarmentsOrder } from './orders/entities/garmentsOrder.entity';
 import { GeneralPricesModule } from './general-prices/general-prices.module';
 import { GeneralPrice } from './general-prices/entities/general-price.entity';
+import { History } from './orders/entities/history.entity';
 
 @Module({
   imports: [
@@ -84,7 +85,8 @@ import { GeneralPrice } from './general-prices/entities/general-price.entity';
         Settings,
         Order,
         GarmentsOrder,
-        GeneralPrice
+        GeneralPrice,
+        History
       ]
     } as TypeOrmModuleOptions),
     TypeOrmModule.forRoot({

@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Order } from './entities/order.entity';
 import { GetClientsDto } from '../clients/dto/get-clients.dto';
+import { ChangeStatusDto } from './dto/change-status.dto';
 
 @Injectable()
 export class OrdersService {
@@ -51,7 +52,7 @@ export class OrdersService {
   async findOne(id: number) {
     try {
       const order = await this.ordersRepository.findOne({
-        relations: ['garments', 'garments.garment', 'currency'],
+        relations: ['garments', 'garments.garment', 'currency','historyEntries'],
         where: { id }
       });
       return order.json;
@@ -90,5 +91,9 @@ export class OrdersService {
       }
     }
     return `This action removes a #${id} order`;
+  }
+
+  async changeStatus(id: number, changeStatusDto: ChangeStatusDto){
+
   }
 }
