@@ -28,4 +28,9 @@ export class CreateOrderDto {
   @IsOptional()
   @IsNumber()
   payType?: number;
+
+  @Expose()
+  @IsOptional()
+  @IsNumber()
+  statusId: number;
 }

@@ -34,7 +34,7 @@ export class OrdersService {
         status: 0,
         endDate: createOrderDto.endDate ?? null,
         currency: { id: createOrderDto.currencyId },
-        client: { id: createOrderDto.clientId }
+        client: createOrderDto.clientId ? { id: createOrderDto.clientId } : undefined
       });
       return await this.ordersRepository.save(order);
     } catch (error) {
@@ -92,7 +92,8 @@ export class OrdersService {
         endDate: updateOrderDto.endDate ?? null,
         payType: updateOrderDto.payType,
         currency: { id: updateOrderDto.currencyId },
-        client: { id: updateOrderDto.clientId }
+        client: updateOrderDto.clientId ? { id: updateOrderDto.clientId } : undefined,
+        status: updateOrderDto.statusId
       });
     } catch (error) {
       console.log(error);
