@@ -15,10 +15,9 @@ export class ClientsService {
 
   async create(createClientDto: CreateClientDto) {
     try {
-      const formatCompanies = createClientDto.companies.map(idCompany => ({ id: idCompany }));
       const client = this.clientsRepository.create({
         ...createClientDto,
-        companies: formatCompanies
+        company: { id: createClientDto.companyId }
       });
       return await this.clientsRepository.save(client);
     } catch (error) {
@@ -32,7 +31,7 @@ export class ClientsService {
       skip: query.skip,
       take: query.take,
       order: { id: 'DESC' },
-      relations: ['companies', 'companies.currency']
+      relations: ['company', 'company.currency']
     });
     const count = await this.clientsRepository.count();
     return { data, count };
@@ -41,17 +40,16 @@ export class ClientsService {
   async findOne(id: number) {
     return await this.clientsRepository.findOne({
       where: { id },
-      relations: ['companies', 'companies.currency']
+      relations: ['company', 'company.currency']
     });
   }
 
   async update(id: number, updateClientDto: UpdateClientDto) {
-    const formatCompanies = updateClientDto.companies.map(company => ({ id: company }));
     try {
       return await this.clientsRepository.save({
         id,
         ...updateClientDto,
-        companies: formatCompanies
+        company: { id: updateClientDto.companyId }
       });
     } catch (error) {
       console.log(error);

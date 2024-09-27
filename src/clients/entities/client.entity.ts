@@ -1,4 +1,4 @@
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Company } from '../../company/entities/company.entity';
 
 @Entity()
@@ -30,7 +30,6 @@ export class Client {
   @Column()
   rfc: string;
 
-  @ManyToMany(() => Company, { cascade: true })
-  @JoinTable()
-  companies: Company[];
+  @ManyToOne(() => Company)
+  company: Company;
 }

@@ -1,7 +1,5 @@
 import { Expose, Type } from 'class-transformer';
-import { IsArray, IsEmail, IsOptional, IsString, ValidateNested } from 'class-validator';
-import { Company } from '../../company/entities/company.entity';
-
+import { IsArray, IsEmail, IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 export class CreateClientDto {
   @Expose()
   @IsString()
@@ -35,8 +33,8 @@ export class CreateClientDto {
   @IsString()
   rfc: string;
 
-  @IsArray()
-  @IsOptional()
   @Expose()
-  companies?: number[];
+  @IsNumber()
+  @IsOptional()
+  companyId?: number;
 }
