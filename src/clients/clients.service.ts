@@ -32,14 +32,17 @@ export class ClientsService {
       skip: query.skip,
       take: query.take,
       order: { id: 'DESC' },
-      relations: ['companies']
+      relations: ['companies', 'companies.currency']
     });
     const count = await this.clientsRepository.count();
     return { data, count };
   }
 
   async findOne(id: number) {
-    return await this.clientsRepository.findOne({ where: { id }, relations: ['companies'] });
+    return await this.clientsRepository.findOne({
+      where: { id },
+      relations: ['companies', 'companies.currency']
+    });
   }
 
   async update(id: number, updateClientDto: UpdateClientDto) {

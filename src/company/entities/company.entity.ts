@@ -40,7 +40,7 @@ export class Company {
       personName: this.personName,
       personEmail: this.personEmail,
       country: this.country,
-      currencyId: this.currency.id
+      currencyId: this.currency?.id
     };
   }
 }

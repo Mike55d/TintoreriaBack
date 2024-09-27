@@ -33,7 +33,8 @@ export class OrdersService {
         garments,
         status: 0,
         endDate: createOrderDto.endDate ?? null,
-        currency: { id: createOrderDto.currencyId }
+        currency: { id: createOrderDto.currencyId },
+        client: { id: createOrderDto.clientId }
       });
       return await this.ordersRepository.save(order);
     } catch (error) {
@@ -47,7 +48,7 @@ export class OrdersService {
         skip: query.skip,
         take: query.take,
         order: { id: 'DESC' },
-        relations: ['garments', 'garments.garment']
+        relations: ['garments', 'garments.garment', 'client']
       });
       const count = await this.ordersRepository.count();
       return { data, count };
@@ -59,7 +60,7 @@ export class OrdersService {
   async findOne(id: number) {
     try {
       const order = await this.ordersRepository.findOne({
-        relations: ['garments', 'garments.garment', 'currency', 'historyEntries'],
+        relations: ['garments', 'garments.garment', 'currency', 'historyEntries', 'client'],
         where: { id }
       });
       return order.json;
@@ -70,7 +71,7 @@ export class OrdersService {
 
   async update(id: number, updateOrderDto: UpdateOrderDto) {
     try {
-      const garments: any = updateOrderDto.garments.map(garment => ({
+      const garments: any = updateOrderDto.garments?.map(garment => ({
         id: garment.id,
         quantity: garment.quantity,
         ironingOnly: garment.ironingOnly,
@@ -82,7 +83,9 @@ export class OrdersService {
         id,
         garments,
         endDate: updateOrderDto.endDate ?? null,
-        currency: { id: updateOrderDto.currencyId }
+        payType: updateOrderDto.payType,
+        currency: { id: updateOrderDto.currencyId },
+        client: { id: updateOrderDto.clientId }
       });
     } catch (error) {
       console.log(error);
@@ -112,7 +115,7 @@ export class OrdersService {
     });
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_10AM)
+  @Cron('0 12 * * *')
   async ordersLate() {
     try {
       const ordersOutTime = await this.ordersRepository

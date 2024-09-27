@@ -9,6 +9,7 @@ import {
 import { Currency } from '../../currencies/entities/currency.entity';
 import { GarmentsOrder } from './garmentsOrder.entity';
 import { History } from './history.entity';
+import { Client } from '../../clients/entities/client.entity';
 
 @Entity()
 export class Order {
@@ -30,6 +31,9 @@ export class Order {
   @ManyToOne(() => Currency)
   currency: Currency;
 
+  @ManyToOne(() => Client, { nullable: true })
+  client: Client;
+
   @OneToMany(() => GarmentsOrder, garmentsOrder => garmentsOrder.order, {
     cascade: true
   })
@@ -49,6 +53,7 @@ export class Order {
       status: this.status,
       created_at: this.created_at,
       currencyId: this.currency.id,
+      clientId: this.client?.id,
       garments: this.garments,
       total: this.total,
       endDate: this.endDate,

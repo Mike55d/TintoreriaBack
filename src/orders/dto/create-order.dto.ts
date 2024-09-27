@@ -9,6 +9,11 @@ export class CreateOrderDto {
 
   @Expose()
   @IsOptional()
+  @IsNumber()
+  clientId?: number;
+
+  @Expose()
+  @IsOptional()
   @IsDate()
   endDate: Date;
 
@@ -18,4 +23,9 @@ export class CreateOrderDto {
   @Type(() => GarmentsDto)
   @Expose()
   garments?: GarmentsDto[];
+
+  @Expose()
+  @IsOptional()
+  @IsNumber()
+  payType?: number;
 }
