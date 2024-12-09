@@ -6,7 +6,7 @@ export default new DataSource({
     port: 3306,
     username: "root",
     password: "123456",
-    database: "adv_tickets",
+    database: "tintoreria",
     entities: [__dirname + '/**/*.entity.{ts,js}'],
     migrations: [__dirname + '/migrations/**/*.ts']
 })

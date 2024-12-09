@@ -2,7 +2,7 @@
   "name": "tintoreria-backend",
   "private": true,
   "version": "2.0.2",
-  "description": "ADV Tickets Backend",
+  "description": "tintoreria Backend",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build --webpack --webpackPath webpack-hmr.config.js",

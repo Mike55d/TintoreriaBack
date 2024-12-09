@@ -24,7 +24,7 @@ export class SeedStatusTable1701366016898 implements MigrationInterface {
       `INSERT INTO \`roles\`(name,permissions) VALUES ('admin','${allPermissions}'),('readOnly','${allPermissions}'),('tecnician','${allPermissions}'),('supervisor','${allPermissions}')`
     );
     await queryRunner.query(
-      `INSERT INTO \`users\`(name,email,status) VALUES ('Development','development@adv-ic.com',1)`
+      `INSERT INTO \`users\`(name,email,status) VALUES ('Development','development@tintoreria.com',1)`
     );
   }
 

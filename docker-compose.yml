@@ -2,8 +2,8 @@ version: '3.8'
 
 services:
   app:
-    image: adv-tickets-back
-    container_name: adv-tickets-back
+    image: tintoreria
+    container_name: tintoreria
     build: 
       context: .
       dockerfile: Dockerfile

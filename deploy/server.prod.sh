@@ -1,5 +1,5 @@
 # Pull code
-cd ~/apps/prod-adv-tickets-backend
+cd ~/apps/tintoreria-backend
 git checkout master
 git pull origin master
 
@@ -7,4 +7,4 @@ git pull origin master
 yarn install
 yarn run build
 yarn typeorm migration:run -- -d ormdatasource.ts
-pm2 startOrRestart ecosystem.config.js --only prod-adv-tickets-backend
+pm2 startOrRestart ecosystem.config.js --only tintoreria-backend
