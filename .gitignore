@@ -37,3 +37,5 @@ lerna-debug.log*
 public/docs/openapi.json
 yarn.lock
 /public/organization_logos/**
+service-account.json
+firebase-adminsdk.json
